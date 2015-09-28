@@ -6,6 +6,7 @@
     <color name="font_blue">#448ccb</color>
     <color name="font_orange">#fcab53</color>
     <color name="font_gray">#8e8e92</color>
+    <color name="font_gray_light">#ddd</color>
 
     <!--字体大小-->
     <dimen name="large_x">24dp</dimen>

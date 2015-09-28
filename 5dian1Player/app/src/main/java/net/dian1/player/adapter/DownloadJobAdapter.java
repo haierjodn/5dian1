@@ -32,27 +32,29 @@ import net.dian1.player.R;
  */
 public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 
-	public DownloadJobAdapter(Activity context) {
+	public final static int TYPE_COMPLETED = 0;
+	public final static int TYPE_DOWNLOADING = 1;
+
+	private int type = 0;
+
+	public DownloadJobAdapter(Activity context, int listType) {
 		super(context);
+		type = listType;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row=convertView;
-
 		ViewHolder holder;
-
 		if (row==null) {
 			LayoutInflater inflater = mContext.getLayoutInflater();
 			row=inflater.inflate(R.layout.download_row, null);
-
 			holder = new ViewHolder();
 			holder.songName = (TextView)row.findViewById(R.id.TrackRowName);
 			holder.songArtistAlbum = (TextView)row.findViewById(R.id.TrackRowArtistAlbum);
 			holder.songProgressText = (TextView)row.findViewById(R.id.TrackRowProgress);
-			holder.progressBar = (ProgressBar)row.findViewById(R.id.ProgressBar);
+			holder.songProgressText.setVisibility(type == TYPE_COMPLETED ? View.INVISIBLE : View.VISIBLE);
 			row.setTag(holder);
-
 			mContext.registerForContextMenu(row);
 		}
 		else{
@@ -63,17 +65,13 @@ public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 		holder.songName.setText(playlistEntry.getMusic().getName());
 		holder.songArtistAlbum.setText(playlistEntry.getAlbum().getArtistName()+" - "+playlistEntry.getAlbum().getName());
 
-		if(mList.get(position).getProgress() == 100){
-			holder.progressBar.setVisibility(View.GONE);
-			holder.songProgressText.setText("COMPLETE");
-		} else {
-			holder.progressBar.setVisibility(View.VISIBLE);
-			holder.progressBar.setMax(100);
-			holder.progressBar.setProgress(mList.get(position).getProgress());
-			holder.songProgressText.setText(mList.get(position).getProgress()+"%");
+		if(type == TYPE_DOWNLOADING) {
+			if (mList.get(position).getProgress() == 100) {
+				holder.songProgressText.setText("COMPLETE");
+			} else {
+				holder.songProgressText.setText(mList.get(position).getProgress() + "%");
+			}
 		}
-
-		
 
 		return row;
 	}
@@ -88,7 +86,6 @@ public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 		TextView songName;
 		TextView songArtistAlbum;
 		TextView songProgressText;
-		ProgressBar progressBar;
 	}
 
 }

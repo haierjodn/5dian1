@@ -18,5 +18,5 @@ limitations under the License.
     <item android:state_selected="true" android:color="#fff" />
     <item android:state_pressed="true" android:color="#fff" />
     <item android:state_focused="true" android:color="#fff" />
-    <item android:color="#4d4d4d" />
+    <item android:color="@color/font_gray_light" />
 </selector>

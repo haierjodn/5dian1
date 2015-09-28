@@ -7,12 +7,13 @@
 
     <include layout="@layout/common_header" />
 
-    <LinearLayout
+    <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:gravity="center">
 
-        <CheckBox
+        <RadioButton
             android:id="@+id/cb_downloaded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,24 +21,24 @@
             android:checked="true"
             android:text="下载完成"
             android:background="@drawable/common_radio_left"
-            android:button="@null" />
+            android:button="@null"/>
 
-        <CheckBox
+        <RadioButton
             android:id="@+id/cb_downloading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@drawable/common_radio_textcolor"
-            android:checked="true"
+            android:checked="false"
             android:text="正在下载"
             android:background="@drawable/common_radio_right"
             android:button="@null" />
-    </LinearLayout>
+    </RadioGroup>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
     <!--<ListView
         android:layout_width="match_parent"

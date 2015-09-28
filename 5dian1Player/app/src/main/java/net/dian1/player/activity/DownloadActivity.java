@@ -16,288 +16,279 @@
 
 package net.dian1.player.activity;
 
-import java.util.ArrayList;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.AbsListView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.Spinner;
+import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.support.v4.view.ViewPager;
-import android.widget.ViewFlipper;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.adapter.DownloadJobAdapter;
 import net.dian1.player.api.Playlist;
-import net.dian1.player.media.PlayerEngine;
-import net.dian1.player.download.DownloadManager;
 import net.dian1.player.download.DownloadJob;
+import net.dian1.player.download.DownloadManager;
 import net.dian1.player.download.DownloadObserver;
+import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.util.MockUtils;
+
+import java.util.ArrayList;
 
 /**
  * @author Lukasz Wisniewski
  */
 public class DownloadActivity extends BaseActivity implements DownloadObserver,
-		CompoundButton.OnCheckedChangeListener {
-	
-	/**
+        CompoundButton.OnCheckedChangeListener {
+
+    /**
      * Runnable periodically querying DownloadService about
      * downloads
      */
     private Runnable mUpdateTimeTask = new Runnable() {
-            public void run() {
-            	//updateListView(mDownloadSpinner.getSelectedItemPosition());
-            }
+        public void run() {
+            //updateListView(mDownloadSpinner.getSelectedItemPosition());
+        }
     };
-    
+
     private Handler mHandler;
 
-	private ListView downloadingListView, downloadedListView;
-	private DownloadJobAdapter downloadedJobAdapter, downloadingJobAdapter;
-	private ViewPager viewPager;
-	private DownloadPageAdapter downloadPageAdapter;
-	private CheckBox cbDownloaded, cbDownloading;
-	
-	private DownloadManager mDownloadManager;
-	private PlayerEngine mPlayerInterface;
-	
-	/**
-	 * Launch this Activity from the outside
-	 *
-	 * @param c context from which Activity should be started
-	 */
-	public static void launch(Context c){
-		Intent intent = new Intent(c, DownloadActivity.class);
-		c.startActivity(intent);
-	}
-	
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_download);
-		
-		mDownloadManager = Dian1Application.getInstance().getDownloadManager();
-		mPlayerInterface = Dian1Application.getInstance().getPlayerEngineInterface();
+    private ListView downloadingListView, downloadedListView;
+    private DownloadJobAdapter downloadedJobAdapter, downloadingJobAdapter;
+    private ViewPager viewPager;
+    private DownloadPageAdapter downloadPageAdapter;
+    private RadioButton cbDownloaded, cbDownloading;
 
-		mHandler = new Handler();
+    private DownloadManager mDownloadManager;
+    private PlayerEngine mPlayerInterface;
 
-		initView();
+    /**
+     * Launch this Activity from the outside
+     *
+     * @param c context from which Activity should be started
+     */
+    public static void launch(Context c) {
+        Intent intent = new Intent(c, DownloadActivity.class);
+        c.startActivity(intent);
+    }
+
+    /**
+     * Called when the activity is first created.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_download);
+
+        mDownloadManager = Dian1Application.getInstance().getDownloadManager();
+        mPlayerInterface = Dian1Application.getInstance().getPlayerEngineInterface();
+
+        mHandler = new Handler();
+
+        initView();
 
 
-	}
-	
-	@Override
-	protected void onPause() {
-		mHandler.removeCallbacks(mUpdateTimeTask);
-		mDownloadManager.deregisterDownloadObserver(this);
-		super.onPause();
-	}
+    }
 
-	@Override
-	protected void onResume() {
-		mDownloadManager.registerDownloadObserver(this);
-		super.onResume();
-	}
+    @Override
+    protected void onPause() {
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        mDownloadManager.deregisterDownloadObserver(this);
+        super.onPause();
+    }
 
-	private void initView() {
-		setupHeader("下载管理");
-		findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
+    @Override
+    protected void onResume() {
+        mDownloadManager.registerDownloadObserver(this);
+        super.onResume();
+    }
 
-		cbDownloaded = (CheckBox) findViewById(R.id.cb_downloaded);
-		cbDownloading = (CheckBox) findViewById(R.id.cb_downloading);
-		cbDownloaded.setOnCheckedChangeListener(this);
-		cbDownloading.setOnCheckedChangeListener(this);
+    private void initView() {
+        setupHeader("下载管理");
+        findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
 
-		setupListView();
+        cbDownloaded = (RadioButton) findViewById(R.id.cb_downloaded);
+        cbDownloading = (RadioButton) findViewById(R.id.cb_downloading);
+        cbDownloaded.setOnCheckedChangeListener(this);
+        cbDownloading.setOnCheckedChangeListener(this);
 
-		viewPager = (ViewPager) findViewById(R.id.viewpager);
-		downloadPageAdapter = new DownloadPageAdapter();
-		viewPager.setAdapter(downloadPageAdapter);
-		viewPager.setCurrentItem(0);
-		viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-			@Override
-			public void onPageSelected(int position) {
-				super.onPageSelected(position);
-				cbDownloaded.setChecked(position == 0 ? true : false);
-				cbDownloading.setChecked(position == 1 ? true : false);
-			}
-		});
-	}
+        setupListView();
 
-	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		if(isChecked) {
-			switch (buttonView.getId()) {
-				case R.id.cb_downloaded:
-					viewPager.setCurrentItem(0, true);
-					//updateListView(1);
-					break;
-				case R.id.cb_downloading:
-					viewPager.setCurrentItem(1, true);
-					//updateListView(2);
-					break;
-			}
-		}
-	}
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        downloadPageAdapter = new DownloadPageAdapter();
+        viewPager.setAdapter(downloadPageAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                cbDownloaded.setChecked(position == 0 ? true : false);
+                cbDownloading.setChecked(position == 1 ? true : false);
+            }
+        });
+        viewPager.setCurrentItem(0);
+    }
 
-	
-	private int lastSpinnerPosition = -1;
-	
-	private void updateListView(int position){
-		ArrayList<DownloadJob> jobs = null;
-		switch (position) {
-		case 0:
-			// Display ALL
-			jobs = mDownloadManager.getAllDownloads();
-			break;
-			
-		case 1:
-			// Display Completed
-			jobs = mDownloadManager.getCompletedDownloads();
-			break;
-			
-		case 2:
-			// Display Queued
-			jobs = mDownloadManager.getQueuedDownloads();
-			break;
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            switch (buttonView.getId()) {
+                case R.id.cb_downloaded:
+                    viewPager.setCurrentItem(0, true);
+                    //updateListView(1);
+                    break;
+                case R.id.cb_downloading:
+                    viewPager.setCurrentItem(1, true);
+                    //updateListView(2);
+                    break;
+            }
+        }
+    }
 
-		default:
-			break;
-		}
 
-//		DownloadJobAdapter adapter = (DownloadJobAdapter)mListView.getAdapter();
-//
-//		if(lastSpinnerPosition == position && jobs != null && jobs.size() == adapter.getCount()){
-//			adapter.notifyDataSetChanged();
-//			return;
-//		} else {
-//			adapter = new DownloadJobAdapter(DownloadActivity.this);
-//			adapter.setList(jobs);
-//			mListView.setAdapter(adapter);
-//		}
-//		lastSpinnerPosition = position;
-//		setupListView();
-	}
-	
-	private void setupListView(){
-		downloadedListView = new ListView(this);
-		downloadedJobAdapter = new DownloadJobAdapter(this);
-		//downloadedJobAdapter.setList(mDownloadManager.getCompletedDownloads());
-		downloadedJobAdapter.setList(MockUtils.buildDownloadListSample());
-		downloadedListView.setAdapter(downloadedJobAdapter);
-		TextView tvEmpty = new TextView(this);
-		tvEmpty.setText("EMPTY VIEW 1");
-		downloadedListView.setEmptyView(tvEmpty);
+    private int lastSpinnerPosition = -1;
 
-		downloadingListView = new ListView(this);
-		downloadingJobAdapter = new DownloadJobAdapter(this);
-		downloadingJobAdapter.setList(mDownloadManager.getQueuedDownloads());
-		downloadingListView.setAdapter(downloadingJobAdapter);
-		TextView tvEmpty2 = new TextView(this);
-		tvEmpty2.setText("EMPTY VIEW 2");
-		downloadingListView.setEmptyView(tvEmpty2);
-	}
+    private void updateListView(int position) {
+        ArrayList<DownloadJob> jobs = null;
+        switch (position) {
+            case 0:
+                // Display ALL
+                jobs = mDownloadManager.getAllDownloads();
+                break;
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		if(v.getId() == R.id.DownloadListView){
-			MenuInflater inflater = getMenuInflater();
-			inflater.inflate(R.menu.download_context, menu);
-		}
-	}
+            case 1:
+                // Display Completed
+                jobs = mDownloadManager.getCompletedDownloads();
+                break;
 
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		switch (item.getItemId()) {
-		case R.id.add_to_playlist:
+            case 2:
+                // Display Queued
+                jobs = mDownloadManager.getQueuedDownloads();
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+    private void setupListView() {
+        downloadedListView = new ListView(this);
+        downloadedJobAdapter = new DownloadJobAdapter(this, DownloadJobAdapter.TYPE_COMPLETED);
+        //downloadedJobAdapter.setList(mDownloadManager.getCompletedDownloads());
+        downloadedJobAdapter.setList(MockUtils.buildDownloadListSample());
+        downloadedListView.setAdapter(downloadedJobAdapter);
+        TextView tvEmpty = new TextView(this);
+        tvEmpty.setText("EMPTY VIEW 1");
+        downloadedListView.setEmptyView(tvEmpty);
+
+        downloadingListView = new ListView(this);
+        downloadingJobAdapter = new DownloadJobAdapter(this, DownloadJobAdapter.TYPE_DOWNLOADING);
+        //downloadingJobAdapter.setList(mDownloadManager.getQueuedDownloads());
+        downloadingJobAdapter.setList(MockUtils.buildDownloadListSample());
+        downloadingListView.setAdapter(downloadingJobAdapter);
+//        TextView tvEmpty2 = new TextView(this);
+//        tvEmpty2.setText("EMPTY VIEW 2");
+//        tvEmpty2.setTextColor(getResources().getColor(R.color.font_orange));
+//        tvEmpty2.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        tvEmpty2.setGravity(Gravity.CENTER);
+//        tvEmpty2.setVisibility(View.GONE);
+//        ((ViewGroup)downloadingListView.getParent()).addView(tvEmpty2);
+//        downloadingListView.setEmptyView(tvEmpty2);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.DownloadListView) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.download_context, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.add_to_playlist:
 //			addToPlaylist(getJob(info.position));
-			return true;
-		case R.id.play_download:
-			playNow(info.position);
-			return true;
-		case R.id.delete_download:
+                return true;
+            case R.id.play_download:
+                playNow(info.position);
+                return true;
+            case R.id.delete_download:
 //			deleteJob(getJob(info.position));
-			return true;
-		default:
-			return super.onContextItemSelected(item);
-		}
-	}
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
 
-	private void deleteJob(DownloadJob job) {
-		mDownloadManager.deleteDownload(job);
+    private void deleteJob(DownloadJob job) {
+        mDownloadManager.deleteDownload(job);
 //		DownloadJobAdapter adapter = (DownloadJobAdapter) mListView.getAdapter();
 //		adapter.notifyDataSetChanged();
-	}
+    }
 
-	private void playNow(int position) {
+    private void playNow(int position) {
 //		Playlist playlist = new Playlist();
 //		playlist.addPlaylistEntry(getJob(position).getPlaylistEntry());
 //		playlist.select(0);
 //		mPlayerInterface.openPlaylist(playlist);
 //		mPlayerInterface.play();
-	}
+    }
 
 
-	private void addToPlaylist(DownloadJob job) {
-		Playlist playlist = mPlayerInterface.getPlaylist();
-		if(playlist == null){
-			playlist = new Playlist();
-			playlist.addPlaylistEntry(job.getPlaylistEntry());
-			mPlayerInterface.openPlaylist(playlist);
-		} else {
-			playlist.addPlaylistEntry(job.getPlaylistEntry());
-		}
-	}
+    private void addToPlaylist(DownloadJob job) {
+        Playlist playlist = mPlayerInterface.getPlaylist();
+        if (playlist == null) {
+            playlist = new Playlist();
+            playlist.addPlaylistEntry(job.getPlaylistEntry());
+            mPlayerInterface.openPlaylist(playlist);
+        } else {
+            playlist.addPlaylistEntry(job.getPlaylistEntry());
+        }
+    }
 
-	@Override
-	public void onDownloadChanged(DownloadManager manager) {
-		mHandler.post(mUpdateTimeTask);
-	}
+    @Override
+    public void onDownloadChanged(DownloadManager manager) {
+        mHandler.post(mUpdateTimeTask);
+    }
 
-	private class DownloadPageAdapter extends PagerAdapter {
+    private class DownloadPageAdapter extends PagerAdapter {
 
-		@Override
-		public int getCount() {
-			return 2;
-		}
+        @Override
+        public int getCount() {
+            return 2;
+        }
 
-		@Override
-		public boolean isViewFromObject(View view, Object object) {
-			return view == object;
-		}
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
 
-		@Override
-		public Object instantiateItem(ViewGroup container, int position) {
-			View view = position == 0 ? downloadedListView : downloadingListView;
-			container.addView(view);
-			return view;
-		}
-	}
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View view = position == 0 ? downloadedListView : downloadingListView;
+            container.addView(view);
+            return view;
+        }
+    }
 
 }
