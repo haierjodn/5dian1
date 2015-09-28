@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dip" >
+
+    <ImageView
+        android:id="@+id/audio_status"
+        android:layout_width="3dp"
+        android:layout_height="46dp"
+        android:visibility="invisible"
+        android:layout_centerVertical="true"
+        android:src="@color/main_repo_online"/>
+
+    <TextView
+        android:id="@+id/audio_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="像风一样的"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/audio_status"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/normal" />
+
+    <TextView
+        android:id="@+id/audio_singer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="风一样"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_alignLeft="@id/audio_name"
+        android:layout_below="@id/audio_name"
+        android:singleLine="true"
+        android:textColor="#eee"
+        android:textSize="@dimen/normal_s" />
+
+
+</RelativeLayout>

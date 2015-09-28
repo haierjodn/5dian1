@@ -1,0 +1,137 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical"
+    tools:context="com.dmall.ods.activity.MainActivity">
+
+    <!-- user info -->
+    <include layout="@layout/common_user_info" />
+
+    <!-- block -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="4"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:baselineAligned="false">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/main_listen_any">
+
+                <View android:id="@+id/v_listen_any"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/common_block_press_selector" />
+
+                <TextView
+                    android:id="@+id/tv_listen_any"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawablePadding="20dp"
+                    android:drawableTop="@drawable/icon_main_assignment"
+                    android:text="5.1随便听"
+                    android:textColor="#fff"
+                    android:textSize="@dimen/normal" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/main_repo_online">
+
+                <View android:id="@+id/v_repo_online"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/common_block_press_selector" />
+
+                <TextView
+                    android:id="@+id/tv_repo_online"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawablePadding="20dp"
+                    android:drawableTop="@drawable/icon_main_delivery"
+                    android:text="5.1音乐库"
+                    android:textColor="#fff"
+                    android:textSize="@dimen/normal" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/main_download">
+
+                    <View android:id="@+id/v_download"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/common_block_press_selector" />
+
+                    <TextView
+                        android:id="@+id/tv_download"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:drawablePadding="20dp"
+                        android:drawableTop="@drawable/icon_main_pay"
+                        android:text="下载管理"
+                        android:textColor="#fff"
+                        android:textSize="@dimen/normal" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/main_listen_local">
+
+                    <View android:id="@+id/v_listen_local"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/common_block_press_selector" />
+
+                    <TextView
+                        android:id="@+id/tv_listen_local"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:drawablePadding="20dp"
+                        android:drawableTop="@drawable/icon_main_me"
+                        android:text="本地音乐"
+                        android:textColor="#fff"
+                        android:textSize="@dimen/normal" />
+
+                </RelativeLayout>
+
+        </LinearLayout>
+
+        <!-- setting pannel -->
+        <include layout="@layout/common_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"/>
+
+    </LinearLayout>
+</LinearLayout>

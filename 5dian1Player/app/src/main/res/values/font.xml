@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="font_green">#50d2c2</color>
+    <color name="font_black">#1d1d26</color>
+    <color name="font_blue">#448ccb</color>
+    <color name="font_orange">#fcab53</color>
+    <color name="font_gray">#8e8e92</color>
+
+    <!--字体大小-->
+    <dimen name="large_x">24dp</dimen>
+    <dimen name="large">22dp</dimen>
+    <dimen name="large_s">20dp</dimen>
+    <dimen name="normal_x">18dp</dimen>
+    <dimen name="normal">16dp</dimen>
+    <dimen name="normal_s">14dp</dimen>
+    <dimen name="small_x">12dp</dimen>
+    <dimen name="small">10dp</dimen>
+    <dimen name="small_s">8dp</dimen>
+
+
+</resources>

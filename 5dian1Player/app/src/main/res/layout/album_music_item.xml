@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tv_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:padding="10dp"
+        android:layout_marginLeft="5dp"
+        android:text="0"
+        android:textColor="#fff"
+        android:textSize="@dimen/normal_x"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tv_number"
+        android:singleLine="true"
+        android:layout_marginTop="10dp"
+        android:text="像梦一样自由"
+        android:textColor="#fff"
+        android:textSize="@dimen/normal"/>
+
+    <TextView
+        android:id="@+id/tv_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_alignLeft="@id/tv_title"
+        android:singleLine="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:text="汪峰"
+        android:textColor="#fff"
+        android:textSize="@dimen/normal"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:layout_marginRight="1dp"
+        android:button="@drawable/common_toggle"
+        android:gravity="center"/>
+
+</RelativeLayout>
