@@ -42,8 +42,8 @@ import org.json.JSONException;
  */
 public interface JamendoGet2Api {
 	
-	public static final String ENCODING_MP3 = "mp31";
-	public static final String ENCODING_OGG = "ogg2";
+	public static final String ENCODING_MP3 = "mp3";
+	public static final String ENCODING_OGG = "ogg";
 
 	/**
 	 * Retrieve "this week's most popular albums" 

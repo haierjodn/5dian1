@@ -19,12 +19,16 @@ package net.dian1.player.download;
 import net.dian1.player.Dian1Application;
 import net.dian1.player.api.PlaylistEntry;
 
+import java.util.concurrent.ExecutorService;
+
 /**
  * Single remote file download task
  * 
  * @author Lukasz Wisniewski
  */
 public class DownloadJob {
+
+	private ExecutorService executorService;
 
 	private PlaylistEntry mPlaylistEntry;
 	private String mDestination;
@@ -58,7 +62,9 @@ public class DownloadJob {
 		mDestination = destination;
 	}
 
-	public DownloadJob(PlaylistEntry playlistEntry, String destination, int startId, String downloadFormat){
+	public DownloadJob(ExecutorService service, PlaylistEntry playlistEntry,
+					   String destination, int startId, String downloadFormat){
+		executorService = service;
 		mPlaylistEntry = playlistEntry;
 		mDestination = destination;
 		mProgress = 0;
@@ -69,7 +75,11 @@ public class DownloadJob {
 
 	public void start(){
 		mDownloadTask = new DownloadTask(this);
-		mDownloadTask.execute();
+		if(executorService != null) {
+			mDownloadTask.executeOnExecutor(executorService);
+		} else {
+			mDownloadTask.execute();
+		}
 	}
 
 	public void pause(){

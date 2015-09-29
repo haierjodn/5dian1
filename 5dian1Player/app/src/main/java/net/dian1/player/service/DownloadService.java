@@ -34,6 +34,10 @@ import net.dian1.player.download.DownloadJobListener;
 import net.dian1.player.download.DownloadProvider;
 import net.dian1.player.download.MediaScannerNotifier;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 // TODO sd card listener
 /**
  * Background download manager
@@ -52,6 +56,8 @@ public class DownloadService extends Service {
 
 	private DownloadProvider mDownloadProvider;
 
+	private ExecutorService executorService = Executors.newCachedThreadPool();
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
@@ -66,20 +72,21 @@ public class DownloadService extends Service {
 	}
 
 	@Override
-	public void onStart(Intent intent, int startId) {
-		super.onStart(intent, startId);
-		
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		super.onStartCommand(intent, flags, startId);
+
 		if(intent == null){
-			return;
+			return START_NOT_STICKY;
 		}
-		
+
 		String action = intent.getAction();
-		Log.i(Dian1Application.TAG, "DownloadService.onStart - "+action);
-		
+		Log.i(Dian1Application.TAG, "DownloadService.onStart - " + action);
+
 		if(action.equals(ACTION_ADD_TO_DOWNLOAD)){
 			PlaylistEntry entry = (PlaylistEntry) intent.getSerializableExtra(EXTRA_PLAYLIST_ENTRY);
 			addToDownloadQueue(entry, startId);
 		}
+		return super.onStartCommand(intent, flags, startId);
 	}
 
 	@Override
@@ -129,7 +136,7 @@ public class DownloadService extends Service {
 		// another download process
 		String downloadPath = DownloadHelper.getDownloadPath();
 		String downloadFormat = Dian1Application.getInstance().getDownloadFormat();
-		DownloadJob downloadJob = new DownloadJob(entry, downloadPath, startId, downloadFormat);
+		DownloadJob downloadJob = new DownloadJob(executorService, entry, downloadPath, startId, downloadFormat);
 		
 		if(mDownloadProvider.queueDownload(downloadJob)){
 			downloadJob.setListener(mDownloadJobListener);

@@ -46,7 +46,7 @@ public class DownloadJobBuilder extends DatabaseBuilder<DownloadJob> {
 		pEntry.setAlbum(album);
 		pEntry.setMusic(music);
 
-		DownloadJob dJob = new DownloadJob(pEntry, DownloadHelper
+		DownloadJob dJob = new DownloadJob(null, pEntry, DownloadHelper
 				.getDownloadPath(), 0, Dian1Application.getInstance()
 				.getDownloadFormat());
 		int progress = query.getInt(query.getColumnIndex(DOWNLOADED));
@@ -57,14 +57,14 @@ public class DownloadJobBuilder extends DatabaseBuilder<DownloadJob> {
 	}
 
 	@Override
-	public ContentValues deconstruct(DownloadJob t) {
+	public ContentValues deconstruct(DownloadJob job) {
 		ContentValues values = new ContentValues();
 
-		values.putAll(new TrackDatabaseBuilder().deconstruct(t
+		values.putAll(new TrackDatabaseBuilder().deconstruct(job
 				.getPlaylistEntry().getMusic()));
-		values.putAll(new AlbumDatabaseBuilder().deconstruct(t
+		values.putAll(new AlbumDatabaseBuilder().deconstruct(job
 				.getPlaylistEntry().getAlbum()));
-		values.put(DOWNLOADED, (t.getProgress() == 100) ? 1 : 0);
+		values.put(DOWNLOADED, (job.getProgress() == 100) ? 1 : 0);
 
 		return values;
 	}

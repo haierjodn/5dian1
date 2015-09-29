@@ -16,12 +16,31 @@
 
 package net.dian1.player.activity;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-
-import org.json.JSONException;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.gesture.GestureOverlayView;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Gallery;
+import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import net.dian1.player.Dian1Application;
+import net.dian1.player.R;
 import net.dian1.player.activity.BrowsePlaylistActivity.Mode;
 import net.dian1.player.adapter.ImageAdapter;
 import net.dian1.player.adapter.PurpleAdapter;
@@ -38,32 +57,12 @@ import net.dian1.player.api.impl.JamendoGet2ApiImpl;
 import net.dian1.player.dialog.AboutDialog;
 import net.dian1.player.dialog.LoadingDialog;
 import net.dian1.player.widget.FailureBar;
-import net.dian1.player.widget.OnAlbumClickListener;
 import net.dian1.player.widget.ProgressBar;
-import net.dian1.player.R;
 
-import android.app.Activity;
-import android.gesture.GestureOverlayView;
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.Gallery;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.ViewFlipper;
-import android.widget.AdapterView.OnItemClickListener;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Home activity of the jamendo, central navigation place
@@ -71,7 +70,7 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author Lukasz Wisniewski
  * @author Marcin Gil
  */
-public class HomeActivity extends Activity implements OnAlbumClickListener {
+public class HomeActivity extends BaseActivity {
 
 	private static final String TAG = "HomeActivity";
 
@@ -119,11 +118,6 @@ public class HomeActivity extends Activity implements OnAlbumClickListener {
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		// commented out, was causing "Wrong state class -- expecting View State" on view rotation
 		// super.onRestoreInstanceState(savedInstanceState);
-	}
-
-	@Override
-	public void onAlbumClicked(Album album) {
-		PlayerActivity.launch(this, album);
 	}
 
 	@Override
@@ -335,7 +329,7 @@ public class HomeActivity extends Activity implements OnAlbumClickListener {
 				ImageAdapter albumsAdapter = new ImageAdapter(HomeActivity.this);
 				albumsAdapter.setList(albums);
 				mGallery.setAdapter(albumsAdapter);
-				mGallery.setOnItemClickListener(mGalleryListener);
+				//mGallery.setOnItemClickListener(mGalleryListener);
 				mGallery.setSelection(albums.length/2, true); // animate to center
 
 			} else {
@@ -424,16 +418,5 @@ public class HomeActivity extends Activity implements OnAlbumClickListener {
 		}
 
 	}
-	
-	private OnItemClickListener mGalleryListener = new OnItemClickListener(){
-
-		@Override
-		public void onItemClick(AdapterView<?> adapterView, View view, int position,
-				long id) {
-			Album album = (Album) adapterView.getItemAtPosition(position);
-			PlayerActivity.launch(HomeActivity.this, album);
-		}
-		
-	};
 
 }

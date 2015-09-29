@@ -80,8 +80,7 @@ public class DownloadManagerImpl implements DownloadManager {
 		File fileMP3 = new File(trackPath, fileNameMP3);
 		if (fileMP3.exists()) {
 			String path = fileMP3.getAbsolutePath();
-			Log
-					.i(Dian1Application.TAG, "Playing from local file: "
+			Log.i(Dian1Application.TAG, "Playing from local file: "
 							+ fileMP3);
 			return path;
 		}
@@ -90,8 +89,7 @@ public class DownloadManagerImpl implements DownloadManager {
 		File fileOGG = new File(trackPath, fileNameOGG);
 		if (fileOGG.exists()) {
 			String path = fileOGG.getAbsolutePath();
-			Log
-					.i(Dian1Application.TAG, "Playing from local file: "
+			Log.i(Dian1Application.TAG, "Playing from local file: "
 							+ fileOGG);
 			return path;
 		}

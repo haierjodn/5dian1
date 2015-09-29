@@ -114,7 +114,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
     private String mBetterRes;
     private LoadingDialog mUriLoadingDialog;
 
-    private SeekToMode seekToMode;
 
     private BitmapUtils bitmapUtils;
 
@@ -137,27 +136,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
 		 */
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         c.startActivity(intent);
-    }
-
-    /**
-     * Launch this Activity from the outside, with defined playlist on a remote server
-     *
-     * @param c
-     * @param playlistRemote
-     */
-    public static void launch(Activity c, PlaylistRemote playlistRemote) {
-        Intent intent = new Intent(c, PlayerActivity.class);
-        new PlaylistRemoteLoadingDialog(c, R.string.loading_playlist, R.string.loading_playlist_fail, intent).execute(playlistRemote);
-    }
-
-    /**
-     * Launch this Activity from the outside with the given album
-     *
-     * @param c     Activity from which PlayerActivity should be started
-     * @param album an album to be played
-     */
-    public static void launch(Activity c, Album album) {
-        new PlayerAlbumLoadingDialog(c, R.string.album_loading, R.string.album_fail).execute(album);
     }
 
     /**

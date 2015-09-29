@@ -17,18 +17,18 @@ import java.util.List;
 
 public class AudioLoaderTask extends AsyncQueryHandler {
 
-    public final static String[] DEF_PROJECTION = new String[] {
-        MediaStore.Audio.Media._ID,
-        MediaStore.Audio.Media.DISPLAY_NAME,
-        MediaStore.Audio.Media.TITLE,
-        MediaStore.Audio.Media.DURATION,
-        MediaStore.Audio.Media.ARTIST,
-        MediaStore.Audio.Media.ALBUM,
-        MediaStore.Audio.Media.ALBUM_ID,
-        MediaStore.Audio.Media.YEAR,
-        MediaStore.Audio.Media.MIME_TYPE,
-        MediaStore.Audio.Media.SIZE,
-        MediaStore.Audio.Media.DATA };
+    public final static String[] DEF_PROJECTION = new String[]{
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.DISPLAY_NAME,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.YEAR,
+            MediaStore.Audio.Media.MIME_TYPE,
+            MediaStore.Audio.Media.SIZE,
+            MediaStore.Audio.Media.DATA};
 
     public final static String DEF_SELECTION_ALL = null;
 
@@ -88,7 +88,7 @@ public class AudioLoaderTask extends AsyncQueryHandler {
 
     /**
      * getSongList()
-     * 
+     *
      * @param cursor
      */
     public List<Music> getSongs(Cursor cursor) {
@@ -100,7 +100,7 @@ public class AudioLoaderTask extends AsyncQueryHandler {
             //song.setName(fileName);// file Name
             String fileTitle = getStringForChinese(cursor.getString(2));
             song.setName(fileTitle);// song name
-            song.setDuration(cursor.getInt(3)/1000);// play time
+            song.setDuration(cursor.getInt(3) / 1000);// play time
             String artist = getStringForChinese(cursor.getString(4));
             song.setArtist(artist);// artist
             //            song.setAlbumArt(cursor.getString(5)); // album
@@ -108,7 +108,6 @@ public class AudioLoaderTask extends AsyncQueryHandler {
             song.setAlbumId(albumId);
             //String album = getAlbumArt(mContext.getContentResolver(), albumId);
             //song.setAlbum(album);
-
 
 
             if (cursor.getString(9) != null) {// fileSize
@@ -136,7 +135,7 @@ public class AudioLoaderTask extends AsyncQueryHandler {
 
     public static String getAlbumArt(ContentResolver resolver, int album_id) {
         String mUriAlbums = "content://media/external/audio/albums";
-        String[] projection = new String[] { "album_art" };
+        String[] projection = new String[]{"album_art"};
         Cursor cur = null;
         String album_art = null;
         try {
