@@ -93,16 +93,16 @@ public class MockUtils {
     public static ArrayList<DownloadJob> buildDownloadListSample() {
         ArrayList<DownloadJob> downloadJobs = new ArrayList<DownloadJob>();
         int startId = new Random().nextInt();
-        DownloadJob downloadJob = new DownloadJob(buildSamplePlaylistEntry(), "destination", startId, "MP3");
+        DownloadJob downloadJob = new DownloadJob(null, buildSamplePlaylistEntry(), "destination", startId, "MP3");
         downloadJob.setProgress((new Random().nextInt(100)));
         downloadJobs.add(downloadJob);
-        downloadJob = new DownloadJob(buildSamplePlaylistEntry(), "destination", startId, "MP3");
+        downloadJob = new DownloadJob(null, buildSamplePlaylistEntry(), "destination", startId, "MP3");
         downloadJob.setProgress((new Random().nextInt(100)));
         downloadJobs.add(downloadJob);
-        downloadJob = new DownloadJob(buildSamplePlaylistEntry(), "destination", startId, "MP3");
+        downloadJob = new DownloadJob(null, buildSamplePlaylistEntry(), "destination", startId, "MP3");
         downloadJob.setProgress((new Random().nextInt(100)));
         downloadJobs.add(downloadJob);
-        downloadJob = new DownloadJob(buildSamplePlaylistEntry(), "destination", startId, "MP3");
+        downloadJob = new DownloadJob(null, buildSamplePlaylistEntry(), "destination", startId, "MP3");
         downloadJob.setProgress((new Random().nextInt(100)));
         downloadJobs.add(downloadJob);
         return downloadJobs;

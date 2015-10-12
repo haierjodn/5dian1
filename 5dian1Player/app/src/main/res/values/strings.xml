@@ -144,4 +144,17 @@
     <string name="close">Close</string>
     <string name="equalizer">Equalizer</string>
     <string name="custom">Custom</string>
+
+    <string name="login_btn">登录</string>
+    <string name="login_acc">帐号</string>
+    <string name="login_pwd">密码</string>
+    <string name="confirm">确定</string>
+    <string name="net_error">网络异常</string>
+    <string name="net_error_tips">网络加载超时</string>
+    <string name="currency_unit">￥%.2f</string>
+    <string name="common_error_reload">重新加载</string>
+    <string name="common_error_null">任务列表为空</string>
+    <string name="common_error_loading">加载中......</string>
+    <string name="common_cancel">取消</string>
+
 </resources>

@@ -6,11 +6,15 @@
     <color name="common_orange_light_bg">#2fa71d12</color>
     <color name="common_block_pressed">#29000000</color>
     <color name="common_orange">#e36f26</color>
+    <color name="white">#ffffff</color>
+    <color name="green">#50d2c2</color>
 
     <!-- Main -->
     <color name="main_listen_any">#afc71d12</color>
     <color name="main_repo_online">#afe36f26</color>
     <color name="main_download">#afcd4424</color>
     <color name="main_listen_local">#afe95418</color>
+
+    <color name="green_transparent_50">#7f50d2c2</color>
 
 </resources>

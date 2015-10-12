@@ -34,8 +34,11 @@ import net.dian1.player.api.util.Caller;
 import net.dian1.player.api.util.RequestCache;
 import net.dian1.player.gestures.GesturesHandler;
 import net.dian1.player.gestures.PlayerGestureCommandRegiser;
+import net.dian1.player.http.ApiManager;
+import net.dian1.player.log.LogUtil;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineListener;
+import net.dian1.player.model.UserInfo;
 import net.dian1.player.service.PlayerService;
 import net.dian1.player.util.ImageCache;
 import net.dian1.player.download.DownloadManager;
@@ -114,6 +117,9 @@ public class Dian1Application extends Application {
 	 */
 	private GesturesHandler mPlayerGestureHandler;
 
+	// 用户登录信息
+	private UserInfo user;
+
 	public static Dian1Application getInstance() {
 		return instance;
 	}
@@ -121,6 +127,9 @@ public class Dian1Application extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		LogUtil.init(this);
+		ApiManager.init(this);
+
 		mImageCache = new ImageCache();
 		mRequestCache = new RequestCache();
 
@@ -307,6 +316,23 @@ public class Dian1Application extends Application {
 		return mDownloadManager;
 	}
 
+
+	public UserInfo getUser() {
+		if (this.user == null) {
+			//user = UserInfo.findFirst(UserInfo.class);
+		}
+		return user;
+	}
+
+	public void setUser(UserInfo user) {
+		this.user = user;
+	}
+	public void exitLogin() {
+		if (user != null) {
+			user = null;
+		}
+	}
+
 	/**
 	 * Since 0.9.8.7 we embrace "bindless" PlayerService thus this adapter. No
 	 * big need of code refactoring, we just wrap sending intents around defined
@@ -441,7 +467,7 @@ public class Dian1Application extends Application {
 		@Override
 		public void forward(int time) {
 			if(mServicePlayerEngine != null){				
-				mServicePlayerEngine.forward( time );
+				mServicePlayerEngine.forward(time);
 			}
 			
 		}
@@ -467,7 +493,6 @@ public class Dian1Application extends Application {
 			if(mServicePlayerEngine != null){
 				mServicePlayerEngine.prevList();
 			}
-			
 		}
 		
 	}

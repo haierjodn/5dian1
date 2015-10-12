@@ -83,7 +83,7 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
 
     @Override
     public void onAlbumClicked(Album album) {
-        PlayerActivity.launch(this, album);
+        //PlayerActivity.launch(this, album);
     }
 
     @Override
@@ -202,16 +202,7 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
         }
     };
 
-    private OnItemClickListener mGalleryListener = new OnItemClickListener() {
 
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int position,
-                                long id) {
-            Album album = (Album) adapterView.getItemAtPosition(position);
-            PlayerActivity.launch(MainActivity.this, album);
-        }
-
-    };
 
 
 }

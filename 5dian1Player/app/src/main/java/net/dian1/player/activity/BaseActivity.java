@@ -20,8 +20,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Environment;
+import android.os.*;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
@@ -52,13 +52,34 @@ import java.util.ArrayList;
 
 public class BaseActivity extends Activity{
 
+	protected Dian1Application app;
+
+	/** UI 线程ID */
+	protected long mUIThreadId;
+
+	protected Handler mHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			onHandleMessage(msg);
+		}
+	};
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		mUIThreadId = android.os.Process.myTid();
+		app = (Dian1Application) getApplication();
+
 	}
+
+	/** 由子类实现如何处理事件 */
+	protected void onHandleMessage(Message msg) {
+
+	}
+
 
 	protected void setupHeader(int titleRes) {
 		setupHeader(titleRes > 0 ? getString(titleRes) : null);
@@ -77,6 +98,44 @@ public class BaseActivity extends Activity{
 				}
 			});
 		}
+	}
+
+	/** 对toast的简易封装。线程安全，可以在非UI线程调用。 */
+	public void showToastSafe(final int resId, final int duration) {
+		if (android.os.Process.myTid() == mUIThreadId) {
+			// 调用在UI线程
+			Toast.makeText(getBaseContext(), resId, duration).show();
+		} else {
+			// 调用在非UI线程
+			post(new Runnable() {
+
+				@Override
+				public void run() {
+					Toast.makeText(getBaseContext(), resId, duration).show();
+				}
+			});
+		}
+	}
+
+	/** 对toast的简易封装。线程安全，可以在非UI线程调用。 */
+	public void showToastSafe(final CharSequence text, final int duration) {
+		if (android.os.Process.myTid() == mUIThreadId) {
+			// 调用在UI线程
+			Toast.makeText(getBaseContext(), text, duration).show();
+		} else {
+			// 调用在非UI线程
+			post(new Runnable() {
+
+				@Override
+				public void run() {
+					Toast.makeText(getBaseContext(), text, duration).show();
+				}
+			});
+		}
+	}
+
+	public boolean post(Runnable run) {
+		return mHandler.post(run);
 	}
 
 }

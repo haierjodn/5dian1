@@ -244,6 +244,8 @@
                 <category android:name="android.intent.category.LAUNCHER"></category>
             </intent-filter>
         </activity>
+        <activity android:name=".activity.login.LoginActivity">
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

@@ -64,6 +64,6 @@ public class StarredAlbumsActivity extends ListActivity implements OnItemClickLi
 	@Override
 	public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 		Album album = (Album)adapterView.getItemAtPosition(position);
-		PlayerActivity.launch(this, album);
+		//PlayerActivity.launch(this, album);
 	}
 }

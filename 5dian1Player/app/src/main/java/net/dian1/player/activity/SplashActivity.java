@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 
 import net.dian1.player.R;
+import net.dian1.player.activity.login.LoginActivity;
 import net.dian1.player.dialog.TutorialDialog;
 
 /**
@@ -61,8 +62,8 @@ public class SplashActivity extends Activity {
 			
 			@Override
 			public void onAnimationEnd(Animation animation) {
-				MainActivity.launch(SplashActivity.this);
-				SplashActivity.this.finish();
+				LoginActivity.startAction(SplashActivity.this);
+				//SplashActivity.this.finish();
 			}
 		});
 
