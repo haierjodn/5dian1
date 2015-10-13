@@ -51,7 +51,7 @@
             android:background="#CCCCCC" />
 
         <ImageView
-            android:id="@+id/ivPassword"
+            android:id="@+id/iv_password"
             android:layout_below="@id/line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
