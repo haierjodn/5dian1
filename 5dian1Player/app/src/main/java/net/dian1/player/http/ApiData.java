@@ -1,6 +1,8 @@
 package net.dian1.player.http;
 
 
+import com.lidroid.xutils.http.RequestParams;
+
 import net.dian1.player.model.LoginParam;
 
 /**
@@ -67,9 +69,27 @@ public class ApiData extends Api {
 
 
 
+	public static class MusicDayApi {
 
+		public static final String URL = API_URL + "/musicday.asp";
 
+		public static ApiRequestParams getParams() {
+			return null;
+		}
 
+	}
+
+	public static class AbumDetailApi {
+
+		public static final String URL = API_URL + "/musicZhuanji.asp";
+
+		public static RequestParams getParams(long albumId) {
+			final RequestParams params = new RequestParams();
+			params.addQueryStringParameter("id", String.valueOf(albumId));
+			return params;
+		}
+
+	}
 
 
 

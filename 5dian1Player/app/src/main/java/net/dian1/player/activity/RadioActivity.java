@@ -260,7 +260,7 @@ public class RadioActivity extends Activity {
 		@Override
 		public void doStuffWithResult(Boolean result) {
 			if(mSpinner.getSelectedItemPosition() == 1){
-				mRadioAdapter.setList(mRecommendedRadios);
+				//mRadioAdapter.setList(mRecommendedRadios);
 				setupListView();
 			}
 		}
@@ -307,7 +307,7 @@ public class RadioActivity extends Activity {
 
 		@Override
 		public void doStuffWithResult(Radio[] radio) {
-			mRadioAdapter.setList(radio);
+			//mRadioAdapter.setList(radio);
 			setupListView();
 		}
 	}

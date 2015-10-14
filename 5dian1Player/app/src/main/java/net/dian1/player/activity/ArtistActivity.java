@@ -134,7 +134,7 @@ public class ArtistActivity extends Activity {
 		public void onItemClick(AdapterView<?> adapter, View view, int position,
 				long time) {
 			Album album = (Album)mAlbumGridAdapter.getItem(position);
-			AlbumActivity.launch(ArtistActivity.this, album);
+			//AlbumActivity.launch(ArtistActivity.this, album);
 		}
 
 	};

@@ -106,8 +106,8 @@ public class IntentDistributorActivity extends Activity {
 			try {
 				int review_id = Integer.parseInt(mIntent.getData()
 						.getQueryParameter(REVIEW_ID_PARAMETER));
-				AlbumActivity.launch(IntentDistributorActivity.this, result,
-						review_id);
+				//AlbumActivity.launch(IntentDistributorActivity.this, result,
+				//		review_id);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				doCancel();

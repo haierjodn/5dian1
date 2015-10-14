@@ -16,8 +16,8 @@ limitations under the License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 		
-	<item android:id="@+id/player_menu_item" android:title="@string/player" android:icon="@drawable/ic_menu_player" />
-	<item android:id="@+id/settings_menu_item" android:title="@string/settings" android:icon="@drawable/android:ic_menu_preferences" />
-	<item android:id="@+id/about_menu_item" android:title="@string/about" android:icon="@drawable/android:ic_menu_info_details" />
+	<item android:id="@+id/player_menu_item" android:name="@string/player" android:icon="@drawable/ic_menu_player" />
+	<item android:id="@+id/settings_menu_item" android:name="@string/settings" android:icon="@drawable/android:ic_menu_preferences" />
+	<item android:id="@+id/about_menu_item" android:name="@string/about" android:icon="@drawable/android:ic_menu_info_details" />
 	
 </menu>

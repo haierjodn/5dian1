@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import net.dian1.player.R;
+import net.dian1.player.common.Extra;
 import net.dian1.player.media.local.AudioLoaderManager;
 
 /**

@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License. 
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/add_to_playlist" android:title="@string/add_to_playlist"/>
-	<item android:id="@+id/play_download" android:title="@string/play" />
-	<item android:id="@+id/delete_download" android:title="@string/delete"/>
+	<item android:id="@+id/add_to_playlist" android:name="@string/add_to_playlist"/>
+	<item android:id="@+id/play_download" android:name="@string/play" />
+	<item android:id="@+id/delete_download" android:name="@string/delete"/>
 </menu>

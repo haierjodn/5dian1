@@ -640,7 +640,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
     }
 
     public void albumClickHandler(View target) {
-        AlbumActivity.launch(this, getPlayerEngine().getPlaylist().getSelectedTrack().getAlbum());
+        //AlbumActivity.launch(this, getPlayerEngine().getPlaylist().getSelectedTrack().getAlbum());
     }
 
     public void artistClickHandler(View target) {

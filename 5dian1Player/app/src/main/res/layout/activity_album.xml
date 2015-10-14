@@ -18,17 +18,16 @@
         <include layout="@layout/common_header"
             android:id="@+id/header" />
         <TextView
-            android:id="@+id/tv_artist"
+            android:id="@+id/tv_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#90000000"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:padding="10dp"
             android:text="Kalafina"
             android:textColor="#fff"
-            android:textSize="@dimen/small"
-            android:singleLine="true"/>
+            android:textSize="@dimen/normal_s"/>
     </RelativeLayout>
     <!-- header -->
 

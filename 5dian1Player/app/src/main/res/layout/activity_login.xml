@@ -91,7 +91,7 @@
 
         <View
             android:id="@+id/line2"
-            android:layout_below="@id/ivPassword"
+            android:layout_below="@id/iv_password"
             android:layout_width="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"

@@ -19,9 +19,8 @@ package net.dian1.player.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,36 +28,31 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.Spinner;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
-import net.dian1.player.Dian1Application;
+import com.lidroid.xutils.BitmapUtils;
+
 import net.dian1.player.R;
-import net.dian1.player.adapter.AlbumAdapter;
-import net.dian1.player.adapter.PlaylistRemoteAdapter;
-import net.dian1.player.api.Album;
-import net.dian1.player.api.JamendoGet2Api;
-import net.dian1.player.api.PlaylistRemote;
-import net.dian1.player.api.WSError;
-import net.dian1.player.api.impl.JamendoGet2ApiImpl;
-import net.dian1.player.dialog.LoadingDialog;
+import net.dian1.player.http.ApiData;
+import net.dian1.player.http.ApiManager;
+import net.dian1.player.http.ApiRequest;
+import net.dian1.player.http.OnResultListener;
+import net.dian1.player.model.Album;
+import net.dian1.player.model.MusicDayResponse;
 
-import org.json.JSONException;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class RepoActivity extends Activity implements OnClickListener {
 
 
+	private RepoAdapter repoAdapter;
+
 	private GridView gvRepoList;
+
+	private List<Album> musicDayList;
 
 
 	public static void launch(Context c){
@@ -75,13 +69,18 @@ public class RepoActivity extends Activity implements OnClickListener {
 
 		initHeader();
 		gvRepoList = (GridView)findViewById(R.id.gv_repo_list);
-		gvRepoList.setAdapter(new MyAdapter(this));
+		repoAdapter = new RepoAdapter(this);
+		gvRepoList.setAdapter(repoAdapter);
 		gvRepoList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				AlbumActivity.launch(RepoActivity.this);
+				Album album = (Album) repoAdapter.getItem(position);
+				if(album != null) {
+					AlbumActivity.launch(RepoActivity.this, album.getId());
+				}
 			}
 		});
+		refreshData();
 	}
 
 	@Override
@@ -93,6 +92,27 @@ public class RepoActivity extends Activity implements OnClickListener {
 		//((TextView) findViewById(R.id.tv_title)).setText();
 		findViewById(R.id.iv_back).setOnClickListener(this);
 		findViewById(R.id.iv_search).setOnClickListener(this);
+	}
+
+	private void refreshData() {
+		ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicDayApi.URL, MusicDayResponse.class,
+				ApiData.MusicDayApi.getParams(), new OnResultListener<MusicDayResponse>() {
+
+			@Override
+			public void onResult(MusicDayResponse response) {
+				//dismissDialog();
+				if (response != null) {
+					musicDayList = response.getMusicDayList();
+					repoAdapter.notifyDataSetChanged();
+				}
+			}
+
+			@Override
+			public void onResultError(String msg, String code) {
+				//dismissDialog();
+				//showToastSafe(msg, Toast.LENGTH_SHORT);
+			}
+		}));
 	}
 
 	@Override
@@ -107,20 +127,20 @@ public class RepoActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	//自定义适配器
-	class MyAdapter extends BaseAdapter{
-		//上下文对象
+	class RepoAdapter extends BaseAdapter{
+
 		private Context context;
 
-		MyAdapter(Context context){
+		RepoAdapter(Context context){
 			this.context = context;
 		}
+
 		public int getCount() {
-			return 7;
+			return musicDayList == null ? 0 : musicDayList.size();
 		}
 
-		public Object getItem(int item) {
-			return item;
+		public Object getItem(int position) {
+			return position >= getCount() ? null : musicDayList.get(position);
 		}
 
 		public long getItemId(int id) {
@@ -129,11 +149,39 @@ public class RepoActivity extends Activity implements OnClickListener {
 
 		//创建View方法
 		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder viewHolder;
 			if (convertView == null) {
+				viewHolder = new ViewHolder();
 				convertView = LayoutInflater.from(context).inflate(R.layout.repo_list_item, null);
+				viewHolder.ivAlbum = (ImageView) convertView.findViewById(R.id.iv_album);
+				viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+				viewHolder.tvArtist = (TextView) convertView.findViewById(R.id.tv_artist);
+				convertView.setTag(viewHolder);
 			} else {
+				viewHolder = (ViewHolder) convertView.getTag();
+			}
+			Album album = (Album) getItem(position);
+			if(album != null) {
+				viewHolder.tvTitle.setText(album.getName());
+				viewHolder.tvArtist.setText(album.getFormat());
+				showImage(viewHolder.ivAlbum, album.getPic());
 			}
 			return convertView;
+		}
+
+		private void showImage(ImageView imageView, String imageUrl) {
+			if (!TextUtils.isEmpty(imageUrl)) {
+				BitmapUtils bitmapUtils = new BitmapUtils(RepoActivity.this);
+				bitmapUtils.configDefaultLoadingImage(R.drawable.icon_splash);// 默认背景图片
+				bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon_splash);// 加载失败图片
+				bitmapUtils.display(imageView, imageUrl);
+			}
+		}
+
+		class ViewHolder {
+			ImageView ivAlbum;
+			TextView tvTitle;
+			TextView tvArtist;
 		}
 	}
 }

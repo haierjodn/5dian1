@@ -79,7 +79,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 		gvRepoList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				AlbumActivity.launch(SearchActivity.this);
+				//AlbumActivity.launch(SearchActivity.this);
 			}
 		});
 	}

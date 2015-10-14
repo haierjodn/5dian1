@@ -327,7 +327,7 @@ public class HomeActivity extends BaseActivity {
 			if(albums != null && albums.length > 0){
 				mViewFlipper.setDisplayedChild(1);
 				ImageAdapter albumsAdapter = new ImageAdapter(HomeActivity.this);
-				albumsAdapter.setList(albums);
+				//albumsAdapter.setList(albums);
 				mGallery.setAdapter(albumsAdapter);
 				//mGallery.setOnItemClickListener(mGalleryListener);
 				mGallery.setSelection(albums.length/2, true); // animate to center

@@ -17,6 +17,7 @@
 package net.dian1.player.adapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.view.View;
@@ -33,7 +34,7 @@ import android.widget.ListView;
  */
 public abstract class ArrayListAdapter<T> extends BaseAdapter{
 	
-	protected ArrayList<T> mList;
+	protected List<T> mList;
 	protected Activity mContext;
 	protected ListView mListView;
 	
@@ -62,21 +63,13 @@ public abstract class ArrayListAdapter<T> extends BaseAdapter{
 	@Override
 	abstract public View getView(int position, View convertView, ViewGroup parent);
 	
-	public void setList(ArrayList<T> list){
+	public void setList(List<T> list){
 		this.mList = list;
 		notifyDataSetChanged();
 	}
 	
-	public ArrayList<T> getList(){
+	public List<T> getList(){
 		return mList;
-	}
-	
-	public void setList(T[] list){
-		ArrayList<T> arrayList = new ArrayList<T>(list.length);  
-		for (T t : list) {  
-			arrayList.add(t);  
-		}  
-		setList(arrayList);
 	}
 	
 	public ListView getListView(){

@@ -105,8 +105,7 @@ public class ReviewAdapter extends ArrayListAdapter<Review> {
 
 	/**
 	 * Sets which languages should be displayed
-	 * 
-	 * @param string
+	 *
 	 */
 	public void setLang(String lang) {
 		if(lang.equals("all")){
@@ -123,10 +122,5 @@ public class ReviewAdapter extends ArrayListAdapter<Review> {
 		notifyDataSetChanged();
 	}
 
-	@Override
-	public void setList(ArrayList<Review> list) {
-		super.setList(list);
-		mAllLangs = list;
-	}
 
 }
