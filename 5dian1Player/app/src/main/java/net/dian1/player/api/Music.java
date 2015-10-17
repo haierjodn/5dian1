@@ -16,7 +16,11 @@
 
 package net.dian1.player.api;
 
+import net.dian1.player.model.MusicUrl;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Unit track<br>
@@ -58,11 +62,8 @@ public class Music implements Serializable {
 	 * Artist of the music
 	 */
 	private String artist;
-	
-	/**
-	 * Link to the page of the track on Jamendo (lyrics)
-	 */
-	private String url;
+
+	private List<MusicUrl> songUrlList;
 
 	private String album;
 
@@ -72,11 +73,6 @@ public class Music implements Serializable {
 	private int albumId;
 
 	private long fileSize;
-
-	/**
-	 * Music stream
-	 */
-	private String stream;
 	
 	/**
 	 * Music rating 0..1
@@ -120,22 +116,6 @@ public class Music implements Serializable {
 		this.artist = artist;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public void setStream(String stream) {
-		this.stream = stream;
-	}
-
-	public String getStream() {
-		return stream;
-	}
-
 	public String getAlbum() {
 		return album;
 	}
@@ -174,5 +154,34 @@ public class Music implements Serializable {
 
 	public int getNumAlbum() {
 		return numalbum;
+	}
+
+	public List<MusicUrl> getSongUrlList() {
+		return songUrlList;
+	}
+
+	public void setSongUrlList(List<MusicUrl> songUrlList) {
+		this.songUrlList = songUrlList;
+	}
+
+	public void addSongUrlList(MusicUrl musicUrl) {
+		if(songUrlList == null) {
+			songUrlList = new ArrayList<MusicUrl>();
+		}
+		if(musicUrl != null) {
+			this.songUrlList.add(musicUrl);
+		}
+	}
+
+	public MusicUrl getFirstMusicUrlInfo() {
+		return (songUrlList != null && songUrlList.size() > 0) ? songUrlList.get(0) : null;
+	}
+
+	public String getFirstMusicNetUrl() {
+		return getFirstMusicUrlInfo() != null ? getFirstMusicUrlInfo().getUrl() : null;
+	}
+
+	public String getFirstMusicLocalUrl() {
+		return getFirstMusicUrlInfo() != null ? getFirstMusicUrlInfo().getLocalUrl() : null;
 	}
 }

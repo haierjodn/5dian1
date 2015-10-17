@@ -1,14 +1,18 @@
 package net.dian1.player.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Desmond on 2015/10/14.
  */
-public class Music {
+public class Music implements Serializable {
     private long id;
     private String name;
     private String singer;
+    private String shichang;
+    private long albumId;
+    private String albumName;
     private List<MusicUrl> songUrlList;
 
     public long getId() {
@@ -41,5 +45,29 @@ public class Music {
 
     public void setSongUrlList(List<MusicUrl> songUrlList) {
         this.songUrlList = songUrlList;
+    }
+
+    public String getShichang() {
+        return shichang;
+    }
+
+    public void setShichang(String shichang) {
+        this.shichang = shichang;
+    }
+
+    public long getAlbumId() {
+        return albumId;
+    }
+
+    public void setAlbumId(long albumId) {
+        this.albumId = albumId;
+    }
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
     }
 }

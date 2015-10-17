@@ -256,16 +256,16 @@ public class JamendoGet2ApiImpl implements JamendoGet2Api {
 			return null;
 		
 		Music[] musics = new Music[n];
-		TrackBuilder trackBuilder = new TrackBuilder();
-
-		for(int i=0; i < n; i++){
-			musics[i] = trackBuilder.build(jsonArrayTracks.getJSONObject(i));
-		}
-
-		if(sort){
-			// sort by track no
-			Arrays.sort(musics, new TrackComparator());
-		}
+//		TrackBuilder trackBuilder = new TrackBuilder();
+//
+//		for(int i=0; i < n; i++){
+//			musics[i] = trackBuilder.build(jsonArrayTracks.getJSONObject(i));
+//		}
+//
+//		if(sort){
+//			// sort by track no
+//			Arrays.sort(musics, new TrackComparator());
+//		}
 
 		return musics;
 	}
@@ -345,25 +345,25 @@ public class JamendoGet2ApiImpl implements JamendoGet2Api {
 
 	@Override
 	public Playlist getPlaylist(PlaylistRemote playlistRemote) throws JSONException, WSError {
-		String jsonString = doGet("stream+name+duration+url+id+rating/track/json/?playlist_id="+playlistRemote.getId());
-		JSONArray jsonArrayTracks = new JSONArray(jsonString);
+//		String jsonString = doGet("stream+name+duration+url+id+rating/track/json/?playlist_id="+playlistRemote.getId());
+//		JSONArray jsonArrayTracks = new JSONArray(jsonString);
+//
+//		int n = jsonArrayTracks.length();
+//
+//		Music[] musics = new Music[n];
+//		int[] tracks_id = new int[n];
+//
+//		TrackBuilder trackBuilder = new TrackBuilder();
+//		// building musics and getting tracks_id
+//		for(int i=0; i < n; i++){
+//			musics[i] = trackBuilder.build(jsonArrayTracks.getJSONObject(i));
+//			tracks_id[i] = musics[i].getId();
+//		}
+//
+//		Album[] albums = new JamendoGet2ApiImpl().getAlbumsByTracksId(tracks_id);
+//		Log.i("jamendroid", ""+ musics.length+" musics & "+albums.length+" albums");
 
-		int n = jsonArrayTracks.length();
-
-		Music[] musics = new Music[n];
-		int[] tracks_id = new int[n];
-
-		TrackBuilder trackBuilder = new TrackBuilder();
-		// building musics and getting tracks_id
-		for(int i=0; i < n; i++){
-			musics[i] = trackBuilder.build(jsonArrayTracks.getJSONObject(i));
-			tracks_id[i] = musics[i].getId();
-		}
-
-		Album[] albums = new JamendoGet2ApiImpl().getAlbumsByTracksId(tracks_id);
-		Log.i("jamendroid", ""+ musics.length+" musics & "+albums.length+" albums");
-
-		return createPlaylist(musics, albums,tracks_id);
+		return null/*createPlaylist(musics, albums,tracks_id)*/;
 	}
 
 	@Override

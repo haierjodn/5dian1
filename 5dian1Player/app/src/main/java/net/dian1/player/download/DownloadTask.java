@@ -38,6 +38,7 @@ import net.dian1.player.api.impl.JamendoGet2ApiImpl;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 
@@ -101,8 +102,12 @@ public class DownloadTask extends AsyncTask<Void, Integer, Boolean>{
 		
 		PlaylistEntry mPlaylistEntry = job.getPlaylistEntry();
 		String mDestination = job.getDestination();
-		
-		URL u = new URL(mPlaylistEntry.getMusic().getStream());
+
+		String url = mPlaylistEntry.getMusic().getFirstMusicNetUrl();
+		if(TextUtils.isEmpty(url)) {
+			return false;
+		}
+		URL u = new URL(url);
 		HttpURLConnection c = (HttpURLConnection) u.openConnection();
 		c.setRequestMethod("GET");
 		c.setDoOutput(true);

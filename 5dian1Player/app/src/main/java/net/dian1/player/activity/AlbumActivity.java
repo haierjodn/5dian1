@@ -22,6 +22,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Html;
+import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,6 +49,7 @@ import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.Album;
 import net.dian1.player.model.Music;
 import net.dian1.player.util.ImageUtils;
+import net.dian1.player.util.MockUtils;
 
 
 public class AlbumActivity extends BaseActivity {
@@ -131,6 +136,12 @@ public class AlbumActivity extends BaseActivity {
 
         mustListAdapter = new MustListAdapter(this);
         musicListView.setAdapter(mustListAdapter);
+        musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PlayerActivity.launch(AlbumActivity.this, MockUtils.buildSamplePlaylist());
+            }
+        });
 
         int selectedReviewId = getIntent().getIntExtra("selectedReviewId", -1);
         if (selectedReviewId != -1) {
@@ -164,7 +175,11 @@ public class AlbumActivity extends BaseActivity {
             TextView tvDesc = (TextView) findViewById(R.id.tv_desc);
             ImageUtils.showImage(ivAlbumCover, album.getPic());
             tvTitle.setText(album.getName());
-            tvDesc.setText(album.getDesc());
+            String desc = album.getDesc();
+            if(!TextUtils.isEmpty(desc)) {
+                tvDesc.setText(Html.fromHtml(album.getDesc()));
+                tvDesc.setMovementMethod(ScrollingMovementMethod.getInstance());
+            }
             mustListAdapter.setList(album.getSongList());
         }
     }
@@ -234,14 +249,9 @@ public class AlbumActivity extends BaseActivity {
             }
             Music music = (Music) getItem(position);
             holder.tvTitle.setText(music.getName());
-            holder.tvArtist.setText(music.getSinger());
-            holder.tvPosition.setText(String.valueOf(position));
+            holder.tvArtist.setText(TextUtils.isEmpty(music.getSinger()) ? "--" : music.getSinger());
+            holder.tvPosition.setText(String.valueOf(position + 1));
             return row;
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            return false;
         }
 
         class ViewHolder {

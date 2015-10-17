@@ -1,13 +1,17 @@
 package net.dian1.player.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Desmond on 2015/10/14.
  */
-public class MusicUrl {
+public class MusicUrl implements Serializable{
     private long id;
     private String format;
     private String fileSize;
     private int point;
+    private String localUrl;
+    private String url;
 
     public long getId() {
         return id;
@@ -39,5 +43,21 @@ public class MusicUrl {
 
     public void setPoint(int point) {
         this.point = point;
+    }
+
+    public String getLocalUrl() {
+        return localUrl;
+    }
+
+    public void setLocalUrl(String localUrl) {
+        this.localUrl = localUrl;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

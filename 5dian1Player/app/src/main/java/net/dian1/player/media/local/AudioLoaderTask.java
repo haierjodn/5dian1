@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import net.dian1.player.api.Music;
+import net.dian1.player.model.MusicUrl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -123,9 +124,13 @@ public class AudioLoaderTask extends AsyncQueryHandler {
                 // if audio in system path, ignore it
                 continue;
             }
-            song.setUrl(path);
-            song.setStream(path);
-            if (new File(song.getUrl()).exists()) {
+            MusicUrl musicUrl = new MusicUrl();
+            musicUrl.setLocalUrl(path);
+            musicUrl.setPoint(0);
+            musicUrl.setFileSize(String.valueOf(song.getFileSize()));
+            //musicUrl.setFormat();
+            song.addSongUrlList(musicUrl);
+            if (new File(path).exists()) {
                 songs.add(song);
             }
 

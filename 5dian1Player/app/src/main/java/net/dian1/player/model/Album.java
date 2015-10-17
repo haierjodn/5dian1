@@ -1,6 +1,9 @@
 package net.dian1.player.model;
 
+import net.dian1.player.api.Playlist;
+
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Desmond on 2015/10/14.
@@ -77,5 +80,37 @@ public class Album {
 
     public void setSongList(List<Music> songList) {
         this.songList = songList;
+    }
+
+    public Playlist buildPlaylist(int position) {
+        if(songList != null && songList.size() > 0) {
+            Playlist playlist = new Playlist();
+            playlist.setPlaylistPlaybackMode(Playlist.PlaylistPlaybackMode.SHUFFLE);
+            playlist.setPlaylistPlaybackMode(Playlist.PlaylistPlaybackMode.NORMAL);
+            net.dian1.player.api.Album album = new net.dian1.player.api.Album();
+            album.setId((int) getId());
+            //album.setArtistName(get);
+            album.setName(getName());
+            album.setRating(0.5d);
+            album.setImage(getPic());
+
+            net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[songList.size()];
+            for(int i = 0; i < songList.size(); i++) {
+                final Music music = songList.get(i);
+                net.dian1.player.api.Music music1 = new net.dian1.player.api.Music();
+                music1.setRating(0.6d);
+                music1.setName(music.getName());
+                music1.setId((int) music.getId());
+                //TODO Dead code
+                music1.setDuration(192);
+                music1.setSongUrlList(music1.getSongUrlList());
+                musics[(i + position) % musics.length] = music1;
+            }
+
+            album.setMusics(musics);
+            playlist.addTracks(album);
+            return playlist;
+        }
+        return null;
     }
 }

@@ -295,14 +295,24 @@ public class PlayerEngineImpl implements PlayerEngine {
 		}
 	}
 
+	/**
+	 * 1. 根据ID去获取歌曲详情->下载歌曲->播放
+	 * 2. 下载歌曲->播放
+	 * 3. 播放
+	 *
+	 * @param playlistEntry
+	 * @return
+	 */
 	private InternalMediaPlayer build(PlaylistEntry playlistEntry){
 		final InternalMediaPlayer mediaPlayer = new InternalMediaPlayer();
 		
 		// try to setup local path
 		String path = Dian1Application.getInstance().getDownloadManager().getTrackPath(playlistEntry);
-		if(path == null)
+
+		if(path == null) {
 			// fallback to remote one
-			path = playlistEntry.getMusic().getStream();
+			path = playlistEntry.getMusic().getFirstMusicLocalUrl();
+		}
 		
 		// some albums happen to contain empty stream url, notify of error, abort playback
 		if(path.length() == 0){

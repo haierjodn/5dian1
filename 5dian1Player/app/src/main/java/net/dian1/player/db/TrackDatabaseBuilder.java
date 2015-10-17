@@ -46,8 +46,8 @@ public class TrackDatabaseBuilder extends DatabaseBuilder<Music> {
 		music.setId(query.getInt(columnId));
 		music.setName(query.getString(columnName));
 		music.setRating(query.getDouble(columnRating));
-		music.setStream(query.getString(columnStream));
-		music.setUrl(query.getString(columnUrl));
+//		music.setStream(query.getString(columnStream));
+//		music.setUrl(query.getString(columnUrl));
 		music.setNumAlbum(query.getInt(columnAlbumTrackNum));
 		return music;
 	}
@@ -56,8 +56,8 @@ public class TrackDatabaseBuilder extends DatabaseBuilder<Music> {
 	public ContentValues deconstruct(Music music) {
 		ContentValues values = new ContentValues();
 		values.put(TRACK_NAME, music.getName());
-		values.put(TRACK_STREAM, music.getStream());
-		values.put(TRACK_URL, music.getUrl());
+//		values.put(TRACK_STREAM, music.getStream());
+//		values.put(TRACK_URL, music.getUrl());
 		values.put(TRACK_DURATION, music.getDuration());
 		values.put(TRACK_ID, music.getId());
 		values.put(TRACK_RATING, music.getRating());

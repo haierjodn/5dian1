@@ -21,11 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.Log;
@@ -34,13 +30,11 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.util.LogUtils;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
@@ -50,14 +44,15 @@ import net.dian1.player.api.Music;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
 import net.dian1.player.api.PlaylistEntry;
-import net.dian1.player.api.PlaylistRemote;
 import net.dian1.player.api.WSError;
 import net.dian1.player.api.impl.JamendoGet2ApiImpl;
 import net.dian1.player.dialog.AddToPlaylistDialog;
 import net.dian1.player.dialog.LoadingDialog;
 import net.dian1.player.dialog.LyricsDialog;
-import net.dian1.player.dialog.PlayerAlbumLoadingDialog;
-import net.dian1.player.dialog.PlaylistRemoteLoadingDialog;
+import net.dian1.player.http.ApiData;
+import net.dian1.player.http.ApiManager;
+import net.dian1.player.http.ApiRequest;
+import net.dian1.player.http.OnResultListener;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineListener;
 import net.dian1.player.media.local.AudioLoaderTask;
@@ -276,7 +271,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
 
     public void doCloseActivity() {
         finish();
-
     }
 
     @Override
@@ -310,6 +304,31 @@ public class PlayerActivity extends Activity implements OnClickListener {
         //mStopImageButton.setVisibility(View.GONE);
         mShuffleImageButton.setVisibility(View.GONE);
         ibDownload.setVisibility(View.GONE);
+    }
+
+    private void getMusicDetailFromNetwork() {
+        long musicId = 1;
+        ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicDetailApi.URL, net.dian1.player.model.Music.class,
+                ApiData.MusicDetailApi.getParams(musicId), new OnResultListener<net.dian1.player.model.Music>() {
+
+            @Override
+            public void onResult(net.dian1.player.model.Music response) {
+                //dismissDialog();
+                updateView(response);
+            }
+
+            @Override
+            public void onResultError(String msg, String code) {
+                //dismissDialog();
+                //showToastSafe(msg, Toast.LENGTH_SHORT);
+            }
+        }));
+    }
+
+    private void updateView(net.dian1.player.model.Music music) {
+        if(music != null) {
+
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ import net.dian1.player.api.Music;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.download.DownloadJob;
+import net.dian1.player.model.MusicUrl;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -29,8 +30,13 @@ public class MockUtils {
         music.setName("伤了心的女人怎么了");
         music.setId(new Random().nextInt());
         music.setDuration(172);
-        music.setUrl("/assets/music_sample.flac");
-        music.setStream("/assets/music_sample.flac");
+
+        MusicUrl musicUrl = new MusicUrl();
+        musicUrl.setLocalUrl("/assets/music_sample.flac");
+        musicUrl.setPoint(0);
+        musicUrl.setFileSize(String.valueOf("--"));
+        musicUrl.setFormat("flac");
+        music.addSongUrlList(musicUrl);
         entry.setAlbum(album);
         entry.setMusic(music);
 
@@ -68,24 +74,36 @@ public class MockUtils {
         music.setName("等你等了那么久");
         music.setId(new Random().nextInt());
         music.setDuration(192);
-        music.setUrl("/assets/music_sample.flac");
-        music.setStream("/assets/music_sample.flac");
+        MusicUrl musicUrl = new MusicUrl();
+        musicUrl.setLocalUrl("/assets/music_sample.flac");
+        musicUrl.setPoint(0);
+        musicUrl.setFileSize(String.valueOf("--"));
+        musicUrl.setFormat("flac");
+        music.addSongUrlList(musicUrl);
         musics[0] = music;
         music = new Music();
         music.setRating(0.6d);
         music.setName("伤了心的女人怎么了");
         music.setId(new Random().nextInt());
         music.setDuration(172);
-        music.setUrl("/assets/music_sample.flac");
-        music.setStream("/assets/music_sample.flac");
+        musicUrl = new MusicUrl();
+        musicUrl.setLocalUrl("/assets/music_sample.flac");
+        musicUrl.setPoint(0);
+        musicUrl.setFileSize(String.valueOf("--"));
+        musicUrl.setFormat("flac");
+        music.addSongUrlList(musicUrl);
         musics[1] = music;
         music = new Music();
         music.setRating(0.6d);
         music.setName("相见不如怀念");
         music.setId(new Random().nextInt());
         music.setDuration(172);
-        music.setUrl("/assets/music_sample.flac");
-        music.setStream("/assets/music_sample.flac");
+        musicUrl = new MusicUrl();
+        musicUrl.setLocalUrl("/assets/music_sample.flac");
+        musicUrl.setPoint(0);
+        musicUrl.setFileSize(String.valueOf("--"));
+        musicUrl.setFormat("flac");
+        music.addSongUrlList(musicUrl);
         musics[2] = music;
         return musics;
     }

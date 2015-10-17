@@ -91,6 +91,17 @@ public class ApiData extends Api {
 
 	}
 
+	public static class MusicDetailApi {
+
+		public static final String URL = API_URL + "/musicSong.asp";
+
+		public static RequestParams getParams(long musicId) {
+			final RequestParams params = new RequestParams();
+			params.addQueryStringParameter("id", String.valueOf(musicId));
+			return params;
+		}
+
+	}
 
 
 }

@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lidroid.xutils.BitmapUtils;
@@ -54,6 +56,9 @@ public class RepoActivity extends Activity implements OnClickListener {
 
 	private List<Album> musicDayList;
 
+	private int mScreenWidth;
+	private int mScreenHeight;
+
 
 	public static void launch(Context c){
 		Intent intent = new Intent(c, RepoActivity.class);
@@ -66,6 +71,9 @@ public class RepoActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_repo);
+		Display display = getWindowManager().getDefaultDisplay();
+		mScreenHeight= display.getHeight();
+		mScreenWidth = display.getWidth();
 
 		initHeader();
 		gvRepoList = (GridView)findViewById(R.id.gv_repo_list);
@@ -156,6 +164,10 @@ public class RepoActivity extends Activity implements OnClickListener {
 				viewHolder.ivAlbum = (ImageView) convertView.findViewById(R.id.iv_album);
 				viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
 				viewHolder.tvArtist = (TextView) convertView.findViewById(R.id.tv_artist);
+				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.ivAlbum.getLayoutParams();
+				params.height = (int)(mScreenHeight/3.8f);
+				params.width = (mScreenWidth-40)/2;
+				viewHolder.ivAlbum.setLayoutParams(params);
 				convertView.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
