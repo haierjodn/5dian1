@@ -139,7 +139,7 @@ public class AlbumActivity extends BaseActivity {
         musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PlayerActivity.launch(AlbumActivity.this, MockUtils.buildSamplePlaylist());
+                PlayerActivity.launch(AlbumActivity.this, mAlbum.buildPlaylist(position)/*MockUtils.buildSamplePlaylist()*/);
             }
         });
 

@@ -180,6 +180,11 @@ public class PlayerEngineImpl implements PlayerEngine {
 		}
 	}
 
+	/**
+	 * 1. 根据ID去获取歌曲详情->下载歌曲->播放
+	 * 2. 下载歌曲->播放
+	 * 3. 播放
+	 */
 	@Override
 	public void play() {
 		
@@ -308,6 +313,9 @@ public class PlayerEngineImpl implements PlayerEngine {
 		
 		// try to setup local path
 		String path = Dian1Application.getInstance().getDownloadManager().getTrackPath(playlistEntry);
+
+		//test
+		//path = "http://5dian1song.tt6.cn/music/天籁美声雪域藏歌《雪域传奇》/10.天上西藏.mp3";
 
 		if(path == null) {
 			// fallback to remote one
