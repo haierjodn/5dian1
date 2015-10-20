@@ -23,8 +23,8 @@ package net.dian1.player.log.handler;
 import android.os.Looper;
 import android.util.Log;
 
-import net.dian1.player.Dian1Application;
 import net.dian1.player.log.CrashListener;
+import net.dian1.player.log.LogUtil;
 import net.dian1.player.log.LogWriter;
 
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -32,23 +32,24 @@ import java.lang.Thread.UncaughtExceptionHandler;
 /**
  *
  */
-public class DMSCrashHandler implements UncaughtExceptionHandler {
-    private static final String LOG_TAG = DMSCrashHandler.class.getSimpleName();
+public class Dian1CrashHandler implements UncaughtExceptionHandler {
+    private static final String LOG_TAG = Dian1CrashHandler.class.getSimpleName();
 
-    private static final DMSCrashHandler sHandler = new DMSCrashHandler();
+    private static final Dian1CrashHandler sHandler = new Dian1CrashHandler();
 
     private CrashListener mListener;
 
-    public static DMSCrashHandler getInstance() {
+    public static Dian1CrashHandler getInstance() {
         return sHandler;
     }
 
     @Override
     public void uncaughtException(final Thread thread, final Throwable ex) {
         try {
-            LogWriter.writeCrash("DMSCrashHandler", ex.getMessage(), ex);
+            LogWriter.writeCrash("Dian1CrashHandler", ex.getMessage(), ex);
+            LogUtil.e("[Dian1CrashHandler]:" + ex.getMessage());
         }catch (Exception e) {
-            Log.w(LOG_TAG, e);
+            LogUtil.e(e.getMessage());
         }
         if(mListener != null) {
             new Thread(new Runnable() {

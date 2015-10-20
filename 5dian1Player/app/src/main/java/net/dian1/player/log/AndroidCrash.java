@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import net.dian1.player.log.handler.AbstractCrashHandler;
-import net.dian1.player.log.handler.DMSCrashHandler;
+import net.dian1.player.log.handler.Dian1CrashHandler;
 
 /**
  * User: Geek_Soledad(msdx.android@qq.com)
@@ -35,8 +35,8 @@ public class AndroidCrash {
     }
 
     public void init(Context mContext) {
-        DMSCrashHandler.getInstance().init(mReporter);
-        Thread.setDefaultUncaughtExceptionHandler(DMSCrashHandler.getInstance());
+        //Dian1CrashHandler.getInstance().init(mReporter);
+        //Thread.setDefaultUncaughtExceptionHandler(Dian1CrashHandler.getInstance());
         Log.d("AndroidCrash", "init success: " + Thread.getDefaultUncaughtExceptionHandler().getClass());
     }
 

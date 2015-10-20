@@ -156,5 +156,6 @@
     <string name="common_error_null">任务列表为空</string>
     <string name="common_error_loading">加载中......</string>
     <string name="common_cancel">取消</string>
+    <string name="common_music_info_error">获取歌曲信息失败！</string>
 
 </resources>

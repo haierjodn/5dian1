@@ -1,6 +1,7 @@
 package net.dian1.player.model;
 
 import net.dian1.player.api.Playlist;
+import net.dian1.player.util.AudioUtils;
 
 import java.util.List;
 import java.util.Random;
@@ -97,13 +98,7 @@ public class Album {
             net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[songList.size()];
             for(int i = 0; i < songList.size(); i++) {
                 final Music music = songList.get(i);
-                net.dian1.player.api.Music music1 = new net.dian1.player.api.Music();
-                music1.setRating(0.6d);
-                music1.setName(music.getName());
-                music1.setId((int) music.getId());
-                //TODO Dead code
-                music1.setDuration(192);
-                music1.setSongUrlList(music1.getSongUrlList());
+                net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);
                 musics[(i + position) % musics.length] = music1;
             }
 

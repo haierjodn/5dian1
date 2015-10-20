@@ -20,9 +20,17 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 
 import net.dian1.player.Dian1Application;
+import net.dian1.player.R;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
+import net.dian1.player.http.ApiData;
+import net.dian1.player.http.ApiManager;
+import net.dian1.player.http.ApiRequest;
+import net.dian1.player.http.OnResultListener;
+import net.dian1.player.model.Album;
+import net.dian1.player.model.Music;
+import net.dian1.player.util.AudioUtils;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -34,7 +42,12 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.lidroid.xutils.http.client.HttpRequest;
 
 /**
  * Player core engine allowing playback, in other words, a
@@ -194,16 +207,28 @@ public class PlayerEngineImpl implements PlayerEngine {
 
 		// check if there is anything to play
 		if(mPlaylist != null){
+			final PlaylistEntry playlistEntry = mPlaylist.getSelectedTrack();
+			fillPlaylistEntry(mPlaylist.getSelectedTrack(), new OnResultListener<Music>() {
+				@Override
+				public void onResult(Music response) {
+					playlistEntry.setMusic(AudioUtils.convertMusic(response));
+					play();
+				}
+				@Override
+				public void onResultError(String msg, String code) {
+					Toast.makeText(Dian1Application.getInstance(), R.string.common_music_info_error, Toast.LENGTH_SHORT).show();
+				}
+			});
 
 			// check if media player is initialized
 			if(mCurrentMediaPlayer == null){
-				mCurrentMediaPlayer = build(mPlaylist.getSelectedTrack());
+				mCurrentMediaPlayer = build(playlistEntry);
 			}
 
 			// check if current media player is set to our song
 			if(mCurrentMediaPlayer != null && mCurrentMediaPlayer.playlistEntry != mPlaylist.getSelectedTrack()){
 				cleanUp(); // this will do the cleanup job				
-				mCurrentMediaPlayer = build(mPlaylist.getSelectedTrack());
+				mCurrentMediaPlayer = build(playlistEntry);
 			}
 			
 			// check if there is any player instance, if not, abort further execution 
@@ -304,6 +329,27 @@ public class PlayerEngineImpl implements PlayerEngine {
 	 * 1. 根据ID去获取歌曲详情->下载歌曲->播放
 	 * 2. 下载歌曲->播放
 	 * 3. 播放
+	 */
+	private void fillPlaylistEntry(PlaylistEntry playlistEntry, OnResultListener<Music> onResultListener) {
+		if(playlistEntry == null) {
+			return;
+		}
+		String path = Dian1Application.getInstance().getDownloadManager().getTrackPath(playlistEntry);
+		if(!TextUtils.isEmpty(path)) {
+			return;
+		}
+		if(!TextUtils.isEmpty(path)) {
+			return;
+		}
+		int musicId = playlistEntry.getMusic().getId();
+		ApiManager.getInstance().send(new ApiRequest(Dian1Application.getInstance(), ApiData.MusicDetailApi.URL, Music.class,
+				ApiData.MusicDetailApi.getParams(musicId), onResultListener).setHttpMethod(HttpRequest.HttpMethod.GET));
+	}
+
+	/**
+	 * 1. 根据ID去获取歌曲详情->下载歌曲->播放
+	 * 2. 下载歌曲->播放
+	 * 3. 播放
 	 *
 	 * @param playlistEntry
 	 * @return
@@ -313,17 +359,15 @@ public class PlayerEngineImpl implements PlayerEngine {
 		
 		// try to setup local path
 		String path = Dian1Application.getInstance().getDownloadManager().getTrackPath(playlistEntry);
-
-		//test
-		//path = "http://5dian1song.tt6.cn/music/天籁美声雪域藏歌《雪域传奇》/10.天上西藏.mp3";
-
-		if(path == null) {
+		if(TextUtils.isEmpty(path)) {
 			// fallback to remote one
 			path = playlistEntry.getMusic().getFirstMusicLocalUrl();
 		}
-		
+		if(TextUtils.isEmpty(path)) {
+			path = playlistEntry.getMusic().getFirstMusicNetUrl();
+		}
 		// some albums happen to contain empty stream url, notify of error, abort playback
-		if(path.length() == 0){
+		if(TextUtils.isEmpty(path)){
 			if(mPlayerEngineListener != null){
 				mPlayerEngineListener.onTrackStreamError();
 				mPlayerEngineListener.onTrackChanged(mPlaylist.getSelectedTrack());
@@ -331,7 +375,6 @@ public class PlayerEngineImpl implements PlayerEngine {
 			stop();
 			return null;
 		}
-		
 		try {
 			Uri pathUri = Uri.parse(path);
 			if(path.indexOf("assets/") > -1) {

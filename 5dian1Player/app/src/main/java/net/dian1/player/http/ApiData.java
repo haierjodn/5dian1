@@ -103,5 +103,15 @@ public class ApiData extends Api {
 
 	}
 
+	public static class MusicSearchApi {
 
+		public static final String URL = API_URL + "/musicSearch.asp";
+
+		public static RequestParams getParams(long musicId) {
+			final RequestParams params = new RequestParams();
+			//params.addQueryStringParameter("id", String.valueOf(musicId));
+			return params;
+		}
+
+	}
 }

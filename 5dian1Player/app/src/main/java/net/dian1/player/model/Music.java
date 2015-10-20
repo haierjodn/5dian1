@@ -11,6 +11,7 @@ public class Music implements Serializable {
     private String name;
     private String singer;
     private String shichang;
+    private String fengge;
     private long albumId;
     private String albumName;
     private List<MusicUrl> songUrlList;
@@ -53,6 +54,14 @@ public class Music implements Serializable {
 
     public void setShichang(String shichang) {
         this.shichang = shichang;
+    }
+
+    public String getFengge() {
+        return fengge;
+    }
+
+    public void setFengge(String fengge) {
+        this.fengge = fengge;
     }
 
     public long getAlbumId() {
