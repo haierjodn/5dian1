@@ -46,7 +46,9 @@
     <ListView android:id="@+id/lv_music"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="1"
         android:cacheColorHint="#00000000"/>
+
+    <include layout="@layout/player_controller_container" />
 
 </LinearLayout>

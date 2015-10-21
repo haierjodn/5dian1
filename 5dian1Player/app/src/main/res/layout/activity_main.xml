@@ -134,4 +134,7 @@
             android:layout_marginBottom="15dp"/>
 
     </LinearLayout>
+
+    <include layout="@layout/player_controller_container" />
+
 </LinearLayout>

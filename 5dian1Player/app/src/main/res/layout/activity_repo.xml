@@ -10,10 +10,13 @@
     <GridView
         android:id="@+id/gv_repo_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:numColumns="2"
         android:columnWidth="5dip"
         android:cacheColorHint="#00000000"
         android:stretchMode="columnWidth"/>
+
+    <include layout="@layout/player_controller_container" />
 
 </LinearLayout>

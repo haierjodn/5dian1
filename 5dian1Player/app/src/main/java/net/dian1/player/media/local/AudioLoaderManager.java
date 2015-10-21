@@ -62,7 +62,9 @@ public class AudioLoaderManager {
 	}
 
 	public void add(List<Music> songs) {
-		mInteralSongs.addAll(songs);
+		if(songs != null) {
+			mInteralSongs.addAll(songs);
+		}
 	}
 
 

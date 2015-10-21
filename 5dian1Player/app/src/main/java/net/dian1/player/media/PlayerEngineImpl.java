@@ -208,6 +208,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 		// check if there is anything to play
 		if(mPlaylist != null){
 			final PlaylistEntry playlistEntry = mPlaylist.getSelectedTrack();
+
 			fillPlaylistEntry(mPlaylist.getSelectedTrack(), new OnResultListener<Music>() {
 				@Override
 				public void onResult(Music response) {
@@ -335,15 +336,21 @@ public class PlayerEngineImpl implements PlayerEngine {
 			return;
 		}
 		String path = Dian1Application.getInstance().getDownloadManager().getTrackPath(playlistEntry);
-		if(!TextUtils.isEmpty(path)) {
+		if(TextUtils.isEmpty(path)) {
+			path = playlistEntry.getMusic().getFirstMusicLocalUrl();
+		} else {
 			return;
 		}
-		if(!TextUtils.isEmpty(path)) {
+		if(TextUtils.isEmpty(path)) {
+			path = playlistEntry.getMusic().getFirstMusicNetUrl();
+		} else {
 			return;
 		}
-		int musicId = playlistEntry.getMusic().getId();
-		ApiManager.getInstance().send(new ApiRequest(Dian1Application.getInstance(), ApiData.MusicDetailApi.URL, Music.class,
-				ApiData.MusicDetailApi.getParams(musicId), onResultListener).setHttpMethod(HttpRequest.HttpMethod.GET));
+		if(TextUtils.isEmpty(path)) {
+			int musicId = playlistEntry.getMusic().getId();
+			ApiManager.getInstance().send(new ApiRequest(Dian1Application.getInstance(), ApiData.MusicDetailApi.URL, Music.class,
+					ApiData.MusicDetailApi.getParams(musicId), onResultListener).setHttpMethod(HttpRequest.HttpMethod.GET));
+		}
 	}
 
 	/**
@@ -382,6 +389,10 @@ public class PlayerEngineImpl implements PlayerEngine {
 				FileDescriptor fileDescriptor = musicAFD.getFileDescriptor();
 				mediaPlayer.setDataSource(fileDescriptor, musicAFD.getStartOffset(), musicAFD.getLength());
 			} else {
+				//for test play
+				if(path.startsWith("http")) {
+					path = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
+				}
 				mediaPlayer.setDataSource(path);
 			}
 
