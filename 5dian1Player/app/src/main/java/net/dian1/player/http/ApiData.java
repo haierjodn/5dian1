@@ -1,9 +1,13 @@
 package net.dian1.player.http;
 
 
+import android.text.TextUtils;
+
 import com.lidroid.xutils.http.RequestParams;
 
 import net.dian1.player.model.LoginParam;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by Six.SamA on 2015/8/20.
@@ -110,6 +114,20 @@ public class ApiData extends Api {
 		public static RequestParams getParams(long musicId) {
 			final RequestParams params = new RequestParams();
 			//params.addQueryStringParameter("id", String.valueOf(musicId));
+			return params;
+		}
+
+	}
+
+	public static class MusicSuibianApi {
+
+		public static final String URL = API_URL + "/musicSuibian.asp";
+
+		public static RequestParams getParams(String fengge) {
+			final RequestParams params = new RequestParams();
+			if(!TextUtils.isEmpty(fengge)) {
+				params.addQueryStringParameter("fengge", fengge);
+			}
 			return params;
 		}
 

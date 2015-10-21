@@ -39,13 +39,10 @@ import com.lidroid.xutils.BitmapUtils;
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.api.Album;
-import net.dian1.player.api.JamendoGet2Api;
 import net.dian1.player.api.Music;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
 import net.dian1.player.api.PlaylistEntry;
-import net.dian1.player.api.WSError;
-import net.dian1.player.api.impl.JamendoGet2ApiImpl;
 import net.dian1.player.dialog.AddToPlaylistDialog;
 import net.dian1.player.dialog.LoadingDialog;
 import net.dian1.player.dialog.LyricsDialog;
@@ -56,25 +53,16 @@ import net.dian1.player.http.OnResultListener;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineListener;
 import net.dian1.player.media.local.AudioLoaderTask;
+import net.dian1.player.model.SearchResult;
+import net.dian1.player.util.AudioUtils;
 import net.dian1.player.util.Helper;
 import net.dian1.player.util.OnSeekToListenerImp;
 import net.dian1.player.util.SeekToMode;
 
-import org.json.JSONException;
-
-import java.util.List;
-
 /**
- * Central part of the UI. Touching cover fades in 4-way media buttons.
- * 4-way media buttons fade out after certain amount of time. Other parts
- * of layout are progress bar, total play time, played time, song title,
- * artist name and jamendo slider.<br><br>
- * <p/>
- * License information is implemented overlaying CreativeCommons logo over
- * the album picture. Information about type of license is retrieved concurrently
- * to track bufferring.
+ * 1. Common Music Player
+ * 2. 支持随便听模式
  *
- * @author Lukasz Wisniewski
  */
 public class PlayerActivity extends Activity implements OnClickListener {
 
@@ -112,23 +100,15 @@ public class PlayerActivity extends Activity implements OnClickListener {
 
     private BitmapUtils bitmapUtils;
 
-    /**
-     * Launch this Activity from the outside, with defined playlist
-     *
-     * @param c        context from which Activity should be started
-     * @param playlist to be played
-     */
     public static void launch(Context c, Playlist playlist) {
         Intent intent = new Intent(c, PlayerActivity.class);
         intent.putExtra("playlist", playlist);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        c.startActivity(intent);
+    }
 
-		/*
-         * For example, consider a task consisting of the activities:
-		 * A, B, C, D. If D calls startActivity() with an Intent that
-		 * resolves to the component of activity B, then C and D will
-		 * be finished and B receive the given Intent, resulting in 
-		 * the stack now being: A, B. 
-		 */
+    public static void launch(Context c) {
+        Intent intent = new Intent(c, PlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         c.startActivity(intent);
     }
@@ -277,7 +257,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
     public void onPause() {
         super.onPause();
         Log.i(Dian1Application.TAG, "PlayerActivity.onPause");
-
         // unregister UI listener
         Dian1Application.getInstance().setPlayerEngineListener(null);
     }
@@ -358,8 +337,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
             } else {
                 getPlayerEngine().play();
             }
-            //when to shop
-            //getPlayerEngine().stop();
         }
 
     };
@@ -540,37 +517,47 @@ public class PlayerActivity extends Activity implements OnClickListener {
      * Loads playlist to the PlayerEngine
      */
     private void handleIntent() {
-        Log.i(Dian1Application.TAG, "PlayerActivity.handleIntent");
-
-        // This will be result of this intent handling
+        Intent intent = getIntent();
         Playlist playlist = null;
-
-        // We need to handle Uri
-        if (getIntent().getData() != null) {
-
-            // Check if this intent was already once parsed
-            // we don't need to do that again
-            if (!getIntent().getBooleanExtra("handled", false)) {
-                mUriLoadingDialog = (LoadingDialog) new UriLoadingDialog(this, R.string.loading, R.string.loading_fail).execute();
+        if (intent != null) {
+            playlist = (Playlist) intent.getSerializableExtra("playlist");
+            if(playlist != null) {
+                setupPlaylist(playlist);
+            } else {
+                downloadPlaylist();
             }
-
-        } else {
-            playlist = (Playlist) getIntent().getSerializableExtra("playlist");
-            loadPlaylist(playlist);
         }
     }
 
-    private void loadPlaylist(Playlist playlist) {
+    private void setupPlaylist(Playlist playlist) {
         Log.i(Dian1Application.TAG, "PlayerActivity.loadPlaylist");
-        if (playlist == null)
+        if (playlist == null) {
             return;
-
+        }
         mPlaylist = playlist;
         if (mPlaylist != getPlayerEngine().getPlaylist()) {
-            //getPlayerEngine().stop();
             getPlayerEngine().openPlaylist(mPlaylist);
             getPlayerEngine().play();
         }
+    }
+
+    /**
+     * 随便听模式下载随机歌单
+     */
+    private void downloadPlaylist() {
+        ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSuibianApi.URL, SearchResult.class,
+                ApiData.MusicSuibianApi.getParams(null), new OnResultListener<SearchResult>() {
+
+            @Override
+            public void onResult(SearchResult response) {
+                //updateView(response);
+                setupPlaylist(AudioUtils.buildPlaylist(response.getSongList(), 0));
+            }
+
+            @Override
+            public void onResultError(String msg, String code) {
+            }
+        }));
     }
 
     @Override
@@ -580,82 +567,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
                 onBackPressed();
                 break;
         }
-    }
-
-    /**
-     * This creates playlist based on url that was passed in the intent,
-     * e.g. http://www.jamendo.com/pl/track/325654 or http://www.jamendo.com/pl/album/7505
-     *
-     * @author Lukasz Wisniewski
-     */
-    private class UriLoadingDialog extends LoadingDialog<Void, Playlist> {
-
-        public UriLoadingDialog(Activity activity, int loadingMsg, int failMsg) {
-            super(activity, loadingMsg, failMsg);
-        }
-
-        @Override
-        public Playlist doInBackground(Void... params) {
-            Playlist playlist = null;
-
-            Intent intent = getIntent();
-            String action = intent.getAction();
-
-            if (Intent.ACTION_VIEW.equals(action)) {
-                playlist = new Playlist();
-
-                List<String> segments = intent.getData().getPathSegments();
-                String mode = segments.get((segments.size() - 2));
-                int id = 0;
-                try {
-                    id = Integer.parseInt(segments.get((segments.size() - 1)));
-                } catch (NumberFormatException e) {
-                    doCancel();
-                    return playlist;
-                }
-                JamendoGet2Api service = new JamendoGet2ApiImpl();
-
-                if (mode.equals("track")) {
-                    try {
-                        Music[] musics = service.getTracksByTracksId(new int[]{id}, Dian1Application.getInstance().getStreamEncoding());
-                        Album[] albums = service.getAlbumsByTracksId(new int[]{id});
-                        albums[0].setMusics(musics);
-                        playlist.addTracks(albums[0]);
-                    } catch (JSONException e) {
-                        Log.e(Dian1Application.TAG, "sth went completely wrong");
-                        PlayerActivity.this.finish();
-                        e.printStackTrace();
-                    } catch (WSError e) {
-                        publishProgress(e);
-                    }
-                }
-
-                if (mode.equals("album")) {
-                    try {
-                        Album album = service.getAlbumById(id);
-                        Music[] musics = service.getAlbumTracks(album, Dian1Application.getInstance().getStreamEncoding());
-
-                        album.setMusics(musics);
-                        playlist.addTracks(album);
-                    } catch (JSONException e) {
-                        Log.e("jamendroid", "sth went completely wrong");
-                        PlayerActivity.this.finish();
-                        e.printStackTrace();
-                    } catch (WSError e) {
-                        publishProgress(e);
-                    }
-                }
-            }
-
-            intent.putExtra("handled", true);
-            return playlist;
-        }
-
-        @Override
-        public void doStuffWithResult(Playlist result) {
-            loadPlaylist(result);
-        }
-
     }
 
     public void albumClickHandler(View target) {
