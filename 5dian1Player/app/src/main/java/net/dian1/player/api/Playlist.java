@@ -37,7 +37,7 @@ public class Playlist implements Serializable {
 	private static final String TAG = "Playlist";
 
 	public enum PlaylistPlaybackMode {
-		NORMAL, SHUFFLE, REPEAT, SHUFFLE_AND_REPEAT
+		NORMAL, SHUFFLE, REPEAT, SHUFFLE_AND_REPEAT, LISTEN_ANY
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class Playlist implements Serializable {
 	/**
 	 * Keep playlist playback mode
 	 */
-	private PlaylistPlaybackMode mPlaylistPlaybackMode = PlaylistPlaybackMode.NORMAL;
+	protected PlaylistPlaybackMode mPlaylistPlaybackMode = PlaylistPlaybackMode.NORMAL;
 
 	/**
 	 * Give playlist playback mode
@@ -376,5 +376,9 @@ public class Playlist implements Serializable {
 			mPlayOrder = new ArrayList<Integer>();
 			calculateOrder(true);
 		}
+	}
+
+	public boolean isPlaylistMode(PlaylistPlaybackMode mode) {
+		return mPlaylistPlaybackMode == mode;
 	}
 }

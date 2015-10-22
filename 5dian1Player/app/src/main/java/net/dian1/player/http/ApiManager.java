@@ -29,6 +29,7 @@ public class ApiManager {
 
 	private ApiManager() {
 		mHttpUtils = new HttpUtils(Api.HTTP_CONNECT_TIMEOUT);
+		mHttpUtils.configDefaultHttpCacheExpiry(0);
 	}
 
 	public static void init(Context context) {

@@ -61,7 +61,7 @@ import net.dian1.player.util.SeekToMode;
 
 /**
  * 1. Common Music Player
- * 2. 支持随便听模式
+ * 2. 支持随便听模式, playlist = null
  *
  */
 public class PlayerActivity extends Activity implements OnClickListener {
@@ -287,8 +287,8 @@ public class PlayerActivity extends Activity implements OnClickListener {
 
     private void getMusicDetailFromNetwork() {
         long musicId = 1;
-        ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicDetailApi.URL, net.dian1.player.model.Music.class,
-                ApiData.MusicDetailApi.getParams(musicId), new OnResultListener<net.dian1.player.model.Music>() {
+        ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSuibianApi.URL, net.dian1.player.model.Music.class,
+                ApiData.MusicSuibianApi.getParams(null), new OnResultListener<net.dian1.player.model.Music>() {
 
             @Override
             public void onResult(net.dian1.player.model.Music response) {
@@ -545,13 +545,13 @@ public class PlayerActivity extends Activity implements OnClickListener {
      * 随便听模式下载随机歌单
      */
     private void downloadPlaylist() {
-        ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSuibianApi.URL, SearchResult.class,
-                ApiData.MusicSuibianApi.getParams(null), new OnResultListener<SearchResult>() {
+        ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSuibianApi.URL, net.dian1.player.model.Music.class,
+                ApiData.MusicSuibianApi.getParams(null), new OnResultListener<net.dian1.player.model.Music>() {
 
             @Override
-            public void onResult(SearchResult response) {
+            public void onResult(net.dian1.player.model.Music response) {
                 //updateView(response);
-                setupPlaylist(AudioUtils.buildPlaylist(response.getSongList(), 0));
+                setupPlaylist(AudioUtils.buildPlaylist(response, 0));
             }
 
             @Override

@@ -28,11 +28,9 @@ import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
-import net.dian1.player.model.Album;
 import net.dian1.player.model.Music;
 import net.dian1.player.util.AudioUtils;
 
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
@@ -42,7 +40,6 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -159,8 +156,12 @@ public class PlayerEngineImpl implements PlayerEngine {
 	@Override
 	public void next() {
 		if(mPlaylist != null){
-			mPlaylist.selectNext();
-			play();
+			if(mPlaylist.isPlaylistMode(PlaylistPlaybackMode.LISTEN_ANY)) {
+				playNextListenAny();
+			} else {
+				mPlaylist.selectNext();
+				play();
+			}
 		}
 	}
 
@@ -282,9 +283,9 @@ public class PlayerEngineImpl implements PlayerEngine {
 
 	@Override
 	public void prev() {
-		if(mPlaylist != null){ 
+		if(mPlaylist != null){
 			mPlaylist.selectPrev();
-			play();	
+			play();
 		}
 	}
 
@@ -335,22 +336,33 @@ public class PlayerEngineImpl implements PlayerEngine {
 		if(playlistEntry == null) {
 			return;
 		}
-		String path = Dian1Application.getInstance().getDownloadManager().getTrackPath(playlistEntry);
-		if(TextUtils.isEmpty(path)) {
-			path = playlistEntry.getMusic().getFirstMusicLocalUrl();
-		} else {
-			return;
-		}
-		if(TextUtils.isEmpty(path)) {
-			path = playlistEntry.getMusic().getFirstMusicNetUrl();
-		} else {
-			return;
-		}
+
+		String path = playlistEntry.getPlayUrl();
+
 		if(TextUtils.isEmpty(path)) {
 			int musicId = playlistEntry.getMusic().getId();
 			ApiManager.getInstance().send(new ApiRequest(Dian1Application.getInstance(), ApiData.MusicDetailApi.URL, Music.class,
 					ApiData.MusicDetailApi.getParams(musicId), onResultListener).setHttpMethod(HttpRequest.HttpMethod.GET));
 		}
+	}
+
+	private void playNextListenAny() {
+		ApiManager.getInstance().send(new ApiRequest(Dian1Application.getInstance(), ApiData.MusicSuibianApi.URL, Music.class,
+				ApiData.MusicSuibianApi.getParams(null), new OnResultListener<Music>() {
+			@Override
+			public void onResult(Music response) {
+				//stop();
+				//final PlaylistEntry playlistEntry = mPlaylist.getSelectedTrack();
+				//playlistEntry.setMusic(AudioUtils.convertMusic(response));
+				mPlaylist.addPlaylistEntry(AudioUtils.buildPlaylistEntry(response, 0));
+				mPlaylist.selectNext();
+				play();
+			}
+			@Override
+			public void onResultError(String msg, String code) {
+
+			}
+		}).setHttpMethod(HttpRequest.HttpMethod.GET));
 	}
 
 	/**
@@ -365,14 +377,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 		final InternalMediaPlayer mediaPlayer = new InternalMediaPlayer();
 		
 		// try to setup local path
-		String path = Dian1Application.getInstance().getDownloadManager().getTrackPath(playlistEntry);
-		if(TextUtils.isEmpty(path)) {
-			// fallback to remote one
-			path = playlistEntry.getMusic().getFirstMusicLocalUrl();
-		}
-		if(TextUtils.isEmpty(path)) {
-			path = playlistEntry.getMusic().getFirstMusicNetUrl();
-		}
+		String path = playlistEntry.getPlayUrl();
 		// some albums happen to contain empty stream url, notify of error, abort playback
 		if(TextUtils.isEmpty(path)){
 			if(mPlayerEngineListener != null){
@@ -389,7 +394,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 				FileDescriptor fileDescriptor = musicAFD.getFileDescriptor();
 				mediaPlayer.setDataSource(fileDescriptor, musicAFD.getStartOffset(), musicAFD.getLength());
 			} else {
-				//for test play
+				//for testing play only
 				if(path.startsWith("http")) {
 					path = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
 				}

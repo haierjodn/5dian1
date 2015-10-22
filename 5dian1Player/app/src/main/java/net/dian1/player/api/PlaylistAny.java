@@ -16,58 +16,28 @@
 
 package net.dian1.player.api;
 
-import android.text.TextUtils;
+import android.util.Log;
 
-import net.dian1.player.Dian1Application;
-
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
-
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
- * Single playlist entry
- * 
  * @author Lukasz Wisniewski
  */
-public class PlaylistEntry implements Serializable {
-	
+public class PlaylistAny extends Playlist {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Album album;
-	
-	private Music music;
+	private static final String TAG = "PlaylistAny";
 
-	public Album getAlbum() {
-		return album;
+	public PlaylistAny() {
+		mPlaylistPlaybackMode = PlaylistPlaybackMode.LISTEN_ANY;
 	}
 
-	public void setAlbum(Album album) {
-		this.album = album;
-	}
-
-	public Music getMusic() {
-		return music;
-	}
-
-	public void setMusic(Music music) {
-		this.music = music;
-	}
-
-	public String getPlayUrl() {
-		String path = Dian1Application.getInstance().getDownloadManager().getTrackPath(this);
-		if(music == null) {
-			return null;
-		}
-		if(TextUtils.isEmpty(path)) {
-			path = music.getFirstMusicLocalUrl();
-		}
-		if(TextUtils.isEmpty(path)) {
-			path = music.getFirstMusicNetUrl();
-		}
-		return path;
-	}
-	
 }
