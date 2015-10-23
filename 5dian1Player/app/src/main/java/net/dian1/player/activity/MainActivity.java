@@ -32,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
@@ -41,6 +42,12 @@ import net.dian1.player.adapter.PurpleListener;
 import net.dian1.player.api.Album;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.dialog.AboutDialog;
+import net.dian1.player.http.ApiData;
+import net.dian1.player.http.ApiManager;
+import net.dian1.player.http.ApiRequest;
+import net.dian1.player.http.OnResultListener;
+import net.dian1.player.model.common.VersionLatest;
+import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.MockUtils;
 import net.dian1.player.widget.OnAlbumClickListener;
 
@@ -80,6 +87,7 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         fillHomeListView();
+        checkUpdate();
     }
 
     @Override
@@ -202,7 +210,23 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
         }
     };
 
+    private void checkUpdate() {
+        // 升级
+        ApiManager.getInstance().send(new ApiRequest(this, ApiData.VersionLatestApi.URL, VersionLatest.class, new OnResultListener<VersionLatest>() {
 
+            @Override
+            public void onResult(final VersionLatest response) {
+                if (response != null && response.hasUpdate && response.versionInfo != null && response.versionInfo.popup) {
+                    DialogUtils.showAppUpgradeDialog(MainActivity.this, response);
+                }
+            }
+
+            @Override
+            public void onResultError(String msg, String code) {
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+            }
+        }));
+    }
 
 
 }

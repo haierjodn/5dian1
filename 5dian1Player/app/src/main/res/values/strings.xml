@@ -77,7 +77,6 @@
     <string name="no_playlists">Type playlist name above and click \'New\'</string>
     <string name="no_tracks">This playlist does not contains any musics yet</string>
     <string name="no_items">No items</string>
-    <string name="cancel">Cancel</string>
     <string name="apply">Apply</string>
     <string name="no_album">No Album</string>
     <string name="no_artist">No Artist</string>
@@ -157,5 +156,40 @@
     <string name="common_error_loading">加载中......</string>
     <string name="common_cancel">取消</string>
     <string name="common_music_info_error">获取歌曲信息失败！</string>
+
+    <string name="upgrade">升级</string>
+    <string name="cancel">取消</string>
+    <string name="common_tip">提示</string>
+
+    <!--登录-->
+    <string name="login_forget">忘记密码?</string>
+    <string name="login_forget_click">点击找回</string>
+    <string name="login_acc_empty">帐号不能为空</string>
+    <string name="login_pwd_empty">密码不能为空</string>
+    <string name="login_ing">登录中...</string>
+
+    <!--修改密码-->
+    <string name="change_title">修改密码</string>
+    <string name="change_old">旧密码</string>
+    <string name="change_new">新密码</string>
+    <string name="change_renew">确认新密码</string>
+    <string name="change_inconformity">两次密码输入不一致</string>
+    <string name="change_pwd_length">密码长度应为6-12位</string>
+    <string name="change_success">修改密码成功</string>
+    <string name="change_false">修改密码失败</string>
+
+    <!--忘记密码-->
+    <string name="forget_title">找回密码</string>
+    <string name="forget_phone">输入绑定手机号</string>
+    <string name="forget_input_code">输入验证码</string>
+    <string name="forget_gain_code">获取验证码</string>
+    <string name="forget_regain_code">秒后重新获取</string>
+    <string name="forget_pwd">请设置新密码</string>
+    <string name="forget_phone_empty">手机号码不能为空</string>
+    <string name="forget_phone_error">手机号码必须为11位</string>
+    <string name="forget_code_empty">验证码不能为空</string>
+    <string name="forget_sms_code">验证码已发送至你手机，请注意查收...</string>
+    <string name="forget_sms_code_false">获取验证码失败，请重试...</string>
+    <string name="forget_reset_success">重置密码成功</string>
 
 </resources>

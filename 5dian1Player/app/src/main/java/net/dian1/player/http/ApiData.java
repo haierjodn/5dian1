@@ -6,6 +6,9 @@ import android.text.TextUtils;
 import com.lidroid.xutils.http.RequestParams;
 
 import net.dian1.player.model.LoginParam;
+import net.dian1.player.model.login.PwdResetParam;
+import net.dian1.player.model.login.PwdUpdateParam;
+import net.dian1.player.model.login.ValidCodeParam;
 
 import org.w3c.dom.Text;
 
@@ -67,7 +70,7 @@ public class ApiData extends Api {
 	// 2.6 获取版本信息
 	public static class VersionLatestApi {
 
-		public static final String URL = API_URL + "/version/latestVersion";
+		public static final String URL = API_URL + "/latestVersion.asp";
 
 	}
 
@@ -132,4 +135,44 @@ public class ApiData extends Api {
 		}
 
 	}
+
+	public static class SecurityApi {
+
+		public static final String URL = API_URL + "/security.asp";
+
+		public static RequestParams getParams() {
+			final RequestParams params = new RequestParams();
+
+			return params;
+		}
+
+	}
+
+	public static class PwdUpdateApi {
+
+		public static final String URL = API_URL + "/updatePwd";
+
+		public static ApiRequestParams setParams(PwdUpdateParam param) {
+			return new ApiData().new ApiRequestParams(param);
+		}
+	}
+
+	public static class ValidCodeApi {
+
+		public static final String URL = API_URL + "/getcode.asp";
+
+		public static ApiRequestParams setParams(ValidCodeParam param) {
+			return new ApiData().new ApiRequestParams(param);
+		}
+	}
+	// 2.3 找回密码
+	public static class PwdResetApi {
+
+		public static final String URL = API_URL + "/resetPwd";
+
+		public static ApiRequestParams setParams(PwdResetParam param) {
+			return new ApiData().new ApiRequestParams(param);
+		}
+	}
+
 }

@@ -345,6 +345,10 @@ public class Dian1Application extends Application {
 		}
 	}
 
+	public void exitApp() {
+
+	}
+
 	/**
 	 * Since 0.9.8.7 we embrace "bindless" PlayerService thus this adapter. No
 	 * big need of code refactoring, we just wrap sending intents around defined

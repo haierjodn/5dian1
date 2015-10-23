@@ -17,4 +17,6 @@
 
     <color name="green_transparent_50">#7f50d2c2</color>
 
+    <color name="divider_line">#ddd</color>
+
 </resources>
