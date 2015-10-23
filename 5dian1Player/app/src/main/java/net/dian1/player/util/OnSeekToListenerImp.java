@@ -19,17 +19,14 @@ public class OnSeekToListenerImp implements OnTouchListener {
 	PlayerEngine mPlayerEngine;
 	CountDownTimer mSeekTimer;
 	SeekToMode mSeekToMode;
-	PlayerActivity mPlayerActivity;
 	double mSeekAccelaration;
 	int stepOfSeekTo;
 
 	long startTime = 0;
 	long endTime = 0;
 
-	public OnSeekToListenerImp(PlayerActivity playerActivity,
-			PlayerEngine playerEngine, SeekToMode seekToMode) {
+	public OnSeekToListenerImp(PlayerEngine playerEngine, SeekToMode seekToMode) {
 
-		mPlayerActivity = playerActivity;
 		mPlayerEngine = playerEngine;
 		mSeekToMode = seekToMode;
 		

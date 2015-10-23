@@ -63,25 +63,6 @@ public class DownloadTask extends AsyncTask<Void, Integer, Boolean>{
 
 	@Override
 	public Boolean doInBackground(Void... params) {
-		// ogg support
-		if(mJob.getFormat().equals(JamendoGet2Api.ENCODING_OGG)){
-			Log.i(Dian1Application.TAG, "Getting path for ogg");
-			int track_id = mJob.getPlaylistEntry().getMusic().getId();
-			JamendoGet2Api api = new JamendoGet2ApiImpl();
-			try {
-				Music music[] = api.getTracksByTracksId(new int[]{track_id}, mJob.getFormat());
-				if(music == null || music.length != 1){
-					return false;
-				} else {
-					mJob.getPlaylistEntry().setMusic(music[0]);
-				}
-			} catch (JSONException e) {
-				return false;
-			} catch (WSError e) {
-				return false;
-			}
-		}
-		
 		try {
 			return downloadFile(mJob);
 		} catch (IOException e) {
@@ -104,6 +85,7 @@ public class DownloadTask extends AsyncTask<Void, Integer, Boolean>{
 		String mDestination = job.getDestination();
 
 		String url = mPlaylistEntry.getMusic().getFirstMusicNetUrl();
+		url = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
 		if(TextUtils.isEmpty(url)) {
 			return false;
 		}

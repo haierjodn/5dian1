@@ -94,7 +94,14 @@ public interface PlayerEngine {
 	 * 
 	 * @param playerEngineListener
 	 */
-	public void setListener(PlayerEngineListener playerEngineListener);
+	public void addListener(PlayerEngineListener playerEngineListener);
+
+	/**
+	 * Remove events listener
+	 *
+	 * @param playerEngineListener
+	 */
+	public void removeListener(PlayerEngineListener playerEngineListener);
 
 	/**
 	 * Set playback mode 

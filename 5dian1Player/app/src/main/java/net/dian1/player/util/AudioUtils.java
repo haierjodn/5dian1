@@ -58,6 +58,7 @@ public class AudioUtils {
                 net.dian1.player.api.Album album = new net.dian1.player.api.Album();
                 album.setId((int) music.getAlbumId());
                 album.setName(music.getAlbumName());
+                album.setImage(music.getPic());
                 //album.setPic();
                 net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[1];
                 net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);
@@ -78,6 +79,7 @@ public class AudioUtils {
         net.dian1.player.api.Album album = new net.dian1.player.api.Album();
         album.setId((int) music.getAlbumId());
         album.setName(music.getAlbumName());
+        album.setImage(music.getPic());
         //album.setPic();
         net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[1];
         net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);
@@ -95,6 +97,7 @@ public class AudioUtils {
         net.dian1.player.api.Album album = new net.dian1.player.api.Album();
         album.setId((int) music.getAlbumId());
         album.setName(music.getAlbumName());
+        album.setImage(music.getPic());
         //album.setPic();
         net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[1];
         net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);

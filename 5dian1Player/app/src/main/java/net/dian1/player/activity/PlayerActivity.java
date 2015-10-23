@@ -46,10 +46,13 @@ import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.dialog.AddToPlaylistDialog;
 import net.dian1.player.dialog.LoadingDialog;
 import net.dian1.player.dialog.LyricsDialog;
+import net.dian1.player.download.DownloadManager;
+import net.dian1.player.download.DownloadObserver;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
+import net.dian1.player.log.LogUtil;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineListener;
 import net.dian1.player.media.local.AudioLoaderTask;
@@ -73,6 +76,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
     private Playlist mPlaylist;
 
     private Album mCurrentAlbum;
+    private PlaylistEntry mPlaylistEntry;
 
     // XML layout
     private TextView mArtistTextView;
@@ -181,19 +185,29 @@ public class PlayerActivity extends Activity implements OnClickListener {
         findViewById(R.id.iv_back).setOnClickListener(this);
         findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
 
-        mProgressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+        mProgressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekbar, int progress, boolean fromUser) {
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar arg0) {
             }
+
             @Override
             public void onStopTrackingTouch(SeekBar arg0) {
                 int progress = mProgressBar.getProgress();
                 getPlayerEngine().seekTo(progress * 1000);
             }
         });
+        Dian1Application.getInstance().getDownloadManager().registerDownloadObserver(new DownloadObserver() {
+            @Override
+            public void onDownloadChanged(DownloadManager manager) {
+                int progress = manager.getAllDownloads().get(0).getProgress();
+                LogUtil.i("download progress:" + progress);
+            }
+        });
+
     }
 
     @Override
@@ -202,7 +216,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
         Log.i(Dian1Application.TAG, "PlayerActivity.onResume");
 
         // register UI listener
-        Dian1Application.getInstance().setPlayerEngineListener(mPlayerEngineListener);
+        Dian1Application.getInstance().addPlayerEngineListener(mPlayerEngineListener);
 
         // refresh UI
         if (getPlayerEngine() != null) {
@@ -258,7 +272,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
         super.onPause();
         Log.i(Dian1Application.TAG, "PlayerActivity.onPause");
         // unregister UI listener
-        Dian1Application.getInstance().setPlayerEngineListener(null);
+        Dian1Application.getInstance().removePlayerEngineListener(mPlayerEngineListener);
     }
 
     /**
@@ -345,13 +359,13 @@ public class PlayerActivity extends Activity implements OnClickListener {
      * next button action
      */
     private OnSeekToListenerImp mOnForwardTouchListener = new OnSeekToListenerImp(
-            this, getPlayerEngine(), SeekToMode.EForward);
+            getPlayerEngine(), SeekToMode.EForward);
 
     /**
      * prev button action
      */
     private OnSeekToListenerImp mOnRewindTouchListener = new OnSeekToListenerImp(
-            this, getPlayerEngine(), SeekToMode.ERewind);
+            getPlayerEngine(), SeekToMode.ERewind);
 
 
     /**
@@ -414,6 +428,9 @@ public class PlayerActivity extends Activity implements OnClickListener {
 
         @Override
         public void onClick(View v) {
+            if(mPlaylistEntry != null) {
+                Dian1Application.getInstance().getDownloadManager().download(mPlaylistEntry);
+            }
             //goto download
             DownloadActivity.launch(PlayerActivity.this);
             //TODO 直接下载某首歌
@@ -445,16 +462,18 @@ public class PlayerActivity extends Activity implements OnClickListener {
 
         @Override
         public void onTrackChanged(PlaylistEntry playlistEntry) {
+            mPlaylistEntry = playlistEntry;
             mCurrentAlbum = playlistEntry.getAlbum();
             if(mCurrentAlbum != null) {
                 mArtistTextView.setText("-- " + playlistEntry.getAlbum().getArtistName() + " --");
                 bitmapUtils.display(mCoverImageView, playlistEntry.getAlbum().getImage());
             }
             Music music = playlistEntry.getMusic();
-            String localAlbumPath = AudioLoaderTask.getAlbumArt(getContentResolver(), music.getAlbumId());
-            if(!TextUtils.isEmpty(localAlbumPath)) {
-                bitmapUtils.display(mCoverImageView, localAlbumPath);
+            String albumPath = AudioLoaderTask.getAlbumArt(getContentResolver(), music.getAlbumId());
+            if(TextUtils.isEmpty(albumPath)) {
+                albumPath = mCurrentAlbum.getImage();
             }
+            bitmapUtils.display(mCoverImageView, albumPath);
 
             mSongTextView.setText(playlistEntry.getMusic().getName());
             ((TextView) findViewById(R.id.tv_title)).setText(playlistEntry.getMusic().getName());

@@ -6,7 +6,10 @@
     android:id="@+id/ll_container"
     android:orientation="vertical">
 
-    <include layout="@layout/player_controller_layout_bottom" />
+    <!--<include layout="@layout/player_controller_layout_bottom" />-->
+    <net.dian1.player.widget.PlayerControllerBottom
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
 

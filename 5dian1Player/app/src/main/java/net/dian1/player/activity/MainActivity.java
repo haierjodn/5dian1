@@ -79,6 +79,7 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        fillHomeListView();
     }
 
     @Override
@@ -167,7 +168,6 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
 
     @Override
     protected void onResume() {
-        fillHomeListView();
         super.onResume();
     }
 

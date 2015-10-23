@@ -39,6 +39,8 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.util.List;
+
 /**
  * Background player
  * 
@@ -77,7 +79,7 @@ public class PlayerService extends Service{
 		// All necessary Application <-> Service pre-setup goes in here
 		
 		mPlayerEngine = new PlayerEngineImpl();
-		mPlayerEngine.setListener(mLocalEngineListener);
+		mPlayerEngine.addListener(mLocalEngineListener);
 
 		mTelephonyManager = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
 		mPhoneStateListener = new PhoneStateListener(){
@@ -106,14 +108,14 @@ public class PlayerService extends Service{
 		mWifiLock.setReferenceCounted(false);
 		
 		Dian1Application.getInstance().setConcretePlayerEngine(mPlayerEngine);
-		mRemoteEngineListener = Dian1Application.getInstance().fetchPlayerEngineListener();
+		mRemoteEngineListeners = Dian1Application.getInstance().fetchPlayerEngineListener();
 	}
 	
 	@Override
-	public void onStart(Intent intent, int startId) {
-		super.onStart(intent, startId);		
+	public int onStartCommand(Intent intent, int flag, int startId) {
+		super.onStartCommand(intent, flag, startId);
 		if(intent == null){
-			return;
+			return Service.START_NOT_STICKY;
 		}
 		
 		String action = intent.getAction();
@@ -121,12 +123,12 @@ public class PlayerService extends Service{
 		
 		if(action.equals(ACTION_STOP)){
 			stopSelfResult(startId);
-			return;
+			return Service.START_NOT_STICKY;
 		}
 		
 		if(action.equals(ACTION_BIND_LISTENER)){
-			mRemoteEngineListener = Dian1Application.getInstance().fetchPlayerEngineListener();
-			return;
+			mRemoteEngineListeners = Dian1Application.getInstance().fetchPlayerEngineListener();
+			return Service.START_NOT_STICKY;
 		}
 		
 		// we need to have up-to-date playlist if any of play,next,prev buttons is pressed
@@ -134,18 +136,19 @@ public class PlayerService extends Service{
 		
 		if(action.equals(ACTION_PLAY)){	
 			mPlayerEngine.play();
-			return;
+			return Service.START_NOT_STICKY;
 		}
 		
 		if(action.equals(ACTION_NEXT)){	
 			mPlayerEngine.next();
-			return;
+			return Service.START_NOT_STICKY;
 		}
 		
 		if(action.equals(ACTION_PREV)){	
 			mPlayerEngine.prev();
-			return;
+			return Service.START_NOT_STICKY;
 		}
+		return Service.START_NOT_STICKY;
 	}
 	
 	/**
@@ -160,6 +163,7 @@ public class PlayerService extends Service{
 	@Override
 	public void onDestroy() {
 		Log.i(Dian1Application.TAG, "Player Service onDestroy");
+		mPlayerEngine.removeListener(mLocalEngineListener);
 		Dian1Application.getInstance().setConcretePlayerEngine(null);
 		mPlayerEngine.stop();
 		mPlayerEngine = null;
@@ -172,7 +176,7 @@ public class PlayerService extends Service{
 	 * Hint: if necessary this can be extended to ArrayList of listeners in the future, though
 	 * I do not expect that it will be necessary
 	 */
-	private PlayerEngineListener mRemoteEngineListener;
+	private List<PlayerEngineListener> mRemoteEngineListeners;
 
 	/**
 	 * Sends notification to the status bar + passes other notifications to remote listeners
@@ -181,17 +185,20 @@ public class PlayerService extends Service{
 
 		@Override
 		public void onTrackBuffering(int percent) {
-			if(mRemoteEngineListener != null){
-				mRemoteEngineListener.onTrackBuffering(percent);
+			if(mRemoteEngineListeners != null){
+				for(int i=0; i < mRemoteEngineListeners.size(); i++) {
+					mRemoteEngineListeners.get(i).onTrackBuffering(percent);
+				}
 			}
-
 		}
 
 		@Override
 		public void onTrackChanged(PlaylistEntry playlistEntry) {
 			displayNotifcation(playlistEntry);
-			if(mRemoteEngineListener != null){
-				mRemoteEngineListener.onTrackChanged(playlistEntry);
+			if(mRemoteEngineListeners != null){
+				for(int i=0; i < mRemoteEngineListeners.size(); i++) {
+					mRemoteEngineListeners.get(i).onTrackChanged(playlistEntry);
+				}
 			}
 			
 			// Scrobbling
@@ -203,8 +210,10 @@ public class PlayerService extends Service{
 
 		@Override
 		public void onTrackProgress(int seconds) {
-			if(mRemoteEngineListener != null){
-				mRemoteEngineListener.onTrackProgress(seconds);
+			if(mRemoteEngineListeners != null){
+				for(int i=0; i < mRemoteEngineListeners.size(); i++) {
+					mRemoteEngineListeners.get(i).onTrackProgress(seconds);
+				}
 			}
 		}
 
@@ -215,8 +224,11 @@ public class PlayerService extends Service{
 			mWifiLock.release();
 			
 			mNotificationManager.cancel(PLAYING_NOTIFY_ID);
-			if(mRemoteEngineListener != null){
-				mRemoteEngineListener.onTrackStop();
+
+			if(mRemoteEngineListeners != null){
+				for(int i=0; i < mRemoteEngineListeners.size(); i++) {
+					mRemoteEngineListeners.get(i).onTrackStop();
+				}
 			}
 		}
 
@@ -225,10 +237,13 @@ public class PlayerService extends Service{
 			// prevent killing this service
 			// NO-OP setForeground(true);
 			mWifiLock.acquire();
-			
-			if(mRemoteEngineListener != null){
-				if( !mRemoteEngineListener.onTrackStart() )
-					return false;
+
+			if(mRemoteEngineListeners != null){
+				for(int i=0; i < mRemoteEngineListeners.size(); i++) {
+					if(!mRemoteEngineListeners.get(i).onTrackStart()) {
+						return false;
+					}
+				}
 			}
 
 			boolean wifiOnlyMode = PreferenceManager.getDefaultSharedPreferences(PlayerService.this).getBoolean("wifi_only", false);
@@ -250,15 +265,19 @@ public class PlayerService extends Service{
 
 		@Override
 		public void onTrackPause() {
-			if(mRemoteEngineListener != null){
-				mRemoteEngineListener.onTrackPause();
+			if(mRemoteEngineListeners != null){
+				for(int i=0; i < mRemoteEngineListeners.size(); i++) {
+					mRemoteEngineListeners.get(i).onTrackPause();
+				}
 			}
 		}
 
 		@Override
 		public void onTrackStreamError() {
-			if(mRemoteEngineListener != null){
-				mRemoteEngineListener.onTrackStreamError();
+			if(mRemoteEngineListeners != null){
+				for(int i=0; i < mRemoteEngineListeners.size(); i++) {
+					mRemoteEngineListeners.get(i).onTrackStreamError();
+				}
 			}
 		}
 

@@ -64,6 +64,7 @@ public class SplashActivity extends Activity {
 			public void onAnimationEnd(Animation animation) {
 				LoginActivity.startAction(SplashActivity.this);
 				//SplashActivity.this.finish();
+				finish();;
 			}
 		});
 

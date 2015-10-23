@@ -395,9 +395,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 				mediaPlayer.setDataSource(fileDescriptor, musicAFD.getStartOffset(), musicAFD.getLength());
 			} else {
 				//for testing play only
-				if(path.startsWith("http")) {
-					path = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
-				}
+				path = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
 				mediaPlayer.setDataSource(path);
 			}
 
@@ -531,8 +529,13 @@ public class PlayerEngineImpl implements PlayerEngine {
 	}
 
 	@Override
-	public void setListener(PlayerEngineListener playerEngineListener) {
+	public void addListener(PlayerEngineListener playerEngineListener) {
 		mPlayerEngineListener = playerEngineListener;
+	}
+
+	@Override
+	public void removeListener(PlayerEngineListener playerEngineListener) {
+		mPlayerEngineListener = null;
 	}
 
 	@Override

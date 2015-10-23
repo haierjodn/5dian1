@@ -44,6 +44,9 @@ import net.dian1.player.util.ImageCache;
 import net.dian1.player.download.DownloadManager;
 import net.dian1.player.download.DownloadManagerImpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Singleton with hooks to Player and Download Service
  * 
@@ -99,7 +102,7 @@ public class Dian1Application extends Application {
 	/**
 	 * Player engine listener
 	 */
-	private PlayerEngineListener mPlayerEngineListener;
+	private List<PlayerEngineListener> mPlayerEngineListeners;
 
 	/**
 	 * Stored in Application instance in case we destroy Player service
@@ -258,8 +261,17 @@ public class Dian1Application extends Application {
 	 * 
 	 * @param l
 	 */
-	public void setPlayerEngineListener(PlayerEngineListener l) {
-		getPlayerEngineInterface().setListener(l);
+	public void addPlayerEngineListener(PlayerEngineListener l) {
+		getPlayerEngineInterface().addListener(l);
+	}
+
+	/**
+	 * This function allows to remove listener to the concrete player engine
+	 *
+	 * @param l
+	 */
+	public void removePlayerEngineListener(PlayerEngineListener l) {
+		getPlayerEngineInterface().removeListener(l);
 	}
 
 	/**
@@ -268,8 +280,8 @@ public class Dian1Application extends Application {
 	 * 
 	 * @return
 	 */
-	public PlayerEngineListener fetchPlayerEngineListener() {
-		return mPlayerEngineListener;
+	public List<PlayerEngineListener> fetchPlayerEngineListener() {
+		return mPlayerEngineListeners;
 	}
 
 	/**
@@ -403,12 +415,22 @@ public class Dian1Application extends Application {
 		}
 
 		@Override
-		public void setListener(PlayerEngineListener playerEngineListener) {
-			mPlayerEngineListener = playerEngineListener;
+		public void addListener(PlayerEngineListener playerEngineListener) {
+			if(mPlayerEngineListeners == null) {
+				mPlayerEngineListeners = new ArrayList<>();
+			}
+			mPlayerEngineListeners.add(playerEngineListener);
 			// we do not want to set this listener if Service
 			// is not up and a new listener is null
-			if (mServicePlayerEngine != null || mPlayerEngineListener != null) {
+			if (mServicePlayerEngine != null || mPlayerEngineListeners != null) {
 				startAction(PlayerService.ACTION_BIND_LISTENER);
+			}
+		}
+
+		@Override
+		public void removeListener(PlayerEngineListener playerEngineListener) {
+			if(mPlayerEngineListeners.contains(playerEngineListener)) {
+				mPlayerEngineListeners.remove(playerEngineListener);
 			}
 		}
 
