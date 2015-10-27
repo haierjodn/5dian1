@@ -99,7 +99,7 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.v_listen_any:
-                PlayerActivity.launch(this);
+                PlayerActivity.launch(this, true);
                 //				Playlist playlist = new DatabaseImpl(HomeActivity.this).getFavorites();
 //				JamendroidApplication.getInstance().getPlayerEngine().openPlaylist(playlist);
 //				PlaylistActivity.launch(HomeActivity.this, true);

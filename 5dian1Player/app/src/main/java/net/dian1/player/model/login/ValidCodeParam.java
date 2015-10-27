@@ -11,8 +11,8 @@ public class ValidCodeParam extends ApiParam {
 
 	// id
 	public String loginId;
-	// 验证码类型发送短信的类型
-	// password更新密码, register 注册, phone 更新绑定手机
+	// 楠岃瘉鐮佺被鍨嬪彂閫佺煭淇＄殑绫诲瀷
+	// password鏇存柊瀵嗙爜, register 娉ㄥ唽, phone 鏇存柊缁戝畾鎵嬫満
 
 	public String type;
 

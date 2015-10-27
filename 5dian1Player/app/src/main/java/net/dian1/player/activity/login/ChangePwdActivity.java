@@ -85,7 +85,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 			String oldPassword = et_old.getText().toString();
 			String newPassword = et_new.getText().toString();
 			//showDialog();
-			// ĞŞ¸ÄÃÜÂë
+			// ä¿®æ”¹å¯†ç 
 			ApiManager.getInstance().send(new ApiRequest(this, ApiData.PwdUpdateApi.URL, DMSResponse.class,
 					ApiData.PwdUpdateApi.setParams(new PwdUpdateParam(oldPassword, newPassword)), new OnResultListener<DMSResponse>() {
 
@@ -129,7 +129,7 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 	}
 
 	/**
-	 * ¸üĞÂµÇÂ¼°´Å¥×´Ì¬
+	 * æ›´æ–°ç™»å½•æŒ‰é’®çŠ¶æ€
 	 */
 	private void updateLoginState() {
 		if (et_old.getText().toString().trim().length() == 0 || et_new.getText().toString().trim().length() == 0 || et_renew.getText().toString().trim().length() == 0) {

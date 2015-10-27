@@ -6,9 +6,9 @@ package net.dian1.player.model.common;
  */
 public class VersionLatest {
 
-	// ÊÇ·ñ´æÔÚĞÂ°æ±¾
+	// æ˜¯å¦å­˜åœ¨æ–°ç‰ˆæœ¬
 	public boolean hasUpdate;
 
-	// °æ±¾ĞÅÏ¢ Èç¹û²»ĞèÒª¸üĞÂ£¬ÄÚÈİÎª¿Õ
+	// ç‰ˆæœ¬ä¿¡æ¯ å¦‚æœä¸éœ€è¦æ›´æ–°ï¼Œå†…å®¹ä¸ºç©º
 	public VersionInfo versionInfo;
 }

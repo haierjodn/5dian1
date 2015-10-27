@@ -44,18 +44,16 @@ public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View row=convertView;
+		View row = convertView;
 		ViewHolder holder;
-		if (row==null) {
-			LayoutInflater inflater = mContext.getLayoutInflater();
-			row=inflater.inflate(R.layout.download_row, null);
+		if (row == null) {
+			row = LayoutInflater.from(mContext).inflate(R.layout.download_row, null);
 			holder = new ViewHolder();
 			holder.songName = (TextView)row.findViewById(R.id.TrackRowName);
 			holder.songArtistAlbum = (TextView)row.findViewById(R.id.TrackRowArtistAlbum);
 			holder.songProgressText = (TextView)row.findViewById(R.id.TrackRowProgress);
 			holder.songProgressText.setVisibility(type == TYPE_COMPLETED ? View.INVISIBLE : View.VISIBLE);
 			row.setTag(holder);
-			mContext.registerForContextMenu(row);
 		}
 		else{
 			holder = (ViewHolder) row.getTag();

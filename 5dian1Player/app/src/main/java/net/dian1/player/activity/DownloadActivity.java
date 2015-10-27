@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -46,6 +47,7 @@ import net.dian1.player.download.DownloadJob;
 import net.dian1.player.download.DownloadManager;
 import net.dian1.player.download.DownloadObserver;
 import net.dian1.player.media.PlayerEngine;
+import net.dian1.player.util.AudioUtils;
 import net.dian1.player.util.MockUtils;
 
 import java.util.ArrayList;
@@ -63,6 +65,8 @@ public class DownloadActivity extends BaseActivity implements DownloadObserver,
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
             //updateListView(mDownloadSpinner.getSelectedItemPosition());
+            downloadedJobAdapter.setList(mDownloadManager.getCompletedDownloads());
+            downloadingJobAdapter.setList(mDownloadManager.getQueuedDownloads());
         }
     };
 
@@ -120,7 +124,7 @@ public class DownloadActivity extends BaseActivity implements DownloadObserver,
     }
 
     private void initView() {
-        setupHeader("下载管理");
+        setupHeader(getString(R.string.download_manager));
         findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
 
         cbDownloaded = (RadioButton) findViewById(R.id.cb_downloaded);
@@ -190,17 +194,17 @@ public class DownloadActivity extends BaseActivity implements DownloadObserver,
     private void setupListView() {
         downloadedListView = new ListView(this);
         downloadedJobAdapter = new DownloadJobAdapter(this, DownloadJobAdapter.TYPE_COMPLETED);
-        //downloadedJobAdapter.setList(mDownloadManager.getCompletedDownloads());
-        downloadedJobAdapter.setList(MockUtils.buildDownloadListSample());
+
+//        downloadedJobAdapter.setList(MockUtils.buildDownloadListSample());
         downloadedListView.setAdapter(downloadedJobAdapter);
-        TextView tvEmpty = new TextView(this);
-        tvEmpty.setText("EMPTY VIEW 1");
-        downloadedListView.setEmptyView(tvEmpty);
+        //TextView tvEmpty = new TextView(this);
+        //tvEmpty.setText("EMPTY VIEW 1");
+        //downloadedListView.setEmptyView(tvEmpty);
 
         downloadingListView = new ListView(this);
         downloadingJobAdapter = new DownloadJobAdapter(this, DownloadJobAdapter.TYPE_DOWNLOADING);
-        //downloadingJobAdapter.setList(mDownloadManager.getQueuedDownloads());
-        downloadingJobAdapter.setList(MockUtils.buildDownloadListSample());
+
+//        downloadingJobAdapter.setList(MockUtils.buildDownloadListSample());
         downloadingListView.setAdapter(downloadingJobAdapter);
 //        TextView tvEmpty2 = new TextView(this);
 //        tvEmpty2.setText("EMPTY VIEW 2");
@@ -210,6 +214,23 @@ public class DownloadActivity extends BaseActivity implements DownloadObserver,
 //        tvEmpty2.setVisibility(View.GONE);
 //        ((ViewGroup)downloadingListView.getParent()).addView(tvEmpty2);
 //        downloadingListView.setEmptyView(tvEmpty2);
+
+        downloadedJobAdapter.setList(mDownloadManager.getCompletedDownloads());
+        downloadingJobAdapter.setList(mDownloadManager.getQueuedDownloads());
+        downloadedListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PlayerActivity.launch(DownloadActivity.this, AudioUtils.buildPlaylistFromDownloadJob(
+                        mDownloadManager.getCompletedDownloads(), position));
+            }
+        });
+        downloadingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PlayerActivity.launch(DownloadActivity.this, AudioUtils.buildPlaylistFromDownloadJob(
+                        mDownloadManager.getCompletedDownloads(), position));
+            }
+        });
     }
 
     @Override

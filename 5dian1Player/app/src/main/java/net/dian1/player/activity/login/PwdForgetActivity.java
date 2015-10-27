@@ -32,12 +32,12 @@ import net.dian1.player.model.login.ValidCodeParam;
 public class PwdForgetActivity extends BaseActivity implements View.OnClickListener{
 
 	/**
-	 * µ¹¼ÆÊ±
+	 * å€’è®¡æ—¶
 	 */
 	public static final int FORGET_TIME_PROCESS_MESSAGE = 0x0002;
 
 	/**
-	 * µ¹¼ÆÊ±½áÊø
+	 * å€’è®¡æ—¶ç»“æŸ
 	 */
 	public static final int FORGET_TIME_FINISH_MESSAGE = 0x0001;
 
@@ -107,7 +107,7 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 		case R.id.tv_confirm:
 			String pwd = et_pwd.getText().toString().trim();
 			String code = et_code.getText().toString().trim();
-			//½¡×³ĞÔ µ«ÊÇÃ²ËÆÃ»Ê²Ã´ÂÑÓÃ
+			//å¥å£®æ€§ ä½†æ˜¯è²Œä¼¼æ²¡ä»€ä¹ˆåµç”¨
 			if (TextUtils.isEmpty(phone)) {
 				showToastSafe(R.string.forget_phone_empty, Toast.LENGTH_SHORT);
 				return;
@@ -156,7 +156,7 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 				public void onResult(Object response) {
 					//dismissDialog();
 					Toast.makeText(ctx, R.string.forget_sms_code, Toast.LENGTH_SHORT).show();
-					// ÑéÖ¤Âëµ¹¼ÆÊ±
+					// éªŒè¯ç å€’è®¡æ—¶
 					new Thread(new Runnable() {
 
 						@Override
@@ -188,7 +188,7 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 	}
 
 	/**
-	 * EDITTEXT¼àÌıÆ÷
+	 * EDITTEXTç›‘å¬å™¨
 	 */
 	class StateTextWatcher implements TextWatcher {
 
@@ -226,7 +226,7 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 	}
 
 	/**
-	 * ¸üĞÂµÇÂ¼°´Å¥×´Ì¬
+	 * æ›´æ–°ç™»å½•æŒ‰é’®çŠ¶æ€
 	 */
 	private void updateLoginState() {
 		if (et_phone.getText().toString().trim().length() == 0 || et_code.getText().toString().trim().length() == 0 || et_pwd.getText().toString().trim().length() == 0) {

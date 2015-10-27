@@ -6,28 +6,28 @@ package net.dian1.player.model.common;
  */
 public class VersionInfo {
 
-	// Æ½Ì¨±ê¼Ç
+	// å¹³å°æ ‡è®°
 	public String platform;
 
-	// °æ±¾ºÅ
+	// ç‰ˆæœ¬å·
 	public String versionCode;
 
-	// °æ±¾Ãû³Æ
+	// ç‰ˆæœ¬åç§°
 	public String versionName;
 
-	// ÊÇ·ñÇ¿ÖÆ¸üĞÂ
+	// æ˜¯å¦å¼ºåˆ¶æ›´æ–°
 	public boolean forcedUpdate;
 
-	// ÏÂÔØµØÖ·
+	// ä¸‹è½½åœ°å€
 	public String downloadPath;
 
-	// Éı¼¶ËµÃ÷
+	// å‡çº§è¯´æ˜
 	public String explain;
 
-	// °æ±¾·¢²¼Ê±¼ä
+	// ç‰ˆæœ¬å‘å¸ƒæ—¶é—´
 	public long createDate;
 
-	// ÊÇ·ñµ¯³öÉı¼¶¿ò
+	// æ˜¯å¦å¼¹å‡ºå‡çº§æ¡†
 	public boolean popup;
 
 }

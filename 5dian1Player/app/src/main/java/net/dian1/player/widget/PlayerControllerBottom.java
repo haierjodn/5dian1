@@ -1,6 +1,7 @@
 package net.dian1.player.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.lidroid.xutils.BitmapUtils;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
+import net.dian1.player.activity.PlayerActivity;
 import net.dian1.player.api.Album;
 import net.dian1.player.api.Music;
 import net.dian1.player.api.PlaylistEntry;
@@ -56,9 +58,10 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
         imPrev.setOnTouchListener(onPrevTouchListener);
         imNext.setOnTouchListener(onNextTouchListener);
         imPlay.setOnClickListener(this);
+        ivCover.setOnClickListener(this);
         bitmapUtils = new BitmapUtils(getContext());
-        bitmapUtils.configDefaultLoadingImage(R.drawable.icon_portrait);// 默认背景图片
-        bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon_portrait);// 加载失败图片
+        bitmapUtils.configDefaultLoadingImage(R.drawable.player_albumcover_default);// 默认背景图片
+        bitmapUtils.configDefaultLoadFailedImage(R.drawable.player_albumcover_default);// 加载失败图片
     }
 
     private PlayerEngine getPlayerEngine() {
@@ -86,6 +89,9 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
                 } else {
                     getPlayerEngine().play();
                 }
+                break;
+            case R.id.iv_cover:
+                PlayerActivity.launch(getContext(), false);
                 break;
         }
     }

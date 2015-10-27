@@ -28,6 +28,7 @@ import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
+import net.dian1.player.log.LogUtil;
 import net.dian1.player.model.Music;
 import net.dian1.player.util.AudioUtils;
 
@@ -378,6 +379,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 		
 		// try to setup local path
 		String path = playlistEntry.getPlayUrl();
+		LogUtil.d("Player path:" + path);
 		// some albums happen to contain empty stream url, notify of error, abort playback
 		if(TextUtils.isEmpty(path)){
 			if(mPlayerEngineListener != null){
@@ -395,7 +397,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 				mediaPlayer.setDataSource(fileDescriptor, musicAFD.getStartOffset(), musicAFD.getLength());
 			} else {
 				//for testing play only
-				path = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
+				//path = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
 				mediaPlayer.setDataSource(path);
 			}
 

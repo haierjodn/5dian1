@@ -111,8 +111,9 @@ public class PlayerActivity extends Activity implements OnClickListener {
         c.startActivity(intent);
     }
 
-    public static void launch(Context c) {
+    public static void launch(Context c, boolean startPlay) {
         Intent intent = new Intent(c, PlayerActivity.class);
+        intent.putExtra("toPlay", startPlay);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         c.startActivity(intent);
     }
@@ -126,6 +127,53 @@ public class PlayerActivity extends Activity implements OnClickListener {
         Log.i(Dian1Application.TAG, "PlayerActivity.onCreate");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.player);
+
+        bitmapUtils = new BitmapUtils(this);
+        bitmapUtils.configDefaultLoadingImage(R.drawable.player_albumcover_default);// 默认背景图片
+        bitmapUtils.configDefaultLoadFailedImage(R.drawable.player_albumcover_default);// 加载失败图片
+
+        initView();
+
+        handleIntent();
+
+        Dian1Application.getInstance().getDownloadManager().registerDownloadObserver(new DownloadObserver() {
+            @Override
+            public void onDownloadChanged(DownloadManager manager) {
+                int progress = manager.getAllDownloads().get(0).getProgress();
+                LogUtil.i("download progress:" + progress);
+            }
+        });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(Dian1Application.TAG, "PlayerActivity.onResume");
+
+        // register UI listener
+        Dian1Application.getInstance().addPlayerEngineListener(mPlayerEngineListener);
+
+        //refresh shuffle and repeat icons
+        if (getPlayerEngine().getPlaylist() != null) {
+            switch (getPlayerEngine().getPlaylist().getPlaylistPlaybackMode()) {
+                case NORMAL:
+                    mShuffleImageButton.setImageResource(R.drawable.player_repeat);
+                    break;
+                case REPEAT:
+                    mShuffleImageButton.setImageResource(R.drawable.player_repeat_one);
+                    break;
+                case SHUFFLE:
+                    mShuffleImageButton.setImageResource(R.drawable.player_random);
+                    break;
+                case SHUFFLE_AND_REPEAT:
+                    mShuffleImageButton.setImageResource(R.drawable.player_random);
+                    break;
+            }
+        }
+    }
+
+    private void initView() {
         // XML binding
         mBetterRes = getResources().getString(R.string.better_res);
 
@@ -143,16 +191,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
         mCoverImageView.setOnClickListener(mCoverOnClickListener);
 
         mProgressBar = (SeekBar) findViewById(R.id.ProgressBar);
-
-        //mReflectableLayout = (ReflectableLayout) findViewById(R.id.ReflectableLayout);
-        //mReflectiveSurface = (ReflectiveSurface) findViewById(R.id.ReflectiveSurface);
-
-        //if (mReflectableLayout != null && mReflectiveSurface != null) {
-            //mReflectableLayout.setReflectiveSurface(mReflectiveSurface);
-            //mReflectiveSurface.setReflectableLayout(mReflectableLayout);
-        //}
-
-        handleIntent();
 
         mPlayImageButton = (ImageButton) findViewById(R.id.PlayImageButton);
         mPlayImageButton.setOnClickListener(mPlayOnClickListener);
@@ -174,14 +212,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
 
         mCurrentAlbum = null;
 
-        //mGesturesOverlayView = (GestureOverlayView) findViewById(R.id.gestures);
-        //mGesturesOverlayView.addOnGesturePerformedListener(Dian1Application
-        //        .getInstance().getPlayerGestureHandler());
-
-        bitmapUtils = new BitmapUtils(this);
-        bitmapUtils.configDefaultLoadingImage(R.drawable.icon_portrait);// 默认背景图片
-        bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon_portrait);// 加载失败图片
-
         findViewById(R.id.iv_back).setOnClickListener(this);
         findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
 
@@ -200,68 +230,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
                 getPlayerEngine().seekTo(progress * 1000);
             }
         });
-        Dian1Application.getInstance().getDownloadManager().registerDownloadObserver(new DownloadObserver() {
-            @Override
-            public void onDownloadChanged(DownloadManager manager) {
-                int progress = manager.getAllDownloads().get(0).getProgress();
-                LogUtil.i("download progress:" + progress);
-            }
-        });
-
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(Dian1Application.TAG, "PlayerActivity.onResume");
-
-        // register UI listener
-        Dian1Application.getInstance().addPlayerEngineListener(mPlayerEngineListener);
-
-        // refresh UI
-        if (getPlayerEngine() != null) {
-            // the playlist is empty, abort playback, show message
-            if (getPlayerEngine().getPlaylist() == null || getPlayerEngine().getPlaylist().getSelectedTrack() == null) {
-                //if playlist comes from link service, don't close activity and wait for playlist
-                if (mUriLoadingDialog != null) {
-                    mUriLoadingDialog = null;
-
-                } else {
-                    Toast.makeText(this, R.string.no_tracks, Toast.LENGTH_LONG).show();
-                    finish();
-                }
-
-                return;
-            }
-            mPlayerEngineListener.onTrackChanged(getPlayerEngine().getPlaylist().getSelectedTrack());
-        }
-
-        //refresh shuffle and repeat icons
-        if (getPlayerEngine().getPlaylist() != null) {
-            switch (getPlayerEngine().getPlaylist().getPlaylistPlaybackMode()) {
-                case NORMAL:
-                    mShuffleImageButton.setImageResource(R.drawable.player_repeat);
-                    //ibDownload.setImageResource(R.drawable.player_repeat_off);
-                    break;
-                case REPEAT:
-                    mShuffleImageButton.setImageResource(R.drawable.player_repeat_one);
-                    //ibDownload.setImageResource(R.drawable.player_repeat_on);
-                    break;
-                case SHUFFLE:
-                    mShuffleImageButton.setImageResource(R.drawable.player_random);
-                    //ibDownload.setImageResource(R.drawable.player_repeat_off);
-                    break;
-                case SHUFFLE_AND_REPEAT:
-                    mShuffleImageButton.setImageResource(R.drawable.player_random);
-                    //ibDownload.setImageResource(R.drawable.player_repeat_on);
-                    break;
-            }
-        }
-
-        //boolean gesturesEnabled = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("gestures", true);
-        //mGesturesOverlayView.setEnabled(gesturesEnabled);
-    }
-
 
     public void doCloseActivity() {
         finish();
@@ -433,25 +402,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
             }
             //goto download
             DownloadActivity.launch(PlayerActivity.this);
-            //TODO 直接下载某首歌
-//            switch (getPlayerEngine().getPlaybackMode()) {
-//                case NORMAL:
-//                    getPlayerEngine().setPlaybackMode(PlaylistPlaybackMode.REPEAT);
-//                    ibDownload.setImageResource(R.drawable.player_repeat_one);
-//                    break;
-//                case REPEAT:
-//                    getPlayerEngine().setPlaybackMode(PlaylistPlaybackMode.NORMAL);
-//                    ibDownload.setImageResource(R.drawable.player_repeat);
-//                    break;
-//                case SHUFFLE:
-//                    getPlayerEngine().setPlaybackMode(PlaylistPlaybackMode.SHUFFLE_AND_REPEAT);
-//                    ibDownload.setImageResource(R.drawable.player_random);
-//                    break;
-//                case SHUFFLE_AND_REPEAT:
-//                    getPlayerEngine().setPlaybackMode(PlaylistPlaybackMode.SHUFFLE);
-//                    ibDownload.setImageResource(R.drawable.player_random);
-//                    break;
-//            }
         }
     };
 
@@ -462,6 +412,9 @@ public class PlayerActivity extends Activity implements OnClickListener {
 
         @Override
         public void onTrackChanged(PlaylistEntry playlistEntry) {
+            if(playlistEntry == null) {
+                return;
+            }
             mPlaylistEntry = playlistEntry;
             mCurrentAlbum = playlistEntry.getAlbum();
             if(mCurrentAlbum != null) {
@@ -540,10 +493,16 @@ public class PlayerActivity extends Activity implements OnClickListener {
         Playlist playlist = null;
         if (intent != null) {
             playlist = (Playlist) intent.getSerializableExtra("playlist");
+            boolean toPlay = intent.getBooleanExtra("toPlay", false);
             if(playlist != null) {
                 setupPlaylist(playlist);
             } else {
-                downloadPlaylist();
+                if (getPlayerEngine() != null && getPlayerEngine().getPlaylist() != null) {
+                    mPlayerEngineListener.onTrackChanged(getPlayerEngine().getPlaylist().getSelectedTrack());
+                }
+                if (toPlay && !getPlayerEngine().isPlaying()) {
+                    downloadPlaylist();
+                }
             }
         }
     }
@@ -596,10 +555,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
         ArtistActivity.launch(this, getPlayerEngine().getPlaylist().getSelectedTrack().getAlbum().getArtistName());
     }
 
-    public void playlistClickHandler(View target) {
-        PlaylistActivity.launch(this, false);
-    }
-
     public void homeClickHandler(View target) {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -619,11 +574,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
         startActivity(intent);
     }
 
-    public void lyricsOnClick(View v) {
-        Music music = getPlayerEngine().getPlaylist().getSelectedTrack().getMusic();
-        new LyricsDialog(PlayerActivity.this, music).show();
-    }
-
     public void downloadOnClick(View v) {
         AlertDialog alertDialog = new AlertDialog.Builder(PlayerActivity.this)
                 .setTitle(R.string.download_track_q)
@@ -637,16 +587,5 @@ public class PlayerActivity extends Activity implements OnClickListener {
 
         alertDialog.show();
     }
-
-    public void shareOnClick(View v) {
-        if (mPlaylist == null || mPlaylist.getSelectedTrack() == null) {
-            return;
-        }
-        PlaylistEntry entry = mPlaylist.getSelectedTrack();
-        Helper.share(PlayerActivity.this, entry);
-    }
-
-
-
 
 }

@@ -5,6 +5,7 @@ import net.dian1.player.api.Music;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.PlaylistAny;
 import net.dian1.player.api.PlaylistEntry;
+import net.dian1.player.download.DownloadJob;
 import net.dian1.player.media.PlayerEngine;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class AudioUtils {
         engineMusic.setName(music.getName());
         engineMusic.setId((int) music.getId());
         engineMusic.setDuration(192);
+        engineMusic.setArtist(music.getSinger());
         engineMusic.setSongUrlList(music.getSongUrlList());
         return engineMusic;
     }
@@ -98,6 +100,8 @@ public class AudioUtils {
         album.setId((int) music.getAlbumId());
         album.setName(music.getAlbumName());
         album.setImage(music.getPic());
+        album.setArtistName(music.getSinger());
+
         //album.setPic();
         net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[1];
         net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);
@@ -106,6 +110,19 @@ public class AudioUtils {
         playlistEntry.setMusic(music1);
         playlistEntry.setAlbum(album);
         return playlistEntry;
+    }
+
+    public static Playlist buildPlaylistFromDownloadJob(List<DownloadJob> downloadJobs, int positionSelected) {
+        Playlist playlist = null;
+        if(downloadJobs != null && downloadJobs.size() > 0) {
+            playlist = new Playlist();
+            int size = downloadJobs.size();
+            for(int x=0, y = positionSelected; x < size; x++, y++) {
+                DownloadJob job = downloadJobs.get(y%size);
+                playlist.addPlaylistEntry(job.getPlaylistEntry());
+            }
+        }
+        return playlist;
     }
 
 }

@@ -9,13 +9,13 @@ import net.dian1.player.http.ApiParam;
  */
 public class PwdResetParam extends ApiParam {
 
-	// ÊÖ»úºÅÂë
+	// æ‰‹æœºå·ç 
 	public String loginId;
-	// ÃÜÂë ¿Í»§¶Ë½øĞĞmd5¼ÓÃÜºó£¬´«¸ø·şÎñ¶Ë
+	// å¯†ç  å®¢æˆ·ç«¯è¿›è¡Œmd5åŠ å¯†åï¼Œä¼ ç»™æœåŠ¡ç«¯
 
 	public String pwd;
 
-	// ÑéÖ¤Âë
+	// éªŒè¯ç 
 	public String authCode;
 
 	public PwdResetParam(String loginId, String pwd, String authCode) {

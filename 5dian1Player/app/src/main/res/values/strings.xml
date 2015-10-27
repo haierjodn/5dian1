@@ -191,5 +191,6 @@
     <string name="forget_sms_code">验证码已发送至你手机，请注意查收...</string>
     <string name="forget_sms_code_false">获取验证码失败，请重试...</string>
     <string name="forget_reset_success">重置密码成功</string>
+    <string name="download_manager">下载管理</string>
 
 </resources>

@@ -9,10 +9,10 @@ import net.dian1.player.http.ApiParam;
  */
 public class PwdUpdateParam extends ApiParam {
 
-	// ¾ÉÃÜÂë
+	// æ—§å¯†ç 
 	public String pwd;
 
-	// ĞÂÃÜÂë
+	// æ–°å¯†ç 
 	public String newPwd;
 
 	public PwdUpdateParam(String pwd, String newPwd) {

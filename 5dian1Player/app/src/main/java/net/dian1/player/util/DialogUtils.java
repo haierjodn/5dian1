@@ -21,7 +21,7 @@ import net.dian1.player.model.common.VersionLatest;
 public class DialogUtils {
 
     /**
-     * APPÉı¼¶µ¯³ö¿ò
+     * APPå‡çº§å¼¹å‡ºæ¡†
      *
      * @param ctx
      * @param response
