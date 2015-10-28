@@ -184,8 +184,8 @@ public class RepoActivity extends Activity implements OnClickListener {
 		private void showImage(ImageView imageView, String imageUrl) {
 			if (!TextUtils.isEmpty(imageUrl)) {
 				BitmapUtils bitmapUtils = new BitmapUtils(RepoActivity.this);
-				bitmapUtils.configDefaultLoadingImage(R.drawable.icon_splash);// 默认背景图片
-				bitmapUtils.configDefaultLoadFailedImage(R.drawable.icon_splash);// 加载失败图片
+				bitmapUtils.configDefaultLoadingImage(R.drawable.player_albumcover_default);// 默认背景图片
+				bitmapUtils.configDefaultLoadFailedImage(R.drawable.player_albumcover_default);// 加载失败图片
 				bitmapUtils.display(imageView, imageUrl);
 			}
 		}

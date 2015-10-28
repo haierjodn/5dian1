@@ -330,7 +330,7 @@ public class PlayerService extends Service{
 		String notificationMessage = playlistEntry.getMusic().getName() + " - " + artist;
 
 		Notification notification = new Notification(
-				R.drawable.stat_notify, notificationMessage, System.currentTimeMillis() );
+				R.drawable.noti_small, notificationMessage, System.currentTimeMillis() );
 
 		PendingIntent contentIntent = PendingIntent.getActivity( this, 0,
 				new Intent( this, PlayerActivity.class ), 0);

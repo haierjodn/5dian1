@@ -17,6 +17,7 @@
 package net.dian1.player.download;
 
 import android.os.Environment;
+import android.text.TextUtils;
 
 import net.dian1.player.api.JamendoGet2Api;
 import net.dian1.player.api.PlaylistEntry;
@@ -40,9 +41,19 @@ public class DownloadHelper {
 	}
 
 	public static String getRelativePath(PlaylistEntry playlistEntry){
-		return String.format("/%s/%s", 
-				playlistEntry.getAlbum().getArtistName(),
-				playlistEntry.getAlbum().getName());
+		String artist = playlistEntry.getAlbum().getArtistName();
+		if(TextUtils.isEmpty(artist)) {
+			artist = playlistEntry.getMusic().getArtist();
+		}
+		String albumName = playlistEntry.getAlbum().getName();
+		String path = "";
+		if(!TextUtils.isEmpty(artist)) {
+			path += "/" + artist;
+		}
+		if(!TextUtils.isEmpty(albumName)) {
+			path += "/" + albumName;
+		}
+		return path;
 	}
 
 	public static String getAbsolutePath(PlaylistEntry playlistEntry, String destination){

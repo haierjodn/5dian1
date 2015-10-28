@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/icon_splash" />
+        android:src="@drawable/logo" />
 
 
     <RelativeLayout

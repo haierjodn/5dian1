@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.json.JSONException;
 
@@ -47,7 +48,7 @@ import android.util.Log;
  * 
  * @author Lukasz Wisniewski
  */
-public class DownloadTask extends AsyncTask<Void, Integer, Boolean>{
+public class DownloadTask extends AsyncTask<Void, Integer, Integer>{
 
 	DownloadJob mJob;
 	
@@ -62,18 +63,18 @@ public class DownloadTask extends AsyncTask<Void, Integer, Boolean>{
 	}
 
 	@Override
-	public Boolean doInBackground(Void... params) {
+	public Integer doInBackground(Void... params) {
 		try {
-			return downloadFile(mJob);
+			return downloadFile(mJob) ? 0 : 2;
 		} catch (IOException e) {
 			Log.e(Dian1Application.TAG, "Download file faild reason-> " + e.getMessage());
-			return false;
+			return 1;
 		}
 	}
 
 	@Override
-	public void onPostExecute(Boolean result) {
-		mJob.notifyDownloadEnded();
+	public void onPostExecute(Integer result) {
+		mJob.notifyDownloadEnded(result);
 		super.onPostExecute(result);
 	}
 
@@ -85,16 +86,19 @@ public class DownloadTask extends AsyncTask<Void, Integer, Boolean>{
 		String mDestination = job.getDestination();
 
 		String url = mPlaylistEntry.getMusic().getFirstMusicNetUrl();
-		url = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
+		//url = "http://room2.5dian1.net/低音环绕·极品女声1/15.我和草原有个约定.mp3";
 		if(TextUtils.isEmpty(url)) {
 			return false;
 		}
 		URL u = new URL(url);
-		HttpURLConnection c = (HttpURLConnection) u.openConnection();
-		c.setRequestMethod("GET");
-		c.setDoOutput(true);
-		c.connect();
-		job.setTotalSize(c.getContentLength());
+		HttpURLConnection connection = (HttpURLConnection) u.openConnection();
+		connection.setRequestMethod("GET");
+		//c.setDoOutput(true);
+		//c.setDoInput(true);
+		connection.setRequestProperty("Accept", "*/*");
+		connection.setRequestProperty("Content-Type", "audio/mpeg");
+		connection.connect();
+		job.setTotalSize(connection.getContentLength());
 
 		Log.i(Dian1Application.TAG, "creating file");
 		
@@ -114,29 +118,29 @@ public class DownloadTask extends AsyncTask<Void, Integer, Boolean>{
 			return false;
 		}
 
-		FileOutputStream f = new FileOutputStream(new File(path, fileName));
+		File outFile = new File(path, fileName);
 
+		FileOutputStream fos = new FileOutputStream(outFile);
 
-		InputStream in = c.getInputStream();
+		InputStream in = connection.getInputStream();
 
 		if(in == null){
 			// When InputStream is a NULL
-			f.close();
+			fos.close();
 			return false;
 		}
 
 		byte[] buffer = new byte[1024];
 		int lenght = 0;
 		while ( (lenght = in.read(buffer)) > 0 ) {
-			f.write(buffer,0, lenght);
+			fos.write(buffer, 0, lenght);
 			job.setDownloadedSize(job.getDownloadedSize()+lenght);
 		}
+		fos.close();
 
-		f.close();
-		
-		downloadCover(job);
+		mPlaylistEntry.getMusic().getFirstMusicUrlInfo().setLocalUrl(outFile.getAbsolutePath());
+		//downloadCover(job);
 		return true;
-		
 	}
 	
 	

@@ -224,13 +224,6 @@ public class DownloadActivity extends BaseActivity implements DownloadObserver,
                         mDownloadManager.getCompletedDownloads(), position));
             }
         });
-        downloadingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PlayerActivity.launch(DownloadActivity.this, AudioUtils.buildPlaylistFromDownloadJob(
-                        mDownloadManager.getCompletedDownloads(), position));
-            }
-        });
     }
 
     @Override

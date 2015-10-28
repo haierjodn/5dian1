@@ -40,6 +40,9 @@ public class DownloadJob {
 	private int mTotalSize;
 	private int mDownloadedSize;
 
+	//0: no error, 1:network, ....
+	private int errorCode;
+
 	private int mStartId;
 
 	private String mFormat;
@@ -114,6 +117,14 @@ public class DownloadJob {
 		return mTotalSize;
 	}
 
+	public int getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
+	}
+
 	public void setDownloadedSize(int downloadedSize) {
 		this.mDownloadedSize = downloadedSize;
 		int oldProgress = mProgress;
@@ -128,16 +139,23 @@ public class DownloadJob {
 	}
 
 	public void notifyDownloadStarted(){
-		if(mListener != null)
+		if(mListener != null) {
 			mListener.downloadStarted();
+		}
 		mProgress = 0;
 	}
 	
-	public void notifyDownloadEnded(){
-		if(!mDownloadTask.isCancelled()){
-			if(mListener != null)
+	public void notifyDownloadEnded(int errorCode){
+		if(errorCode <= 0 && !mDownloadTask.isCancelled()){
+			if(mListener != null) {
 				mListener.downloadEnded(this);
+			}
 			mProgress = 100;
+		} else {
+			this.errorCode = errorCode;
+			if(mListener != null) {
+				mListener.downloadEnded(this);
+			}
 		}
 	}
 

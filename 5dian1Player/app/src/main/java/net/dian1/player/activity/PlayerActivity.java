@@ -139,8 +139,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
         Dian1Application.getInstance().getDownloadManager().registerDownloadObserver(new DownloadObserver() {
             @Override
             public void onDownloadChanged(DownloadManager manager) {
-                int progress = manager.getAllDownloads().get(0).getProgress();
-                LogUtil.i("download progress:" + progress);
+
             }
         });
 
@@ -426,6 +425,9 @@ public class PlayerActivity extends Activity implements OnClickListener {
             if(TextUtils.isEmpty(albumPath)) {
                 albumPath = mCurrentAlbum.getImage();
             }
+            if(TextUtils.isEmpty(albumPath)) {
+                albumPath = music.getAlbum();
+            }
             bitmapUtils.display(mCoverImageView, albumPath);
 
             mSongTextView.setText(playlistEntry.getMusic().getName());
@@ -496,6 +498,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
             boolean toPlay = intent.getBooleanExtra("toPlay", false);
             if(playlist != null) {
                 setupPlaylist(playlist);
+                mPlayerEngineListener.onTrackChanged(getPlayerEngine().getPlaylist().getSelectedTrack());
             } else {
                 if (getPlayerEngine() != null && getPlayerEngine().getPlaylist() != null) {
                     mPlayerEngineListener.onTrackChanged(getPlayerEngine().getPlaylist().getSelectedTrack());

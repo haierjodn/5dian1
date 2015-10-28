@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal|bottom"
+    android:gravity="center"
     android:orientation="vertical"
     android:id="@+id/splashlayout"
     android:background="@color/common_orange">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginBottom="40dp"
-        android:src="@drawable/icon_splash"
+        android:src="@drawable/logo"
         android:id="@+id/tv_logo"/>
 
 </LinearLayout>

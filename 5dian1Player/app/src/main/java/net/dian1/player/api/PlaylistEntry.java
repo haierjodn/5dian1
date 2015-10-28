@@ -64,6 +64,10 @@ public class PlaylistEntry implements Serializable {
 		if(TextUtils.isEmpty(path)) {
 			path = music.getFirstMusicLocalUrl();
 		}
+		//Dian1Application.getInstance().getDownloadManager().getProvider().queueDownload()
+		if(TextUtils.isEmpty(path)) {
+			path = music.getFirstMusicLocalUrl();
+		}
 		if(TextUtils.isEmpty(path)) {
 			path = music.getFirstMusicNetUrl();
 		}

@@ -78,7 +78,9 @@ public class DownloadProviderDbImpl implements DownloadProvider {
 	public void downloadCompleted(DownloadJob job) {
 		mQueuedJobs.remove(job);
 		mCompletedJobs.add(job);
-		mDb.setStatus(job.getPlaylistEntry(), true);
+		if(job.getErrorCode() == 0) {
+			mDb.setStatus(job.getPlaylistEntry(), true);
+		}
 		mDownloadManager.notifyObservers();
 	}
 

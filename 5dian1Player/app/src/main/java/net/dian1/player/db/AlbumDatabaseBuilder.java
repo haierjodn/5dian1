@@ -28,9 +28,9 @@ public class AlbumDatabaseBuilder extends DatabaseBuilder<Album> {
 
 	private static final String ALBUM_ID = "album_id";
 	private static final String ALBUM_NAME = "album_name";
-	private static final String ALBUM_IMAGE = "album_image";
+	public static final String ALBUM_IMAGE = "album_image";
 	private static final String ALBUM_RATING = "album_rating";
-	private static final String ARTIST_NAME = "artist_name";
+	public static final String ARTIST_NAME = "artist_name";
 
 	@Override
 	public Album build(Cursor query) {

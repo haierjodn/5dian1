@@ -116,6 +116,7 @@ public class DownloadDatabaseImpl implements DownloadDatabase {
 		ContentValues values = new ContentValues();
 
 		values.put("downloaded", downloaded ? 1 : 0);
+		values.put("track_path", entry.getMusic().getFirstMusicLocalUrl());
 
 		String[] whereArgs = { "" + entry.getMusic().getId() };
 		int row_count = mDb.update(TABLE_LIBRARY, values, "track_id=?",
@@ -222,9 +223,21 @@ public class DownloadDatabaseImpl implements DownloadDatabase {
 		private void createTables(){
 			mDb.execSQL("CREATE TABLE IF NOT EXISTS "
 					+ TABLE_LIBRARY
-					+ " (track_id INTEGER UNIQUE, downloaded INTEGER, track_name VARCHAR,"
-					+ " track_duration INTEGER, track_url VARCHAR, track_stream VARCHAR, track_rating REAL,"
-					+ " album_id INTEGER, album_name VARCHAR, album_image VARCHAR, album_rating REAL, artist_name VARCHAR, album_track_num INTEGER);");
+					+ " (track_id INTEGER UNIQUE, " +
+					"downloaded INTEGER, " +
+					"track_name VARCHAR, " +
+					"track_duration INTEGER, " +
+					"track_url VARCHAR, " +
+					"track_path VARCHAR, " +
+					"track_file_size VARCHAR, " +
+					"track_stream VARCHAR, " +
+					"track_rating REAL, " +
+					"album_id INTEGER, " +
+					"album_name VARCHAR, " +
+					"album_image VARCHAR, " +
+					"album_rating REAL, " +
+					"artist_name VARCHAR, " +
+					"album_track_num INTEGER);");
 		}
 
 		/*private boolean checkTableExistence(){
