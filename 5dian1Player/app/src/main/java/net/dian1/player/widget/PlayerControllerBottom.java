@@ -18,6 +18,7 @@ import net.dian1.player.R;
 import net.dian1.player.activity.PlayerActivity;
 import net.dian1.player.api.Album;
 import net.dian1.player.api.Music;
+import net.dian1.player.api.Playlist;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineListener;
@@ -100,6 +101,11 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         Dian1Application.getInstance().addPlayerEngineListener(mPlayerEngineListener);
+        Playlist playlist = getPlayerEngine().getPlaylist();
+        if(playlist != null) {
+            mPlayerEngineListener.onTrackChanged(playlist.getSelectedTrack());
+        }
+        setLayoutVisibility(playlist != null ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -108,10 +114,15 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
         Dian1Application.getInstance().removePlayerEngineListener(mPlayerEngineListener);
     }
 
+    private void setLayoutVisibility(int visibility) {
+        findViewById(R.id.ll_outter).setVisibility(visibility);
+    }
+
     private PlayerEngineListener mPlayerEngineListener = new PlayerEngineListener() {
 
         @Override
         public void onTrackChanged(PlaylistEntry playlistEntry) {
+            setLayoutVisibility(playlistEntry != null ? View.VISIBLE : View.GONE);
             Album mCurrentAlbum = playlistEntry.getAlbum();
             Music music = playlistEntry.getMusic();
             String albumPath = AudioLoaderTask.getAlbumArt(getContext().getContentResolver(), music.getAlbumId());
