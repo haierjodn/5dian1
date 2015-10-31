@@ -67,7 +67,7 @@ import net.dian1.player.util.SeekToMode;
  * 2. 支持随便听模式, playlist = null
  *
  */
-public class PlayerActivity extends Activity implements OnClickListener {
+public class PlayerActivity extends BaseActivity implements OnClickListener {
 
     private PlayerEngine getPlayerEngine() {
         return Dian1Application.getInstance().getPlayerEngineInterface();
@@ -101,9 +101,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
     private String mBetterRes;
     private LoadingDialog mUriLoadingDialog;
 
-
-    private BitmapUtils bitmapUtils;
-
     public static void launch(Context c, Playlist playlist) {
         Intent intent = new Intent(c, PlayerActivity.class);
         intent.putExtra("playlist", playlist);
@@ -127,10 +124,6 @@ public class PlayerActivity extends Activity implements OnClickListener {
         Log.i(Dian1Application.TAG, "PlayerActivity.onCreate");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.player);
-
-        bitmapUtils = new BitmapUtils(this);
-        bitmapUtils.configDefaultLoadingImage(R.drawable.player_albumcover_default);// 默认背景图片
-        bitmapUtils.configDefaultLoadFailedImage(R.drawable.player_albumcover_default);// 加载失败图片
 
         initView();
 
@@ -418,7 +411,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
             mCurrentAlbum = playlistEntry.getAlbum();
             if(mCurrentAlbum != null) {
                 mArtistTextView.setText("-- " + playlistEntry.getAlbum().getArtistName() + " --");
-                bitmapUtils.display(mCoverImageView, playlistEntry.getAlbum().getImage());
+                showImage(mCoverImageView, playlistEntry.getAlbum().getImage());
             }
             Music music = playlistEntry.getMusic();
             String albumPath = AudioLoaderTask.getAlbumArt(getContentResolver(), music.getAlbumId());
@@ -428,7 +421,7 @@ public class PlayerActivity extends Activity implements OnClickListener {
             if(TextUtils.isEmpty(albumPath)) {
                 albumPath = music.getAlbum();
             }
-            bitmapUtils.display(mCoverImageView, albumPath);
+            showImage(mCoverImageView, albumPath);
 
             mSongTextView.setText(playlistEntry.getMusic().getName());
             ((TextView) findViewById(R.id.tv_title)).setText(playlistEntry.getMusic().getName());

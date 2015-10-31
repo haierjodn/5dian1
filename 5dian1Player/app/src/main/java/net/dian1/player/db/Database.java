@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.api.Radio;
+import net.dian1.player.model.UserInfo;
 
 /**
  * Interface defining operations on internal application database 
@@ -102,5 +103,23 @@ public interface Database {
 	 * @return
 	 */
 	public Playlist getFavorites();
+
+
+	/**
+	 *
+	 * @param userInfo
+	 */
+	public void addOrUpdateUserInfo(UserInfo userInfo);
+
+	/**
+	 *
+	 */
+	public void deleteAllUserInfo();
+
+	/**
+	 *
+	 * @return
+	 */
+	public UserInfo getCurrentUserInfo();
 
 }

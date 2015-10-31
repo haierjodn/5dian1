@@ -9,89 +9,51 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 
+import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.activity.login.LoginActivity;
 import net.dian1.player.dialog.TutorialDialog;
+import net.dian1.player.model.UserInfo;
 
 /**
  * @author Marcin Gil
  *
  */
-public class SplashActivity extends Activity {
-	public final static String FIRST_RUN_PREFERENCE = "first_run";
-	
-	private Animation endAnimation;
-	
-	private Handler endAnimationHandler;
-	private Runnable endAnimationRunnable;
-	
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
+public class SplashActivity extends BaseActivity {
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.splashscreen);
-		findViewById(R.id.splashlayout);
 
-		endAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out);
-		endAnimation.setFillAfter(true);
-		
-		endAnimationHandler = new Handler();
-		endAnimationRunnable = new Runnable() {
+		findViewById(R.id.splashlayout).postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				findViewById(R.id.splashlayout).startAnimation(endAnimation);
+				checkToLogin();
 			}
-		};
-		
-		endAnimation.setAnimationListener(new AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation animation) {	}
-			
-			@Override
-			public void onAnimationRepeat(Animation animation) { }
-			
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				LoginActivity.startAction(SplashActivity.this);
-				//SplashActivity.this.finish();
-				finish();;
-			}
-		});
-
-		showTutorial();
+		}, 2500);
 	}
 	
-	final void showTutorial() {
-		boolean showTutorial = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(FIRST_RUN_PREFERENCE, true);
-		if (showTutorial) {
-			final TutorialDialog dlg = new TutorialDialog(this);
-			dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					CheckBox cb = (CheckBox) dlg.findViewById(R.id.toggleFirstRun);
-					if (cb != null && cb.isChecked()) {
-						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
-						prefs.edit().putBoolean(FIRST_RUN_PREFERENCE, false).commit();
-					}
-					endAnimationHandler.removeCallbacks(endAnimationRunnable);
-					endAnimationHandler.postDelayed(endAnimationRunnable, 2000);
-				}
-			});
-			dlg.show();
-
+	final void checkToLogin() {
+		UserInfo userInfo = Dian1Application.getInstance().getUser();
+		if(userInfo != null && !TextUtils.isEmpty(userInfo.getToken())) {
+			MainActivity.launch(SplashActivity.this);
 		} else {
-			endAnimationHandler.removeCallbacks(endAnimationRunnable);
-			endAnimationHandler.postDelayed(endAnimationRunnable, 1500);
+			LoginActivity.startAction(SplashActivity.this);
 		}
+		finish();
+	}
+
+	public void updateUserInfo() {
+
 	}
 }

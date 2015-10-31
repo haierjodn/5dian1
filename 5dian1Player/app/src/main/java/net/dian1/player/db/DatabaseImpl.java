@@ -25,7 +25,6 @@ import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,6 +35,9 @@ import net.dian1.player.api.Playlist;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.api.Radio;
 import net.dian1.player.api.Music;
+import net.dian1.player.db.builder.UserInfoDatabaseBuilder;
+import net.dian1.player.db.table.UserInfoTable;
+import net.dian1.player.model.UserInfo;
 
 /**
  * Database implementation using Android SQLite
@@ -54,10 +56,10 @@ public class DatabaseImpl implements Database {
 	 */
 	private static final String SJP_EXT = ".sjp";
 
-	private Activity mActivity;
+	private Context mContext;
 
-	public DatabaseImpl(Activity activity){
-		this.mActivity = activity;
+	public DatabaseImpl(Context activity){
+		this.mContext = activity;
 		create();
 	}
 
@@ -65,7 +67,7 @@ public class DatabaseImpl implements Database {
 	 * Initializes database and tables
 	 */
 	private void create(){
-		SQLiteDatabase db = mActivity.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
+		SQLiteDatabase db = mContext.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 
 		// create tables if necessary
 		
@@ -84,17 +86,19 @@ public class DatabaseImpl implements Database {
 				+ " track_duration INTEGER, track_url VARCHAR, track_stream VARCHAR, track_rating REAL," 
 				+ " album_id INTEGER, album_name VARCHAR, album_image VARCHAR, album_rating REAL, artist_name VARCHAR);");
 
+		db.execSQL(UserInfoTable.CREATE_SQL);
+
 		db.close();
 	}
 
 	@Override
 	public void deletePlaylist(String playlistName) {
-		SQLiteDatabase db = mActivity.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
+		SQLiteDatabase db = mContext.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 
 		String fileName = queryForFileName(playlistName, db);
 		if(fileName != null)
-			mActivity.deleteFile(fileName);
-		//mActivity.openFileOutput(fileName, Context.MODE_PRIVATE).getFD().
+			mContext.deleteFile(fileName);
+		//mContext.openFileOutput(fileName, Context.MODE_PRIVATE).getFD().
 
 		String[] whereArgs = {playlistName};
 		db.delete(TABLE_PLAYLIST, "PlaylistName = ?", whereArgs);
@@ -105,7 +109,7 @@ public class DatabaseImpl implements Database {
 	@Override
 	public ArrayList<String> getAvailablePlaylists() {
 		ArrayList<String> playlists = new ArrayList<String>(); 
-		SQLiteDatabase db = mActivity.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
+		SQLiteDatabase db = mContext.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 
 		String[] columns = {"PlaylistName"};
 		Cursor query = db.query(TABLE_PLAYLIST, columns, null, null, null, null, "PlaylistName ASC");
@@ -133,11 +137,11 @@ public class DatabaseImpl implements Database {
 		
 		Playlist playlist = null;
 		
-		SQLiteDatabase db = mActivity.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
+		SQLiteDatabase db = mContext.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 
 		String fileName = queryForFileName(playlistName, db);
 		try {
-			FileInputStream fis = mActivity.openFileInput(fileName);
+			FileInputStream fis = mContext.openFileInput(fileName);
 			ObjectInputStream in = new ObjectInputStream(fis);
 			playlist = (Playlist)in.readObject();
 			in.close();
@@ -161,7 +165,7 @@ public class DatabaseImpl implements Database {
 	public void savePlaylist(Playlist playlist, String playlistName) {
 		deletePlaylist(playlistName);
 
-		SQLiteDatabase db = mActivity.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
+		SQLiteDatabase db = mContext.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 
 		// put playlist reference into the table
 		ContentValues values = new ContentValues();
@@ -173,7 +177,7 @@ public class DatabaseImpl implements Database {
 
 		// save playlist to file
 		try {
-			FileOutputStream fos = mActivity.openFileOutput(fileName, Context.MODE_PRIVATE);
+			FileOutputStream fos = mContext.openFileOutput(fileName, Context.MODE_PRIVATE);
 			ObjectOutputStream out = new ObjectOutputStream(fos);
 			out.writeObject(playlist);
 			out.close();
@@ -229,7 +233,7 @@ public class DatabaseImpl implements Database {
 		SQLiteDatabase db = getDb();
 		
 		String[] columns = {"radio_id","radio_idstr","radio_name","radio_image"};
-		Cursor query = db.query(TABLE_RECENT_RADIOS, columns, "", null, null, null, "radio_date DESC", ""+limit);
+		Cursor query = db.query(TABLE_RECENT_RADIOS, columns, "", null, null, null, "radio_date DESC", "" + limit);
 		
 		if(query != null){
 			query.moveToFirst();
@@ -295,7 +299,7 @@ public class DatabaseImpl implements Database {
 		db.close();
 		return playlist;
 	}
-	
+
 	@Override
 	public void removeFromFavorites(PlaylistEntry entry) {
 		SQLiteDatabase db = getDb();
@@ -322,8 +326,44 @@ public class DatabaseImpl implements Database {
 		return fileName;
 	}
 
+	@Override
+	public void addOrUpdateUserInfo(UserInfo userInfo) {
+		if(userInfo == null) {
+			return;
+		}
+		SQLiteDatabase db = getDb();
+		ContentValues values = new ContentValues();
+		values.putAll(new UserInfoDatabaseBuilder().deconstruct(userInfo));
+		String[] whereArgs = {""+userInfo.getLoginId()};
+		int row_count = db.update(UserInfoTable.TABLE_NAME, values, UserInfoTable.LOGIN_ID + "=?", whereArgs);
+		if(row_count == 0){
+			db.insert(UserInfoTable.TABLE_NAME, null, values);
+		}
+		db.close();
+	}
+
+	@Override
+	public void deleteAllUserInfo() {
+		SQLiteDatabase db = getDb();
+		db.execSQL("delete from " + UserInfoTable.TABLE_NAME);
+		db.close();
+	}
+
+	@Override
+	public UserInfo getCurrentUserInfo() {
+		SQLiteDatabase db = getDb();
+		Cursor query = db.query(UserInfoTable.TABLE_NAME, null, null, null, null, null, null);
+		if(query != null && query.getCount() > 0){
+			query.moveToFirst();
+			UserInfo userinfo = new UserInfoDatabaseBuilder().build(query);
+			return userinfo;
+		}
+		db.close();
+		return null;
+	}
+
 	private SQLiteDatabase getDb(){
-		return mActivity.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
+		return mContext.openOrCreateDatabase(DB_NAME, Context.MODE_PRIVATE, null);
 	}
 
 }

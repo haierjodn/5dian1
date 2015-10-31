@@ -19,10 +19,7 @@ package net.dian1.player.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,11 +29,12 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
-import net.dian1.player.activity.BrowsePlaylistActivity.Mode;
 import net.dian1.player.adapter.PurpleEntry;
 import net.dian1.player.adapter.PurpleListener;
 import net.dian1.player.api.Album;
@@ -46,12 +44,10 @@ import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
+import net.dian1.player.model.UserInfo;
 import net.dian1.player.model.common.VersionLatest;
 import net.dian1.player.util.DialogUtils;
-import net.dian1.player.util.MockUtils;
 import net.dian1.player.widget.OnAlbumClickListener;
-
-import java.util.ArrayList;
 
 /**
  * Home activity of the jamendo, central navigation place
@@ -59,13 +55,15 @@ import java.util.ArrayList;
  * @author Lukasz Wisniewski
  * @author Marcin Gil
  */
-public class MainActivity extends Activity implements OnAlbumClickListener, OnClickListener {
+public class MainActivity extends BaseActivity implements OnAlbumClickListener, OnClickListener {
 
     private static final String TAG = "MainActivity";
 
     private final int[] blocksId = new int[]{
             R.id.v_listen_any, R.id.v_repo_online, R.id.v_download, R.id.v_listen_local
     };
+
+    private UserInfo userInfo;
 
     /**
      * Launch Home activity helper
@@ -87,7 +85,22 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         fillHomeListView();
-        checkUpdate();
+        checkVersionUpdate();
+        updateUserInfo();
+    }
+
+    private void updateUserInfo() {
+        UserInfo userInfo = Dian1Application.getInstance().getUser();
+        if(userInfo != null) {
+            ImageView ivPortrait = (ImageView) findViewById(R.id.iv_portrait);
+            TextView tvUserName = (TextView) findViewById(R.id.tv_nickname);
+            TextView tvLevel = (TextView) findViewById(R.id.tv_level);
+            TextView tvRenewal = (TextView) findViewById(R.id.tv_renewal);
+            tvUserName.setText(userInfo.getNickname());
+            tvLevel.setText(userInfo.getLevelName());
+            //tvRenewal.setText(userInfo.getNickname());
+            showImage(ivPortrait, userInfo.getPortrait());
+        }
     }
 
     @Override
@@ -210,7 +223,7 @@ public class MainActivity extends Activity implements OnAlbumClickListener, OnCl
         }
     };
 
-    private void checkUpdate() {
+    private void checkVersionUpdate() {
         // 升级
         ApiManager.getInstance().send(new ApiRequest(this, ApiData.VersionLatestApi.URL, VersionLatest.class, new OnResultListener<VersionLatest>() {
 

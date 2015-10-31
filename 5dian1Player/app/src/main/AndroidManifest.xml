@@ -61,7 +61,7 @@
         <activity
             android:name=".activity.RepoActivity"
             android:label="@string/player_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

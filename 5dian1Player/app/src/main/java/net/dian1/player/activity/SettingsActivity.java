@@ -59,15 +59,15 @@ public class SettingsActivity extends PreferenceActivity {
 		setContentView(R.layout.settings);
 	}
 
-	@Override
-	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
-			Preference preference) {
-		if (preference.getKey().equals(RESET_FIRST_RUN_PREFERENCE)) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-			prefs.edit().putBoolean(SplashActivity.FIRST_RUN_PREFERENCE, true).commit();
-			Toast.makeText(this, R.string.preference_firstrun_reset_title, Toast.LENGTH_SHORT).show();
-		}
-		return super.onPreferenceTreeClick(preferenceScreen, preference);
-	}
+//	@Override
+//	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
+//			Preference preference) {
+//		//if (preference.getKey().equals(RESET_FIRST_RUN_PREFERENCE)) {
+//			//SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+//			//prefs.edit().putBoolean(SplashActivity.FIRST_RUN_PREFERENCE, true).commit();
+//			//Toast.makeText(this, R.string.preference_firstrun_reset_title, Toast.LENGTH_SHORT).show();
+//		//}
+//		return super.onPreferenceTreeClick(preferenceScreen, preference);
+//	}
 	
 }

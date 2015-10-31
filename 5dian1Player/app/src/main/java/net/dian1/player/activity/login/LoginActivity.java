@@ -16,6 +16,7 @@ import android.widget.Toast;
 import net.dian1.player.R;
 import net.dian1.player.activity.BaseActivity;
 import net.dian1.player.activity.MainActivity;
+import net.dian1.player.db.DatabaseImpl;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
@@ -152,11 +153,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         ApiData.LoginApi.setParams(new LoginParam(acc, pwd, "1")), new OnResultListener<LoginResponse>() {
 
                     @Override
-                    public void onResult(LoginResponse response) {
+                    public void onResult(final LoginResponse response) {
                         //dismissDialog();
                         if (response != null) {
                             app.setUser(response.user);
                             MainActivity.launch(LoginActivity.this);
+                            new DatabaseImpl(LoginActivity.this).addOrUpdateUserInfo(response.user);
                         }
                         finish();
                     }

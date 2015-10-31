@@ -31,10 +31,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.lidroid.xutils.BitmapUtils;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
@@ -53,6 +56,8 @@ import java.util.ArrayList;
 public class BaseActivity extends Activity{
 
 	protected Dian1Application app;
+
+	private BitmapUtils bitmapUtils;
 
 	/** UI 线程ID */
 	protected long mUIThreadId;
@@ -136,6 +141,17 @@ public class BaseActivity extends Activity{
 
 	public boolean post(Runnable run) {
 		return mHandler.post(run);
+	}
+
+	public void showImage(ImageView imageView, String imagePath) {
+		if(bitmapUtils == null) {
+			bitmapUtils = new BitmapUtils(this);
+			bitmapUtils.configDefaultLoadingImage(R.drawable.player_albumcover_default);// 默认背景图片
+			bitmapUtils.configDefaultLoadFailedImage(R.drawable.player_albumcover_default);// 加载失败图片
+		}
+		if(!TextUtils.isEmpty(imagePath)) {
+			bitmapUtils.display(imageView, imagePath);
+		}
 	}
 
 }

@@ -37,7 +37,7 @@ public class AndroidCrash {
     public void init(Context mContext) {
         //Dian1CrashHandler.getInstance().init(mReporter);
         //Thread.setDefaultUncaughtExceptionHandler(Dian1CrashHandler.getInstance());
-        Log.d("AndroidCrash", "init success: " + Thread.getDefaultUncaughtExceptionHandler().getClass());
+        //Log.d("AndroidCrash", "init success: " + Thread.getDefaultUncaughtExceptionHandler().getClass());
     }
 
 }

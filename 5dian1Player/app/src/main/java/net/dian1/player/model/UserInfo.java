@@ -29,7 +29,7 @@ public class UserInfo {
 
 	private String levelName;
 
-	//private int isappvip;
+	private int isappvip;
 
 	// 工号
 	private String expiredTime;
@@ -97,6 +97,14 @@ public class UserInfo {
 
 	public void setLevelName(String levelName) {
 		this.levelName = levelName;
+	}
+
+	public int getIsappvip() {
+		return isappvip;
+	}
+
+	public void setIsappvip(int isappvip) {
+		this.isappvip = isappvip;
 	}
 
 	public String getExpiredTime() {

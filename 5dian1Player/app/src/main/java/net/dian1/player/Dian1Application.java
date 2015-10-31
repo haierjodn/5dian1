@@ -32,6 +32,7 @@ import net.dian1.player.api.Playlist;
 import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
 import net.dian1.player.api.util.Caller;
 import net.dian1.player.api.util.RequestCache;
+import net.dian1.player.db.DatabaseImpl;
 import net.dian1.player.gestures.GesturesHandler;
 import net.dian1.player.gestures.PlayerGestureCommandRegiser;
 import net.dian1.player.http.ApiManager;
@@ -140,7 +141,19 @@ public class Dian1Application extends Application {
 		instance = this;
 
 		mDownloadManager = new DownloadManagerImpl(this);
+
 		restoreEqualizerSettings();
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				initInBackground();
+			}
+		}).start();
+	}
+
+	private void initInBackground() {
+		setUser(new DatabaseImpl(this).getCurrentUserInfo());
 	}
 
 	/**
