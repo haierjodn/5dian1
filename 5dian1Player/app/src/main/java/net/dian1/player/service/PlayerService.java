@@ -351,7 +351,7 @@ public class PlayerService extends Service {
                 .setContentText(notificationMessage)
                 /*.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))*/;
         Notification notification = builder.build();
-        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 
         mNotificationManager.notify(PLAYING_NOTIFY_ID, notification);
 
