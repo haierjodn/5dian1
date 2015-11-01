@@ -16,16 +16,6 @@
 
 package net.dian1.player.service;
 
-import net.dian1.player.Dian1Application;
-import net.dian1.player.activity.MainActivity;
-import net.dian1.player.activity.PlayerActivity;
-import net.dian1.player.api.Album;
-import net.dian1.player.api.PlaylistEntry;
-import net.dian1.player.media.PlayerEngine;
-import net.dian1.player.media.PlayerEngineImpl;
-import net.dian1.player.media.PlayerEngineListener;
-import net.dian1.player.R;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -34,17 +24,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.RingtoneManager;
+import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import net.dian1.player.Dian1Application;
+import net.dian1.player.R;
+import net.dian1.player.activity.MainActivity;
+import net.dian1.player.activity.PlayerActivity;
+import net.dian1.player.api.Album;
+import net.dian1.player.api.PlaylistEntry;
+import net.dian1.player.media.PlayerEngine;
+import net.dian1.player.media.PlayerEngineImpl;
+import net.dian1.player.media.PlayerEngineListener;
 
 import java.util.List;
 
@@ -55,6 +52,8 @@ import java.util.List;
  * @author Marcin Gil
  */
 public class PlayerService extends Service {
+    private static final String LASTFM_INTENT = "fm.last.android.metachanged";
+    private static final String SIMPLEFM_INTENT = "com.adam.aslfms.notify.playstatechanged";
 
     public static final String ACTION_PLAY = "play";
     public static final String ACTION_NEXT = "next";
@@ -65,13 +64,49 @@ public class PlayerService extends Service {
     private WifiManager mWifiManager;
     private WifiLock mWifiLock;
     private PlayerEngine mPlayerEngine;
-    private TelephonyManager mTelephonyManager;
-    private PhoneStateListener mPhoneStateListener;
+//    private TelephonyManager mTelephonyManager;
+//    private PhoneStateListener mPhoneStateListener;
+    private AudioManager mAudioManager;
+    private boolean mPausedByTransientLossOfFocus;
+
     private NotificationManager mNotificationManager = null;
     private static final int PLAYING_NOTIFY_ID = 667667;
 
-    private static final String LASTFM_INTENT = "fm.last.android.metachanged";
-    private static final String SIMPLEFM_INTENT = "com.adam.aslfms.notify.playstatechanged";
+    private AudioManager.OnAudioFocusChangeListener mAudioFocusListener = new AudioManager.OnAudioFocusChangeListener(){
+        public void onAudioFocusChange(int focusChange) {
+            switch(focusChange){
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    if (mPlayerEngine != null) {
+                        if(mPlayerEngine.isPlaying()) {
+                            //we do not need get focus back in this situation
+                            //会长时间失去，所以告知下面的判断，获得焦点后不要自动播放
+                            mPausedByTransientLossOfFocus = false;
+                            mPlayerEngine.pause();//因为会长时间失去，所以直接暂停
+                            mAudioManager.abandonAudioFocus(this);
+                        }
+                    }
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    if (mPlayerEngine != null) {
+                        if (mPlayerEngine.isPlaying()) {
+                            //短暂失去焦点，先暂停。同时将标志位置成重新获得焦点后就开始播放
+                            mPausedByTransientLossOfFocus = true;
+                            mPlayerEngine.pause();
+                        }
+                    }
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    //重新获得焦点，且符合播放条件，开始播放
+                    if(!mPlayerEngine.isPlaying() && mPausedByTransientLossOfFocus){
+                        mAudioManager.requestAudioFocus(this,
+                                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+                        mPausedByTransientLossOfFocus = false;
+                        mPlayerEngine.play();
+                    }
+                    break;
+            }
+        }};
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -82,28 +117,30 @@ public class PlayerService extends Service {
     public void onCreate() {
         Log.i(Dian1Application.TAG, "Player Service onCreate");
 
-        // All necessary Application <-> Service pre-setup goes in here
-
         mPlayerEngine = new PlayerEngineImpl();
         mPlayerEngine.addListener(mLocalEngineListener);
 
-        mTelephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        mPhoneStateListener = new PhoneStateListener() {
+        mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
+        mAudioManager.requestAudioFocus(mAudioFocusListener,
+                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                Log.e(Dian1Application.TAG, "onCallStateChanged");
-                if (state == TelephonyManager.CALL_STATE_IDLE) {
-                    // resume playback
-                } else {
-                    if (mPlayerEngine != null) {
-                        mPlayerEngine.pause();
-                    }
-                }
-            }
-
-        };
-        mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+//        mTelephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+//        mPhoneStateListener = new PhoneStateListener() {
+//
+//            @Override
+//            public void onCallStateChanged(int state, String incomingNumber) {
+//                Log.e(Dian1Application.TAG, "onCallStateChanged");
+//                if (state == TelephonyManager.CALL_STATE_IDLE) {
+//                    // resume playback
+//                } else {
+//                    if (mPlayerEngine != null) {
+//                        mPlayerEngine.pause();
+//                    }
+//                }
+//            }
+//
+//        };
+//        mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -167,12 +204,13 @@ public class PlayerService extends Service {
     @Override
     public void onDestroy() {
         Log.i(Dian1Application.TAG, "Player Service onDestroy");
+        mAudioManager.abandonAudioFocus(mAudioFocusListener);
         mPlayerEngine.removeListener(mLocalEngineListener);
         Dian1Application.getInstance().setConcretePlayerEngine(null);
         mPlayerEngine.stop();
         mPlayerEngine = null;
         // unregister listener
-        mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+//        mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         super.onDestroy();
     }
 
@@ -258,11 +296,11 @@ public class PlayerService extends Service {
             }
 
             // roaming protection
-            boolean roamingProtection = PreferenceManager.getDefaultSharedPreferences(PlayerService.this).getBoolean("roaming_protection", true);
-            if (!mWifiManager.isWifiEnabled()) {
-                if (roamingProtection && mTelephonyManager.isNetworkRoaming())
-                    return false;
-            }
+//            boolean roamingProtection = PreferenceManager.getDefaultSharedPreferences(PlayerService.this).getBoolean("roaming_protection", true);
+//            if (!mWifiManager.isWifiEnabled()) {
+//                if (roamingProtection && mTelephonyManager.isNetworkRoaming())
+//                    return false;
+//            }
 
             return true;
         }
