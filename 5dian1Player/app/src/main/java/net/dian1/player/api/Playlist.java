@@ -155,8 +155,10 @@ public class Playlist implements Serializable {
 	 */
 	public void selectNext() {
 		if (!isEmpty()) {
-			selected++;
-			selected %= playlist.size();
+			if(mPlaylistPlaybackMode != PlaylistPlaybackMode.REPEAT) {
+				selected++;
+				selected %= playlist.size();
+			}
 			if (Log.isLoggable(TAG, Log.DEBUG)) {
 				Log.d(TAG, "Current (next) selected = " + selected);
 			}

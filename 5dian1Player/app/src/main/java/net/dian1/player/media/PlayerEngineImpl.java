@@ -160,6 +160,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 			if(mPlaylist.isPlaylistMode(PlaylistPlaybackMode.LISTEN_ANY)) {
 				playNextListenAny();
 			} else {
+				stop();
 				mPlaylist.selectNext();
 				play();
 			}
@@ -285,6 +286,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 	@Override
 	public void prev() {
 		if(mPlaylist != null){
+			stop();
 			mPlaylist.selectPrev();
 			play();
 		}
