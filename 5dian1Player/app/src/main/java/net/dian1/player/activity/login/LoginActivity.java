@@ -56,6 +56,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
      */
     public static final void startAction(Context ctx) {
         Intent intent = new Intent(ctx, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         ctx.startActivity(intent);
     }
 

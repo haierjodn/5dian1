@@ -9,18 +9,19 @@
 
     <TextView android:id="@+id/tv_setting_adjust"
         style="@style/common_setting_item"
-        android:text="均衡器" />
+        android:text="@string/setting_adjust" />
 
     <TextView android:id="@+id/tv_setting_update"
         style="@style/common_setting_item"
-        android:text="版本更新" />
+        android:text="@string/setting_update_version" />
 
     <TextView android:id="@+id/tv_setting_about"
         style="@style/common_setting_item"
-        android:text="关于" />
+        android:text="@string/setting_about" />
 
     <TextView android:id="@+id/tv_setting_exit"
         style="@style/common_setting_item"
-        android:text="退出登录" />
+        android:text="@string/setting_logout" />
+
 
 </LinearLayout>

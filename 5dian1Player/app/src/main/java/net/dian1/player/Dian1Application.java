@@ -352,14 +352,15 @@ public class Dian1Application extends Application {
 	public void setUser(UserInfo user) {
 		this.user = user;
 	}
-	public void exitLogin() {
+
+	public void logoff() {
 		if (user != null) {
 			user = null;
 		}
+		new DatabaseImpl(this).deleteAllUserInfo();
 	}
 
 	public void exitApp() {
-
 	}
 
 	/**

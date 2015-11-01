@@ -44,7 +44,7 @@ public class AudioUtils {
         engineMusic.setRating(0.6d);
         engineMusic.setName(music.getName());
         engineMusic.setId((int) music.getId());
-        engineMusic.setDuration(192);
+        engineMusic.setDuration(Helper.stringToSeconds(music.getShichang()));
         engineMusic.setArtist(music.getSinger());
         engineMusic.setSongUrlList(music.getSongUrlList());
         return engineMusic;

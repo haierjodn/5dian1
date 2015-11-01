@@ -22,6 +22,7 @@ import java.util.Locale;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.api.Review;
@@ -52,6 +53,18 @@ public class Helper {
 		int t = (int) (minSeconds/1000)%(60);
 		s += t < 10 ? "0"+t : t;
 		return s;
+	}
+
+	public static int stringToSeconds(String duration) {
+		if(!TextUtils.isEmpty(duration) && duration.split(":").length == 2) {
+			try {
+				String[] arrays = duration.split(":");
+				return Integer.parseInt(arrays[0]) * 60 + Integer.parseInt(arrays[1]);
+			} catch (Exception e) {
+				//noting to do
+			}
+		}
+		return 0;
 	}
 	
 	/**

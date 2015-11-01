@@ -37,10 +37,7 @@ import android.widget.ViewFlipper;
 public class AboutDialog extends Dialog {
 
 	private TextView mVersionTextView;
-	private Button mTermsButton;
-	private Button mCompanyButton;
 	private Button mCancelButton;
-	private ViewFlipper mCompanyViewFlipper;
 
 	public AboutDialog(Activity context) {
 		super(context);
@@ -71,37 +68,6 @@ public class AboutDialog extends Dialog {
 		mVersionTextView = (TextView)findViewById(R.id.VersionText);
 		mVersionTextView.setText(topText);
 
-		mTermsButton = (Button)findViewById(R.id.TermsButton);
-		mTermsButton.setOnClickListener(new View.OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				Intent myIntent = new Intent(Intent.ACTION_VIEW,
-						Uri.parse("http://www.jamendo.com/en/cgu_user"));
-				context.startActivity(myIntent); 				
-			}
-
-		});
-		
-		mCompanyViewFlipper = (ViewFlipper)findViewById(R.id.CompanyViewFlipper);
-		mCompanyButton = (Button)findViewById(R.id.AboutCompanyButton);
-		mCompanyButton.setOnClickListener(new View.OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				int currentCompany = mCompanyViewFlipper.getDisplayedChild();
-				if(currentCompany == 0 ){
-					mCompanyButton.setText(R.string.about_jamendo);
-					mCompanyViewFlipper.setDisplayedChild(1); // display Teleca info
-				}
-				else {
-					mCompanyButton.setText(R.string.about_teleca);
-					mCompanyViewFlipper.setDisplayedChild(0); // display Jamendo info
-				}
-			}
-
-		});
-		
 		mCancelButton = (Button)findViewById(R.id.CancelButton);
 		mCancelButton.setOnClickListener(new View.OnClickListener(){
 
