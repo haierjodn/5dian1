@@ -26,8 +26,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="搜索音乐库"
+            android:singleLine="true"
+            android:gravity="center_vertical"
+            android:hint="搜索音乐库"
             android:textColor="#fff"
             android:textSize="@dimen/normal" />
 
@@ -43,12 +44,12 @@
 
     </LinearLayout>
 
+    <View style="@style/DividerLine"/>
+
     <ListView android:id="@+id/lv_music"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:cacheColorHint="#00000000"/>
-
-    <include layout="@layout/player_controller_container" />
 
 </LinearLayout>

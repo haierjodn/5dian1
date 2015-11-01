@@ -29,6 +29,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -49,6 +50,9 @@ import java.util.List;
 
 public class SearchActivity extends Activity implements OnClickListener {
 
+	private View btnSearch;
+
+	private EditText editText;
 
 	private ListView gvRepoList;
 
@@ -67,7 +71,20 @@ public class SearchActivity extends Activity implements OnClickListener {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_search);
 
+		initView();
+
+		refreshData();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	private void initView() {
 		initHeader();
+		btnSearch = findViewById(R.id.tv_search);
+		editText = (EditText) findViewById(R.id.et_search);
 		searchAdapter = new SearchAdapter(this);
 		gvRepoList = (ListView)findViewById(R.id.lv_music);
 		gvRepoList.setAdapter(searchAdapter);
@@ -78,12 +95,8 @@ public class SearchActivity extends Activity implements OnClickListener {
 				PlayerActivity.launch(SearchActivity.this, AudioUtils.buildPlaylist(searchAdapter.getList(), position));
 			}
 		});
-		refreshData();
-	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
+		btnSearch.setOnClickListener(this);
 	}
 
 	private void initHeader() {
@@ -96,12 +109,16 @@ public class SearchActivity extends Activity implements OnClickListener {
 			case R.id.iv_back:
 				onBackPressed();
 				break;
+			case R.id.tv_search:
+				refreshData();
+				break;
 		}
 	}
 
 	private void refreshData() {
+		String keyWords = editText.getText().toString();
 		ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSearchApi.URL, SearchResult.class,
-				ApiData.MusicSearchApi.getParams(1), new OnResultListener<SearchResult>() {
+				ApiData.MusicSearchApi.getParams(keyWords), new OnResultListener<SearchResult>() {
 
 			@Override
 			public void onResult(SearchResult response) {
