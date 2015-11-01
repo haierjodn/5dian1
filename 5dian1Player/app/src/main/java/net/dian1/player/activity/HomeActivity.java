@@ -150,7 +150,6 @@ public class HomeActivity extends BaseActivity {
 			break;
 
 		case R.id.settings_menu_item:
-			SettingsActivity.launch(this);
 			break;
 
 		default:

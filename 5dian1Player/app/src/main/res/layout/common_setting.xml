@@ -4,18 +4,8 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_setting_adjust"
+        android:id="@+id/tv_setting"
         style="@style/common_setting_item"
-        android:text="均衡器" />
-
-    <TextView
-        android:id="@+id/tv_setting_version"
-        style="@style/common_setting_item"
-        android:text="版本更新" />
-
-    <TextView
-        android:id="@+id/tv_setting_about"
-        style="@style/common_setting_item"
-        android:text="关于" />
+        android:text="设置" />
 
 </LinearLayout>

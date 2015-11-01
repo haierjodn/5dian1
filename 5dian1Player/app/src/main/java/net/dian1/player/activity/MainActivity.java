@@ -16,7 +16,6 @@
 
 package net.dian1.player.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
@@ -82,7 +80,6 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         fillHomeListView();
         checkVersionUpdate();
@@ -130,14 +127,8 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                 LocalBrowserActivity.launch(this);
                 //HomeActivity.launch(this);
                 break;
-            case R.id.tv_setting_version:
-                SearchActivity.launch(MainActivity.this);
-                break;
-            case R.id.tv_setting_about:
-                new AboutDialog(this).show();
-                break;
-            case R.id.tv_setting_adjust:
-                SettingsActivity.launch(this);
+            case R.id.tv_setting:
+                SettingActivity.startAction(MainActivity.this);
                 break;
         }
     }
@@ -160,27 +151,6 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.player_menu_item:
-                PlayerActivity.launch(this, (Playlist) null);
-                break;
-
-            case R.id.about_menu_item:
-                new AboutDialog(this).show();
-                break;
-
-            case R.id.settings_menu_item:
-                SettingsActivity.launch(this);
-                break;
-
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onPause() {
@@ -199,9 +169,7 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
         for (int resId : blocksId) {
             findViewById(resId).setOnClickListener(this);
         }
-        findViewById(R.id.tv_setting_version).setOnClickListener(this);
-        findViewById(R.id.tv_setting_about).setOnClickListener(this);
-        findViewById(R.id.tv_setting_adjust).setOnClickListener(this);
+        findViewById(R.id.tv_setting).setOnClickListener(this);
     }
 
     /**
