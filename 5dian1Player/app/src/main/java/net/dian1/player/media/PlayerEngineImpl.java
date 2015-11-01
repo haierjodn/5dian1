@@ -392,16 +392,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 			return null;
 		}
 		try {
-			Uri pathUri = Uri.parse(path);
-			if(path.indexOf("assets/") > -1) {
-				AssetFileDescriptor musicAFD = Dian1Application.getInstance().getAssets().openFd(pathUri.getLastPathSegment());
-				FileDescriptor fileDescriptor = musicAFD.getFileDescriptor();
-				mediaPlayer.setDataSource(fileDescriptor, musicAFD.getStartOffset(), musicAFD.getLength());
-			} else {
-				//for testing play only
-				//path = "http://5dian1song.tt6.cn/music/The Best of KraftwerkCD1-Kraftwerk/01.Autoban.mp3";
-				mediaPlayer.setDataSource(path);
-			}
+			mediaPlayer.setDataSource(path);
 
 			mediaPlayer.playlistEntry = playlistEntry;
 			//mediaPlayer.setScreenOnWhilePlaying(true);
@@ -412,6 +403,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 				public void onCompletion(MediaPlayer mp) {
 					if(!mPlaylist.isLastTrackOnList()
 							|| mPlaylist.getPlaylistPlaybackMode() == PlaylistPlaybackMode.REPEAT
+							|| mPlaylist.getPlaylistPlaybackMode() == PlaylistPlaybackMode.LISTEN_ANY
 							|| mPlaylist.getPlaylistPlaybackMode() == PlaylistPlaybackMode.SHUFFLE_AND_REPEAT ){
 						next();
 					}else{
