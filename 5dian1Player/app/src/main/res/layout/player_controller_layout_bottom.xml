@@ -15,7 +15,7 @@
         android:src="@drawable/no_cd_300"
         android:id="@+id/iv_cover" />
 
-    <LinearLayout
+    <LinearLayout android:id="@+id/ll_music_info"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

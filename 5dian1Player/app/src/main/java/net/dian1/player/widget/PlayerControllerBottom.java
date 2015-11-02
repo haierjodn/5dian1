@@ -60,6 +60,7 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
         imNext.setOnTouchListener(onNextTouchListener);
         imPlay.setOnClickListener(this);
         ivCover.setOnClickListener(this);
+        findViewById(R.id.ll_music_info).setOnClickListener(this);
         bitmapUtils = new BitmapUtils(getContext());
         bitmapUtils.configDefaultLoadingImage(R.drawable.player_albumcover_default);// 默认背景图片
         bitmapUtils.configDefaultLoadFailedImage(R.drawable.player_albumcover_default);// 加载失败图片
@@ -91,6 +92,7 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
                     getPlayerEngine().play();
                 }
                 break;
+            case R.id.ll_music_info:
             case R.id.iv_cover:
                 PlayerActivity.launch(getContext(), false);
                 break;
