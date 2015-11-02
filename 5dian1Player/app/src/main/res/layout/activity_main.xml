@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:drawablePadding="20dp"
-                    android:drawableTop="@drawable/icon_main_assignment"
+                    android:drawableTop="@drawable/icon_main_listenany"
                     android:text="5.1随便听"
                     android:textColor="#fff"
                     android:textSize="@dimen/normal" />
@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:drawablePadding="20dp"
-                    android:drawableTop="@drawable/icon_main_delivery"
+                    android:drawableTop="@drawable/icon_main_repo"
                     android:text="5.1音乐库"
                     android:textColor="#fff"
                     android:textSize="@dimen/normal" />
@@ -94,7 +94,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:drawablePadding="20dp"
-                        android:drawableTop="@drawable/icon_main_pay"
+                        android:drawableTop="@drawable/icon_main_download"
                         android:text="下载管理"
                         android:textColor="#fff"
                         android:textSize="@dimen/normal" />
@@ -118,7 +118,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:drawablePadding="20dp"
-                        android:drawableTop="@drawable/icon_main_me"
+                        android:drawableTop="@drawable/icon_main_local"
                         android:text="本地音乐"
                         android:textColor="#fff"
                         android:textSize="@dimen/normal" />

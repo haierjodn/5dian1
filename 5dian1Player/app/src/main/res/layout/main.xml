@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-	<!--
+<?xml version="1.0" encoding="utf-8"?>    <!--
 		Copyright (C) 2009 Teleca Poland Sp. z o.o. <android@teleca.com>
 
 		Licensed under the Apache License, Version 2.0 (the "License"); you
@@ -14,53 +13,75 @@
 		License.
 	-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent" android:background="#ffffff">
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff">
 
-	<net.dian1.player.util.FixedViewFlipper
-		android:orientation="vertical" android:id="@+id/ViewFlipper"
-		android:layout_width="fill_parent" android:layout_height="75dip"
-		android:background="@drawable/gradient_dark_purple">
+    <net.dian1.player.util.FixedViewFlipper
+        android:orientation="vertical"
+        android:id="@+id/ViewFlipper"
+        android:layout_width="fill_parent"
+        android:layout_height="75dip"
+        android:background="@drawable/gradient_dark_purple">
 
-		<!-- (0) Loading -->
-		<LinearLayout android:orientation="vertical"
-			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:layout_marginLeft="15dip" android:gravity="left|center_vertical">
-			<net.dian1.player.widget.ProgressBar
-				android:id="@+id/ProgressBar" android:layout_width="wrap_content"
-				android:layout_height="wrap_content">
-			</net.dian1.player.widget.ProgressBar>
-		</LinearLayout>
+        <!-- (0) Loading -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="15dip"
+            android:gravity="left|center_vertical">
 
-		<!-- (1) Gallery -->
-		<LinearLayout android:orientation="vertical"
-			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:gravity="center">
-			<Gallery android:id="@+id/Gallery" android:layout_width="fill_parent"
-				android:layout_height="wrap_content" android:spacing="0px" />
-		</LinearLayout>
+            <net.dian1.player.widget.ProgressBar
+                android:id="@+id/ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"></net.dian1.player.widget.ProgressBar>
+        </LinearLayout>
 
-		<!-- (2) Failure -->
-		<LinearLayout android:orientation="vertical"
-			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:layout_marginLeft="15dip" android:gravity="left|center_vertical">
-			<net.dian1.player.widget.FailureBar
-				android:id="@+id/FailureBar" android:layout_width="wrap_content"
-				android:layout_height="wrap_content">
-			</net.dian1.player.widget.FailureBar>
-		</LinearLayout>
-	</net.dian1.player.util.FixedViewFlipper>
+        <!-- (1) Gallery -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center">
 
-	<android.gesture.GestureOverlayView
-		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/gestures"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
+            <Gallery
+                android:id="@+id/Gallery"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:spacing="0px" />
+        </LinearLayout>
 
-		android:gestureStrokeType="multiple"
-		android:eventsInterceptionEnabled="false" android:orientation="vertical">
+        <!-- (2) Failure -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="15dip"
+            android:gravity="left|center_vertical">
 
-		<ListView android:id="@+id/HomeListView"
-			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:divider="#000" />
-	</android.gesture.GestureOverlayView>
+            <net.dian1.player.widget.FailureBar
+                android:id="@+id/FailureBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"></net.dian1.player.widget.FailureBar>
+        </LinearLayout>
+    </net.dian1.player.util.FixedViewFlipper>
+
+    <android.gesture.GestureOverlayView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gestures"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+
+        android:gestureStrokeType="multiple"
+        android:eventsInterceptionEnabled="false"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/HomeListView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="#000" />
+    </android.gesture.GestureOverlayView>
 
 </LinearLayout>

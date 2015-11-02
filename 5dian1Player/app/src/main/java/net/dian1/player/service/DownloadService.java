@@ -21,12 +21,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.activity.DownloadActivity;
+import net.dian1.player.activity.PlayerActivity;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.download.DownloadHelper;
 import net.dian1.player.download.DownloadJob;
@@ -110,22 +114,24 @@ public class DownloadService extends Service {
 
 	};
 	
-	private void displayNotifcation(DownloadJob job)
-	{
-
+	private void displayNotifcation(DownloadJob job) {
 		String notificationMessage = job.getPlaylistEntry().getMusic().getName() + " - " + job.getPlaylistEntry().getAlbum().getArtistName();
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+				new Intent( this, DownloadActivity.class), 0);
+		Resources res = getResources();
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+		builder.setContentIntent(contentIntent)
+				.setSmallIcon(android.R.drawable.stat_sys_download_done)
+				.setLargeIcon(BitmapFactory.decodeResource(res, android.R.drawable.stat_sys_download_done))
+				.setTicker(notificationMessage)
+				.setWhen(System.currentTimeMillis())
+				.setAutoCancel(true)
+				.setContentTitle(getString(R.string.downloaded))
+				.setContentText(notificationMessage);
+		Notification notification = builder.build();
+		notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
 
-		Notification notification = new Notification(
-				android.R.drawable.stat_sys_download_done, notificationMessage, System.currentTimeMillis() );
-
-		PendingIntent contentIntent = PendingIntent.getActivity( this, 0,
-				new Intent( this, DownloadActivity.class ), 0);
-
-		notification.setLatestEventInfo( this, getString(R.string.downloaded),
-				notificationMessage, contentIntent );
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-		mNotificationManager.notify( DOWNLOAD_NOTIFY_ID, notification );
+		mNotificationManager.notify(DOWNLOAD_NOTIFY_ID, notification);
 	}
 	
 
