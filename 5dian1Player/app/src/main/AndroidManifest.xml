@@ -27,6 +27,7 @@
         android:name=".Dian1Application">
         <activity
             android:name=".activity.HomeActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -35,6 +36,7 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -43,6 +45,7 @@
         </activity>
         <activity
             android:name=".activity.AlbumActivity"
+            android:screenOrientation="portrait"
             android:label="@string/album">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -51,6 +54,7 @@
         </activity>
         <activity
             android:name=".activity.PlayerActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -60,7 +64,7 @@
 
         <activity
             android:name=".activity.RepoActivity"
-            android:label="@string/player_name"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -71,7 +75,7 @@
 
         <activity
             android:name=".activity.LocalBrowserActivity"
-            android:label="@string/player_name"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -82,6 +86,7 @@
 
         <activity
             android:name=".activity.SearchActivity"
+            android:screenOrientation="portrait"
             android:label="@string/search">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -90,6 +95,7 @@
         </activity>
         <activity
             android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait"
             android:label="@string/search">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -98,6 +104,7 @@
         </activity>
         <activity
             android:name=".activity.ArtistActivity"
+            android:screenOrientation="portrait"
             android:label="@string/artist">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -106,6 +113,7 @@
         </activity>
         <activity
             android:name=".activity.PlaylistActivity"
+            android:screenOrientation="portrait"
             android:label="@string/playlist">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -114,6 +122,7 @@
         </activity>
         <activity
             android:name=".activity.BrowsePlaylistActivity"
+            android:screenOrientation="portrait"
             android:label="@string/playlist">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -122,6 +131,7 @@
         </activity>
         <activity
             android:name=".activity.RadioActivity"
+            android:screenOrientation="portrait"
             android:label="@string/playlist">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -130,6 +140,7 @@
         </activity>
         <activity
             android:name=".activity.DownloadActivity"
+            android:screenOrientation="portrait"
             android:label="@string/playlist">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -138,6 +149,7 @@
         </activity>
         <activity
             android:name=".activity.StarredAlbumsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/playlist">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -236,17 +248,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"></action>
                 <category android:name="android.intent.category.LAUNCHER"></category>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.login.LoginActivity">
+        <activity android:name=".activity.login.LoginActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.login.ChangePwdActivity">
+        <activity android:name=".activity.login.ChangePwdActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activity.login.PwdForgetActivity">
+        <activity android:name=".activity.login.PwdForgetActivity"
+            android:screenOrientation="portrait">
         </activity>
 
     </application>
