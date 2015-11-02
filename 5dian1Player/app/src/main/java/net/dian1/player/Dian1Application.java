@@ -40,6 +40,8 @@ import net.dian1.player.log.LogUtil;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineListener;
 import net.dian1.player.model.UserInfo;
+import net.dian1.player.model.authority.Authority;
+import net.dian1.player.model.authority.AuthorityPolicy;
 import net.dian1.player.service.PlayerService;
 import net.dian1.player.util.ImageCache;
 import net.dian1.player.download.DownloadManager;
@@ -123,6 +125,9 @@ public class Dian1Application extends Application {
 
 	// 用户登录信息
 	private UserInfo user;
+
+	// 用户权限
+	private Authority userAuthority = new Authority();
 
 	public static Dian1Application getInstance() {
 		return instance;
@@ -351,6 +356,16 @@ public class Dian1Application extends Application {
 
 	public void setUser(UserInfo user) {
 		this.user = user;
+		userAuthority = AuthorityPolicy.getAuthority(user != null ? user.getIsappvip() : 0);
+	}
+
+	/**
+	 * 返回用户权限
+	 *
+	 * @return
+	 */
+	public Authority getUserAuthority() {
+		return userAuthority;
 	}
 
 	public void logoff() {

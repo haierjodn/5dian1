@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="user_portrait">90dp</dimen>
+    <dimen name="user_portrait">68dp</dimen>
 
     <dimen name="tab_size">32px</dimen>
     <dimen name="icon_size">48px</dimen>

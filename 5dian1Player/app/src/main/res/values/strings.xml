@@ -143,6 +143,12 @@
     <string name="equalizer">Equalizer</string>
     <string name="custom">Custom</string>
 
+    <!-- Main -->
+    <string name="user_gold_expired">金砖会员剩余%d天</string>
+    <string name="nickname_prefix">亲爱的%s</string>
+    <string name="user_ordinary">普通会员</string>
+
+
     <string name="login_btn">登录</string>
     <string name="login_acc">帐号</string>
     <string name="login_pwd">密码</string>
@@ -198,5 +204,6 @@
     <string name="setting_update_version">版本更新</string>
     <string name="setting_about">关于</string>
     <string name="setting_logout">退出登录</string>
+
 
 </resources>

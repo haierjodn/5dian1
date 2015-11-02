@@ -45,6 +45,7 @@ import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.UserInfo;
 import net.dian1.player.model.common.VersionLatest;
 import net.dian1.player.util.DialogUtils;
+import net.dian1.player.util.Helper;
 import net.dian1.player.widget.OnAlbumClickListener;
 
 /**
@@ -90,11 +91,17 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
         UserInfo userInfo = Dian1Application.getInstance().getUser();
         if(userInfo != null) {
             ImageView ivPortrait = (ImageView) findViewById(R.id.iv_portrait);
+            ImageView ivGold = (ImageView) findViewById(R.id.iv_gold);
             TextView tvUserName = (TextView) findViewById(R.id.tv_nickname);
             TextView tvLevel = (TextView) findViewById(R.id.tv_level);
-            TextView tvRenewal = (TextView) findViewById(R.id.tv_renewal);
-            tvUserName.setText(userInfo.getNickname());
-            tvLevel.setText(userInfo.getLevelName());
+            tvUserName.setText(getString(R.string.nickname_prefix, userInfo.getNickname()));
+            if(userInfo.getIsappvip() == 1) {
+                tvLevel.setText(getString(R.string.user_gold_expired , Helper.getTimeLeftFromNow(userInfo.getExpiredTime())));
+                ivGold.setImageResource(R.drawable.icon_level_gold);
+            } else {
+                tvLevel.setText(R.string.user_ordinary);
+                ivGold.setImageResource(R.drawable.icon_level_siliver);
+            }
             //tvRenewal.setText(userInfo.getNickname());
             showImage(ivPortrait, userInfo.getPortrait());
         }

@@ -22,6 +22,7 @@ import java.util.Locale;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.text.TextUtils;
 
 import net.dian1.player.api.PlaylistEntry;
@@ -65,6 +66,23 @@ public class Helper {
 			}
 		}
 		return 0;
+	}
+
+	/**
+	 * 用于计算系统时间至指定时间之间的天数
+	 *
+	 * @param time "1446472140"
+	 * @return
+	 */
+	public static int getTimeLeftFromNow(String time) {
+		long target = 0;
+		try {
+			target = Long.parseLong(time);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+		long current = System.currentTimeMillis()/1000;
+		return (int) ((target - current)/60/60/24 + 1);
 	}
 	
 	/**
