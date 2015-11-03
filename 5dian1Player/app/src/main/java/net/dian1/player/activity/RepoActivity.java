@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lidroid.xutils.BitmapUtils;
 
 import net.dian1.player.R;
@@ -44,6 +45,9 @@ import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.Album;
 import net.dian1.player.model.MusicDayResponse;
+import net.dian1.player.model.preference.MusicDay;
+import net.dian1.player.preferences.CommonPreference;
+
 
 import java.util.List;
 
@@ -103,6 +107,12 @@ public class RepoActivity extends Activity implements OnClickListener {
 	}
 
 	private void refreshData() {
+		MusicDay musicDay = retrieveMusicDay();
+		if(musicDay != null) {
+			musicDayList = musicDay.musicDay.getMusicDayList();
+			repoAdapter.notifyDataSetChanged();
+			return;
+		}
 		ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicDayApi.URL, MusicDayResponse.class,
 				ApiData.MusicDayApi.getParams(), new OnResultListener<MusicDayResponse>() {
 
@@ -112,6 +122,7 @@ public class RepoActivity extends Activity implements OnClickListener {
 				if (response != null) {
 					musicDayList = response.getMusicDayList();
 					repoAdapter.notifyDataSetChanged();
+					saveMusicDay(response);
 				}
 			}
 
@@ -133,6 +144,30 @@ public class RepoActivity extends Activity implements OnClickListener {
 				SearchActivity.launch(this);
 				break;
 		}
+	}
+
+	public void saveMusicDay(MusicDayResponse httpResponse) {
+		if(httpResponse != null) {
+			MusicDay musicDay = new MusicDay();
+			musicDay.updateTime = System.currentTimeMillis();
+			musicDay.musicDay = httpResponse;
+			String jsonString = JSONObject.toJSONString(musicDay);
+			CommonPreference.save(CommonPreference.MUSIC_DAY, jsonString);
+		}
+	}
+
+	public MusicDay retrieveMusicDay() {
+		String jsonString = CommonPreference.getString(CommonPreference.MUSIC_DAY, null);
+		if(!TextUtils.isEmpty(jsonString)) {
+			try {
+				MusicDay musicDay = JSONObject.parseObject(jsonString, MusicDay.class);
+				if(System.currentTimeMillis() - musicDay.updateTime < 1000 * 60 * 60 * 24) {
+					return musicDay;
+				}
+			} catch (Exception e) {
+			}
+		}
+		return null;
 	}
 
 	class RepoAdapter extends BaseAdapter{

@@ -70,7 +70,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
 			@Override
 			public void onResult(final VersionLatest response) {
-				if (response != null && response.hasUpdate && response.versionInfo != null && response.versionInfo.popup) {
+				if (response != null && response.hasUpdate && response.versionInfo != null) {
 					DialogUtils.showAppUpgradeDialog(SettingActivity.this, response);
 				}
 			}
