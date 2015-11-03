@@ -32,6 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -86,9 +87,9 @@ public class RepoActivity extends Activity implements OnClickListener {
 		gvRepoList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Album album = (Album) repoAdapter.getItem(position);
-				if(album != null) {
-					AlbumActivity.launch(RepoActivity.this, album.getId());
+				Object item = repoAdapter.getItem(position);
+				if(item != null && item instanceof Album) {
+					AlbumActivity.launch(RepoActivity.this, ((Album) item).getId());
 				}
 			}
 		});
@@ -110,7 +111,7 @@ public class RepoActivity extends Activity implements OnClickListener {
 		MusicDay musicDay = retrieveMusicDay();
 		if(musicDay != null) {
 			musicDayList = musicDay.musicDay.getMusicDayList();
-			repoAdapter.notifyDataSetChanged();
+			notifyDataSetChanged();
 			return;
 		}
 		ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicDayApi.URL, MusicDayResponse.class,
@@ -121,7 +122,7 @@ public class RepoActivity extends Activity implements OnClickListener {
 				//dismissDialog();
 				if (response != null) {
 					musicDayList = response.getMusicDayList();
-					repoAdapter.notifyDataSetChanged();
+					notifyDataSetChanged();
 					saveMusicDay(response);
 				}
 			}
@@ -134,12 +135,23 @@ public class RepoActivity extends Activity implements OnClickListener {
 		}));
 	}
 
+	private void notifyDataSetChanged() {
+		if(musicDayList != null && musicDayList.size() > 0) {
+			findViewById(R.id.tv_footer_content).setVisibility(View.VISIBLE);
+			findViewById(R.id.tv_footer_content).setOnClickListener(this);
+		} else {
+			findViewById(R.id.tv_footer_content).setVisibility(View.GONE);
+		}
+		repoAdapter.notifyDataSetChanged();
+	}
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.iv_back:
 				onBackPressed();
 				break;
+			case R.id.tv_footer_content:
 			case R.id.iv_search:
 				SearchActivity.launch(this);
 				break;

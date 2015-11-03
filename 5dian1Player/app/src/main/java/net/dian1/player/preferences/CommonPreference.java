@@ -62,7 +62,7 @@ public class CommonPreference {
 		}
 		return mPreferences.getInt(key, defValue);
 	}
-    
+
     /************* Preference Constants ********************/
     /** Ã¿ÈÕÍÆ¼ö */
     public final static String MUSIC_DAY = "music.day";

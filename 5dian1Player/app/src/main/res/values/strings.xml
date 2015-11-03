@@ -149,7 +149,7 @@
     <string name="user_ordinary">普通会员</string>
 
 
-    <string name="login_btn">登录</string>
+    <string name="login_btn">登陆</string>
     <string name="login_acc">帐号</string>
     <string name="login_pwd">密码</string>
     <string name="confirm">确定</string>
@@ -167,12 +167,12 @@
     <string name="cancel">取消</string>
     <string name="common_tip">提示</string>
 
-    <!--登录-->
+    <!--登陆-->
     <string name="login_forget">忘记密码?</string>
     <string name="login_forget_click">点击找回</string>
     <string name="login_acc_empty">帐号不能为空</string>
     <string name="login_pwd_empty">密码不能为空</string>
-    <string name="login_ing">登录中...</string>
+    <string name="login_ing">登陆中...</string>
 
     <!--修改密码-->
     <string name="change_title">修改密码</string>
@@ -203,7 +203,7 @@
     <string name="setting_adjust">均衡器</string>
     <string name="setting_update_version">版本更新</string>
     <string name="setting_about">关于</string>
-    <string name="setting_logout">退出登录</string>
+    <string name="setting_logout">退出登陆</string>
 
 
 </resources>

@@ -7,15 +7,29 @@
 
     <include layout="@layout/common_header" />
 
-    <GridView
-        android:id="@+id/gv_repo_list"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:numColumns="2"
-        android:columnWidth="5dip"
-        android:cacheColorHint="#00000000"
-        android:stretchMode="columnWidth"/>
+        android:layout_height="wrap_content">
+
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <net.dian1.player.widget.GridViewNoneScroll
+                android:id="@+id/gv_repo_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:numColumns="2"
+                android:columnWidth="5dip"
+                android:cacheColorHint="#00000000"
+                android:stretchMode="columnWidth"/>
+
+            <include layout="@layout/common_text_footer"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 
     <include layout="@layout/player_controller_container" />
 
