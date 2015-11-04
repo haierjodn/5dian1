@@ -119,9 +119,11 @@ public class DownloadProviderDbImpl implements DownloadProvider {
 
 	@Override
 	public boolean trackAvailable(Music music) {
-		for (DownloadJob dJob : mCompletedJobs) {
-			if (music.getId() == dJob.getPlaylistEntry().getMusic().getId()) {
-				return true;
+		if(music != null) {
+			for (DownloadJob dJob : mCompletedJobs) {
+				if (music.getId() == dJob.getPlaylistEntry().getMusic().getId()) {
+					return true;
+				}
 			}
 		}
 		return false;

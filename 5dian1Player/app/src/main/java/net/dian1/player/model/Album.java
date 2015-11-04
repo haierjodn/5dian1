@@ -1,6 +1,8 @@
 package net.dian1.player.model;
 
+import net.dian1.player.Dian1Application;
 import net.dian1.player.api.Playlist;
+import net.dian1.player.model.authority.Authority;
 import net.dian1.player.util.AudioUtils;
 
 import java.util.List;
@@ -85,6 +87,8 @@ public class Album {
 
     public Playlist buildPlaylist(int position) {
         if(songList != null && songList.size() > 0) {
+            Authority authority = Dian1Application.getInstance().getUserAuthority();
+            int maxLen = authority.searchAlbumAll ? songList.size() : Math.min(songList.size(), 2);
             Playlist playlist = new Playlist();
             playlist.setPlaylistPlaybackMode(Playlist.PlaylistPlaybackMode.SHUFFLE);
             playlist.setPlaylistPlaybackMode(Playlist.PlaylistPlaybackMode.NORMAL);
@@ -95,8 +99,8 @@ public class Album {
             album.setRating(0.5d);
             album.setImage(getPic());
 
-            net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[songList.size()];
-            for(int i = 0; i < songList.size(); i++) {
+            net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[maxLen];
+            for(int i = 0; i < maxLen; i++) {
                 final Music music = songList.get(i);
                 net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);
                 musics[(i + position) % musics.length] = music1;

@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
@@ -97,5 +98,9 @@ public class DialogUtils {
             });
         }
         dialog.show();
+    }
+
+    public static void showNoAuthorityAndJumpPage(final Context context) {
+        Toast.makeText(context, "No authority, would u please go to purchase page?", Toast.LENGTH_LONG).show();
     }
 }

@@ -51,6 +51,7 @@ public class AudioLoaderTask extends AsyncQueryHandler {
     }
 
     public void loadData() {
+        //where length(title) < 20
         startQuery(0, (Object) null, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 AudioLoaderTask.DEF_PROJECTION, AudioLoaderTask.DEF_SELECTION_ALL,
                 null, null);

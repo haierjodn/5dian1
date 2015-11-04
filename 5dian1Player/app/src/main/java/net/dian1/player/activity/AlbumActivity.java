@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.adapter.ArrayListAdapter;
 import net.dian1.player.api.Review;
@@ -48,6 +49,7 @@ import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.Album;
 import net.dian1.player.model.Music;
+import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.ImageUtils;
 import net.dian1.player.util.MockUtils;
 
@@ -139,7 +141,13 @@ public class AlbumActivity extends BaseActivity {
         musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PlayerActivity.launch(AlbumActivity.this, mAlbum.buildPlaylist(position)/*MockUtils.buildSamplePlaylist()*/);
+                Dian1Application.getInstance().getUserAuthority();
+                if(position > 1 && !Dian1Application.getInstance().getUserAuthority().searchAlbumAll) {
+                    DialogUtils.showNoAuthorityAndJumpPage(AlbumActivity.this);
+                } else {
+                    PlayerActivity.launch(AlbumActivity.this,
+                            mAlbum.buildPlaylist(position)/*MockUtils.buildSamplePlaylist()*/);
+                }
             }
         });
 
