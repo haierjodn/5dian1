@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.dian1.player.R;
 import net.dian1.player.adapter.ArrayListAdapter;
@@ -48,7 +49,7 @@ import net.dian1.player.util.AudioUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends Activity implements OnClickListener {
+public class SearchActivity extends BaseActivity implements OnClickListener {
 
 	private View btnSearch;
 
@@ -127,8 +128,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void onResultError(String msg, String code) {
-				//dismissDialog();
-				//showToastSafe(msg, Toast.LENGTH_SHORT);
+				showToastSafe(R.string.search_failed, Toast.LENGTH_SHORT);
 			}
 		}));
 	}

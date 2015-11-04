@@ -113,6 +113,29 @@
             android:textColor="@color/white"
             android:textSize="@dimen/normal_x" />
 
+        <LinearLayout
+            android:id="@+id/ll_forget_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_login"
+            android:gravity="center"
+            android:padding="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="6dp"
+                android:text="@string/login_forget"
+                android:textColor="@color/font_gray"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_forget_click"
+                android:textColor="@color/font_gray"/>
+        </LinearLayout>
+
 
     </RelativeLayout>
 

@@ -140,6 +140,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
             }
         });
+        findViewById(R.id.ll_forget_pwd).setOnClickListener(this);
     }
 
     @Override
@@ -188,6 +189,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
                 isShowPwd = !isShowPwd;
 
+                break;
+            case R.id.ll_forget_pwd:
+                PwdForgetActivity.startAction(this);
                 break;
         }
     }

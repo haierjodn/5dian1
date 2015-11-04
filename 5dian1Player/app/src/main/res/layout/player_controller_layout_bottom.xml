@@ -30,7 +30,7 @@
             android:layout_marginTop="5dp"
             android:text="在爱与痛的边缘"
             android:textSize="@dimen/normal_s"
-            android:textColor="@color/font_blue"
+            android:textColor="@color/font_white"
             android:singleLine="true" />
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_marginBottom="5dp"
             android:text="王菲"
             android:textSize="@dimen/normal_s"
-            android:textColor="@color/font_gray"
+            android:textColor="@color/font_white"
             android:singleLine="true" />
     </LinearLayout>
 

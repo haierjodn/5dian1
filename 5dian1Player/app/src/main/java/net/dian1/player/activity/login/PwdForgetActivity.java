@@ -21,7 +21,7 @@ import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.DMSResponse;
-import net.dian1.player.model.login.PwdResetParam;
+import net.dian1.player.model.login.SecurityParam;
 import net.dian1.player.model.login.ValidCodeParam;
 
 
@@ -123,8 +123,13 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 			}
 			//showDialog();
 			final String password = et_pwd.getText().toString();
-			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.PwdResetApi.URL, DMSResponse.class,
-					ApiData.PwdResetApi.setParams(new PwdResetParam(phone, password, code)), new OnResultListener<DMSResponse>() {
+			SecurityParam param = new SecurityParam();
+			param.setAct("resetpwd");
+			param.setAuthCode(code);
+			param.setPhone(phone);
+			param.setNewPwd(password);
+			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.SecurityApi.URL, DMSResponse.class,
+					ApiData.SecurityApi.getParams(param), new OnResultListener<DMSResponse>() {
 				@Override
 				public void onResult(DMSResponse response) {
 					//dismissDialog();
@@ -150,7 +155,8 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 				return;
 			}
 			//showDialog(getString(R.string.forget_gain_code));
-			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.ValidCodeApi.URL, ApiData.ValidCodeApi.setParams(new ValidCodeParam(phone, "password")), new OnResultListener() {
+			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.ValidCodeApi.URL, ApiData.ValidCodeApi.getParams(
+					new ValidCodeParam("getcode_findpwd", "", phone)), new OnResultListener() {
 
 				@Override
 				public void onResult(Object response) {

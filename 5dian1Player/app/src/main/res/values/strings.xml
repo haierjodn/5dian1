@@ -167,6 +167,9 @@
     <string name="cancel">取消</string>
     <string name="common_tip">提示</string>
 
+    <!-- Search -->
+    <string name="search_failed">搜索失败!</string>
+
     <!--登陆-->
     <string name="login_forget">忘记密码?</string>
     <string name="login_forget_click">点击找回</string>

@@ -8,6 +8,7 @@ import com.lidroid.xutils.http.RequestParams;
 import net.dian1.player.model.LoginParam;
 import net.dian1.player.model.login.PwdResetParam;
 import net.dian1.player.model.login.PwdUpdateParam;
+import net.dian1.player.model.login.SecurityParam;
 import net.dian1.player.model.login.ValidCodeParam;
 
 import org.w3c.dom.Text;
@@ -121,7 +122,7 @@ public class ApiData extends Api {
          */
         public static RequestParams getParams(String keywords) {
             final RequestParams params = new RequestParams();
-            if(!TextUtils.isEmpty(keywords)) {
+            if (!TextUtils.isEmpty(keywords)) {
                 params.addQueryStringParameter("keywords", keywords);
             }
             params.addQueryStringParameter("pagesize", String.valueOf(50));
@@ -148,10 +149,8 @@ public class ApiData extends Api {
 
         public static final String URL = API_URL + "/security.asp";
 
-        public static RequestParams getParams() {
-            final RequestParams params = new RequestParams();
-
-            return params;
+        public static RequestParams getParams(SecurityParam param) {
+            return new ApiData().new ApiRequestParams(param);
         }
 
     }
@@ -165,14 +164,7 @@ public class ApiData extends Api {
         }
     }
 
-    public static class ValidCodeApi {
 
-        public static final String URL = API_URL + "/getcode.asp";
-
-        public static ApiRequestParams setParams(ValidCodeParam param) {
-            return new ApiData().new ApiRequestParams(param);
-        }
-    }
 
     // 2.3 找回密码
     public static class PwdResetApi {
@@ -183,5 +175,16 @@ public class ApiData extends Api {
             return new ApiData().new ApiRequestParams(param);
         }
     }
+
+    public static class ValidCodeApi {
+
+        public static final String URL = API_URL + "/getcode.asp";
+
+        public static ApiRequestParams getParams(ValidCodeParam param) {
+            return new ApiData().new ApiRequestParams(param);
+        }
+    }
+
+
 
 }

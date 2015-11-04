@@ -16,7 +16,6 @@
 
 package net.dian1.player.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,13 +27,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.lidroid.xutils.BitmapUtils;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
@@ -45,18 +45,15 @@ import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.dialog.AddToPlaylistDialog;
 import net.dian1.player.dialog.LoadingDialog;
-import net.dian1.player.dialog.LyricsDialog;
 import net.dian1.player.download.DownloadManager;
 import net.dian1.player.download.DownloadObserver;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
-import net.dian1.player.log.LogUtil;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineListener;
 import net.dian1.player.media.local.AudioLoaderTask;
-import net.dian1.player.model.SearchResult;
 import net.dian1.player.util.AudioUtils;
 import net.dian1.player.util.Helper;
 import net.dian1.player.util.OnSeekToListenerImp;
@@ -422,6 +419,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
                 albumPath = music.getAlbum();
             }
             showImage(mCoverImageView, albumPath);
+            startRotatoAnim();
 
             mSongTextView.setText(playlistEntry.getMusic().getName());
             ((TextView) findViewById(R.id.tv_title)).setText(playlistEntry.getMusic().getName());
@@ -477,7 +475,6 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         public void onTrackStreamError() {
             Toast.makeText(PlayerActivity.this, R.string.stream_error, Toast.LENGTH_LONG).show();
         }
-
     };
 
     /**
@@ -500,6 +497,15 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
                     downloadPlaylist();
                 }
             }
+        }
+    }
+
+    private void startRotatoAnim() {
+        Animation operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rotato);
+        LinearInterpolator lin = new LinearInterpolator();
+        operatingAnim.setInterpolator(lin);
+        if (operatingAnim != null) {
+            mCoverImageView.startAnimation(operatingAnim);
         }
     }
 
