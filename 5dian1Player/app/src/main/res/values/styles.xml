@@ -1,5 +1,39 @@
 <resources>
 
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="AppTheme.Base">
+    </style>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- Actionbar color -->
+        <item name="colorPrimary">#27a7e0</item>
+        <!--Status bar color-->
+        <item name="colorPrimaryDark">@color/accent_material_light</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <!--Window color-->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+    </style>
+
+    <style name="Theme.WebTheme" parent="Theme.AppCompat.Light">
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">#27a7e0</item>
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/primary_dark_material_light</item>
+
+        <!-- colorAccent is used as the default value for colorControlActivated
+             which is used to tint widgets -->
+        <item name="colorAccent">@color/accent_material_light</item>
+
+        <item name="android:textColorSecondary">@color/white</item>
+
+
+        <!-- You can also set colorControlNormal, colorControlActivated
+             colorControlHighlight & colorSwitchThumbNormal. -->
+    </style>
+
     <style name="common_setting_item">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

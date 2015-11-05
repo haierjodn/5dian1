@@ -126,13 +126,9 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 			}
 			//showDialog();
 			final String password = et_pwd.getText().toString();
-			SecurityParam param = new SecurityParam();
-			param.setAct("resetpwd");
-			param.setAuthCode(code);
-			param.setPhone(phone);
-			param.setNewPwd(password);
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.SecurityApi.URL, DMSResponse.class,
-					ApiData.SecurityApi.getParams(param), new OnResultListener<DMSResponse>() {
+					ApiData.SecurityApi.getParams(SecurityParam.getPwdForgetParam(code, phone, password)),
+					new OnResultListener<DMSResponse>() {
 				@Override
 				public void onResult(DMSResponse response) {
 					//dismissDialog();

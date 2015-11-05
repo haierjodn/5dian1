@@ -19,6 +19,8 @@ import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.DMSResponse;
 import net.dian1.player.model.login.PwdUpdateParam;
+import net.dian1.player.model.login.RegisterParam;
+import net.dian1.player.model.login.SecurityParam;
 
 
 /**
@@ -86,8 +88,8 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 			String newPassword = et_new.getText().toString();
 			//showDialog();
 			// 修改密码
-			ApiManager.getInstance().send(new ApiRequest(this, ApiData.PwdUpdateApi.URL, DMSResponse.class,
-					ApiData.PwdUpdateApi.setParams(new PwdUpdateParam(oldPassword, newPassword)), new OnResultListener<DMSResponse>() {
+			ApiManager.getInstance().send(new ApiRequest(this, ApiData.SecurityApi.URL, DMSResponse.class,
+					ApiData.SecurityApi.getParams(SecurityParam.getPwdSetParam(oldPassword, newPassword)), new OnResultListener<DMSResponse>() {
 
 				@Override
 				public void onResult(DMSResponse response) {

@@ -35,12 +35,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 	/**
 	 * 倒计时
 	 */
-	public static final int FORGET_TIME_PROCESS_MESSAGE = 0x0002;
+	public static final int REGISTER_TIME_PROCESS_MESSAGE = 0x0002;
 
 	/**
 	 * 倒计时结束
 	 */
-	public static final int FORGET_TIME_FINISH_MESSAGE = 0x0001;
+	public static final int REGISTER_TIME_FINISH_MESSAGE = 0x0001;
 
 	private EditText et_phone;
 
@@ -170,7 +170,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 						@Override
 						public void run() {
 							while (time != 0) {
-								mHandler.sendEmptyMessage(FORGET_TIME_PROCESS_MESSAGE);
+								mHandler.sendEmptyMessage(REGISTER_TIME_PROCESS_MESSAGE);
 								try {
 									Thread.sleep(1000);
 								} catch (InterruptedException e) {
@@ -179,7 +179,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 								time--;
 							}
 							time = 10;
-							mHandler.sendEmptyMessage(FORGET_TIME_FINISH_MESSAGE);
+							mHandler.sendEmptyMessage(REGISTER_TIME_FINISH_MESSAGE);
 
 						}
 					}).start();
@@ -220,12 +220,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 	@Override
 	protected void onHandleMessage(Message msg) {
 		switch (msg.what) {
-		case FORGET_TIME_FINISH_MESSAGE:
+		case REGISTER_TIME_FINISH_MESSAGE:
 			tv_gain_code.setClickable(true);
 			tv_gain_code.setText(R.string.forget_gain_code);
 			tv_gain_code.setBackgroundColor(getResources().getColor(R.color.green));
 			break;
-		case FORGET_TIME_PROCESS_MESSAGE:
+		case REGISTER_TIME_PROCESS_MESSAGE:
 			tv_gain_code.setClickable(false);
 			tv_gain_code.setText(time + getString(R.string.forget_regain_code));
 			tv_gain_code.setBackgroundColor(getResources().getColor(R.color.green_transparent_50));

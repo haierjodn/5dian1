@@ -104,6 +104,7 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
             }
             //tvRenewal.setText(userInfo.getNickname());
             showImage(ivPortrait, userInfo.getPortrait());
+            ivGold.setOnClickListener(this);
         }
     }
 
@@ -136,6 +137,9 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                 break;
             case R.id.tv_setting:
                 SettingActivity.startAction(MainActivity.this);
+                break;
+            case R.id.iv_gold:
+
                 break;
         }
     }

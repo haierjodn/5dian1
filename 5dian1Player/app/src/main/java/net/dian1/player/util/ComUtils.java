@@ -21,9 +21,12 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+
+import net.dian1.player.activity.BrowserActivity;
 
 import java.security.MessageDigest;
 import java.util.List;
@@ -194,5 +197,14 @@ public class ComUtils {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public static void openBrowser(Context context, String url, String title) {
+		Intent intent = new Intent(context, BrowserActivity.class);
+		intent.putExtra("url", url);
+		if(!TextUtils.isEmpty(title)) {
+			intent.putExtra("title", title);
+		}
+		context.startActivity(intent);
 	}
 }

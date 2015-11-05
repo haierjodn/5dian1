@@ -33,13 +33,23 @@ public class SecurityParam extends ApiParam {
     public SecurityParam() {
     }
 
-    public SecurityParam(String pageNum, String pageSize, String act, String uid, String phone, String oldPwd, String newPwd, String authCode) {
-        this.act = act;
-        this.uid = uid;
-        this.phone = phone;
-        this.oldPwd = oldPwd;
-        this.newPwd = newPwd;
-        this.authCode = authCode;
+    public static SecurityParam getPwdForgetParam(String code, String phone, String password) {
+        SecurityParam param = new SecurityParam();
+        param.setAct("resetpwd");
+        param.setAuthCode(code);
+        param.setPhone(phone);
+        param.setNewPwd(password);
+        return param;
+    }
+
+    public static SecurityParam getPwdSetParam(String oldPwd, String newPwd) {
+        SecurityParam param = new SecurityParam();
+        param.setAct("resetpwd");
+        param.setOldPwd(oldPwd);
+        param.setNewPwd(newPwd);
+        //param.setAuthCode(code);
+        //param.setPhone(phone);
+        return param;
     }
 
     public String getAct() {
