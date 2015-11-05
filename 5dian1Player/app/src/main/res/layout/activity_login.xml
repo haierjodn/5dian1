@@ -114,25 +114,26 @@
             android:textSize="@dimen/normal_x" />
 
         <LinearLayout
-            android:id="@+id/ll_forget_pwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_login"
             android:gravity="center"
-            android:padding="10dp"
             android:orientation="horizontal">
 
-            <TextView
+            <TextView android:id="@+id/tv_forget_pwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="6dp"
+                android:gravity="center"
+                android:padding="10dp"
                 android:text="@string/login_forget"
                 android:textColor="@color/font_gray"/>
 
-            <TextView
+            <TextView android:id="@+id/tv_register_free"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/login_forget_click"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/register_free"
                 android:textColor="@color/font_gray"/>
         </LinearLayout>
 

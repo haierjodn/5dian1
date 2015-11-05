@@ -64,7 +64,7 @@ public class CommonPreference {
 	}
 
     /************* Preference Constants ********************/
-    /** Ã¿ÈÕÍÆ¼ö */
+    /** æ¯æ—¥æ¨è */
     public final static String MUSIC_DAY = "music.day";
 
 

@@ -8,6 +8,7 @@ import com.lidroid.xutils.http.RequestParams;
 import net.dian1.player.model.LoginParam;
 import net.dian1.player.model.login.PwdResetParam;
 import net.dian1.player.model.login.PwdUpdateParam;
+import net.dian1.player.model.login.RegisterParam;
 import net.dian1.player.model.login.SecurityParam;
 import net.dian1.player.model.login.ValidCodeParam;
 
@@ -181,6 +182,15 @@ public class ApiData extends Api {
         public static final String URL = API_URL + "/getcode.asp";
 
         public static ApiRequestParams getParams(ValidCodeParam param) {
+            return new ApiData().new ApiRequestParams(param);
+        }
+    }
+
+    public static class RegisterApi {
+
+        public static final String URL = API_URL + "/reg.asp";
+
+        public static ApiRequestParams getParams(RegisterParam param) {
             return new ApiData().new ApiRequestParams(param);
         }
     }

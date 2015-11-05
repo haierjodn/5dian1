@@ -52,7 +52,7 @@ import net.dian1.player.preferences.CommonPreference;
 
 import java.util.List;
 
-public class RepoActivity extends Activity implements OnClickListener {
+public class RepoActivity extends BaseActivity implements OnClickListener {
 
 
 	private RepoAdapter repoAdapter;

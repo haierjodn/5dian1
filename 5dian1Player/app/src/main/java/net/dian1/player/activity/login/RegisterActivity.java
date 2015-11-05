@@ -21,6 +21,7 @@ import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.DMSResponse;
+import net.dian1.player.model.login.RegisterParam;
 import net.dian1.player.model.login.SecurityParam;
 import net.dian1.player.model.login.ValidCodeParam;
 
@@ -29,7 +30,7 @@ import net.dian1.player.model.login.ValidCodeParam;
  * Created by Six.SamA on 2015/8/17.
  * Email:MephistoLake@gmail.com
  */
-public class PwdForgetActivity extends BaseActivity implements View.OnClickListener{
+public class RegisterActivity extends BaseActivity implements View.OnClickListener{
 
 	/**
 	 * 倒计时
@@ -60,21 +61,20 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 	private Context ctx = this;
 
 	public static void startAction(Context ctx) {
-		Intent intent = new Intent(ctx, PwdForgetActivity.class);
+		Intent intent = new Intent(ctx, RegisterActivity.class);
 		ctx.startActivity(intent);
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_pwd_forget);
+		setContentView(R.layout.activity_register);
 		initView();
 	}
 
 	protected void initView() {
-		setupHeader(R.string.forget_password);
+		setupHeader(R.string.register);
 		findViewById(R.id.iv_search).setVisibility(View.GONE);
-
 		et_phone = (EditText) findViewById(R.id.et_phone);
 		et_code = (EditText) findViewById(R.id.et_code);
 		et_pwd = (EditText) findViewById(R.id.et_pwd);
@@ -126,17 +126,16 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 			}
 			//showDialog();
 			final String password = et_pwd.getText().toString();
-			SecurityParam param = new SecurityParam();
-			param.setAct("resetpwd");
+			RegisterParam param = new RegisterParam();
 			param.setAuthCode(code);
 			param.setPhone(phone);
-			param.setNewPwd(password);
-			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.SecurityApi.URL, DMSResponse.class,
-					ApiData.SecurityApi.getParams(param), new OnResultListener<DMSResponse>() {
+			param.setPwd(password);
+			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.RegisterApi.URL, DMSResponse.class,
+					ApiData.RegisterApi.getParams(param), new OnResultListener<DMSResponse>() {
 				@Override
 				public void onResult(DMSResponse response) {
 					//dismissDialog();
-					Toast.makeText(ctx, R.string.forget_reset_success, Toast.LENGTH_SHORT).show();
+					Toast.makeText(ctx, R.string.register_success, Toast.LENGTH_SHORT).show();
 					finish();
 				}
 				@Override
@@ -159,7 +158,7 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 			}
 			//showDialog(getString(R.string.forget_gain_code));
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.ValidCodeApi.URL, ApiData.ValidCodeApi.getParams(
-					new ValidCodeParam("getcode_findpwd", "", phone)), new OnResultListener() {
+					ValidCodeParam.getRegisterCodeParam(phone)), new OnResultListener() {
 
 				@Override
 				public void onResult(Object response) {

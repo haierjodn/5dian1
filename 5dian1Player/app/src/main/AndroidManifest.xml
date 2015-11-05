@@ -264,6 +264,10 @@
         <activity android:name=".activity.login.PwdForgetActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".activity.login.RegisterActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
 
     </application>
 
