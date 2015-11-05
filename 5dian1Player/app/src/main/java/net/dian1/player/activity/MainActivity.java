@@ -44,6 +44,7 @@ import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.UserInfo;
 import net.dian1.player.model.common.VersionLatest;
+import net.dian1.player.util.ComUtils;
 import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.Helper;
 import net.dian1.player.widget.OnAlbumClickListener;
@@ -139,7 +140,11 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                 SettingActivity.startAction(MainActivity.this);
                 break;
             case R.id.iv_gold:
-
+                if(Dian1Application.getInstance().getUser().getIsappvip() == 1) {
+                    ComUtils.openBrowser(this, "http://www.5dian1.net/user/upgrade.asp", "WEB1");
+                } else {
+                    ComUtils.openBrowser(this, "http://www.5dian1.net/user/upgrade.asp", "WEB2");
+                }
                 break;
         }
     }
