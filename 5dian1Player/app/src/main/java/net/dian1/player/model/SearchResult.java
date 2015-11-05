@@ -7,7 +7,7 @@ public class SearchResult {
 
 	private PageInfo pageInfo;
 
-	private List<Music> songList;
+	private List<Album> albumList;
 
 	public PageInfo getPageInfo() {
 		return pageInfo;
@@ -17,11 +17,11 @@ public class SearchResult {
 		this.pageInfo = pageInfo;
 	}
 
-	public List<Music> getSongList() {
-		return songList;
+	public List<Album> getAlbumList() {
+		return albumList;
 	}
 
-	public void setSongList(List<Music> songList) {
-		this.songList = songList;
+	public void setAlbumList(List<Album> albumList) {
+		this.albumList = albumList;
 	}
 }

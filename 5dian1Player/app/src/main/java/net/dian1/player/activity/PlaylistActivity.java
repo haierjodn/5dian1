@@ -250,7 +250,7 @@ public class PlaylistActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == BrowsePlaylistActivity.SAVE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-			Toast.makeText(this, "Playlist saved", 2000).show();
+			Toast.makeText(this, "Playlist saved", Toast.LENGTH_SHORT).show();
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

@@ -33,14 +33,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.adapter.ArrayListAdapter;
-import net.dian1.player.api.Review;
 import net.dian1.player.common.Extra;
 import net.dian1.player.dialog.AlbumLoadingDialog;
 import net.dian1.player.http.ApiData;
@@ -51,10 +52,12 @@ import net.dian1.player.model.Album;
 import net.dian1.player.model.Music;
 import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.ImageUtils;
-import net.dian1.player.util.MockUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class AlbumActivity extends BaseActivity {
+public class AlbumActivity extends BaseActivity implements View.OnClickListener {
 
     private long albumId;
     private Album mAlbum;
@@ -134,6 +137,7 @@ public class AlbumActivity extends BaseActivity {
 
     private void initView() {
         setupHeader(-1);
+        findViewById(R.id.iv_search).setVisibility(View.GONE);
         musicListView = (ListView) findViewById(R.id.lv_music);
 
         mustListAdapter = new MustListAdapter(this);
@@ -141,8 +145,7 @@ public class AlbumActivity extends BaseActivity {
         musicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Dian1Application.getInstance().getUserAuthority();
-                if(position > 1 && !Dian1Application.getInstance().getUserAuthority().searchAlbumAll) {
+                if (position > 1 && !Dian1Application.getInstance().getUserAuthority().searchAlbumAll) {
                     DialogUtils.showNoAuthorityAndJumpPage(AlbumActivity.this);
                 } else {
                     PlayerActivity.launch(AlbumActivity.this,
@@ -150,11 +153,10 @@ public class AlbumActivity extends BaseActivity {
                 }
             }
         });
+        findViewById(R.id.tv_play).setOnClickListener(this);
+        findViewById(R.id.tv_download).setOnClickListener(this);
+        findViewById(R.id.tv_select).setOnClickListener(this);
 
-        int selectedReviewId = getIntent().getIntExtra("selectedReviewId", -1);
-        if (selectedReviewId != -1) {
-            selectReview(selectedReviewId);
-        }
     }
 
     private void refreshData() {
@@ -197,19 +199,10 @@ public class AlbumActivity extends BaseActivity {
      * Add whole album to the download queue
      */
     private void downloadAlbum() {
-
         AlertDialog alertDialog = new AlertDialog.Builder(AlbumActivity.this)
                 .setTitle(R.string.download_album_q)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-
-//				DownloadManager downloadManager = Dian1Application.getInstance().getDownloadManager();
-//				for(Music track : mAlbum.getMusics()) {
-//					PlaylistEntry entry = new PlaylistEntry();
-//					entry.setAlbum(mAlbum);
-//					entry.setMusic(track);
-//					downloadManager.download(entry);
-//				}
 
                     }
                 })
@@ -219,16 +212,28 @@ public class AlbumActivity extends BaseActivity {
         alertDialog.show();
     }
 
-
-    private void selectReview(int selectedReviewId) {
-        for (int i = 0; i < mustListAdapter.getCount(); i++) {
-            if (((Review) mustListAdapter.getItem(i)).getId() == selectedReviewId) {
-                musicListView.setSelection(i);
-                return;
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_play: {
+                List<Music> list = mustListAdapter.getSelectedList();
+                if (list == null || list.size() < 1) {
+                    showToastSafe("No item selected", Toast.LENGTH_SHORT);
+                }
+                break;
+            }
+            case R.id.tv_select:
+                mustListAdapter.selectAll();
+                break;
+            case R.id.tv_download: {
+                List<Music> list = mustListAdapter.getSelectedList();
+                if (list == null || list.size() < 1) {
+                    showToastSafe("No item selected", Toast.LENGTH_SHORT);
+                }
+                break;
             }
         }
     }
-
 
     /**
      * Adapter representing reviews
@@ -237,8 +242,39 @@ public class AlbumActivity extends BaseActivity {
      */
     public class MustListAdapter extends ArrayListAdapter<Music> {
 
+        int maxSelectable = Dian1Application.getInstance().getUserAuthority().searchAlbumAll ? Integer.MAX_VALUE : 2;
+
+        boolean[] selected = null;
+
         public MustListAdapter(Activity context) {
             super(context);
+        }
+
+        public void selectAll() {
+            if(selected != null && selected.length > 0) {
+                boolean flag = selected[0];
+                for(int i=0; i < selected.length; i++) {
+                    selected[i] = (i < maxSelectable ? !flag : false);
+                }
+                notifyDataSetChanged();
+            }
+        }
+
+        public List<Music> getSelectedList() {
+            List<Music> selectedList = new ArrayList<>();
+            for(int i=0; i < mList.size(); i++) {
+                if(selected[i]) {
+                    selectedList.add(mList.get(i));
+                }
+            }
+            return selectedList;
+        }
+
+        public void setList(List<Music> list){
+            if(list != null && list.size() > 0) {
+                selected = new boolean[list.size()];
+            }
+            super.setList(list);
         }
 
         @Override
@@ -251,6 +287,7 @@ public class AlbumActivity extends BaseActivity {
                 holder.tvArtist = (TextView) row.findViewById(R.id.tv_artist);
                 holder.tvTitle = (TextView) row.findViewById(R.id.tv_title);
                 holder.tvPosition = (TextView) row.findViewById(R.id.tv_number);
+                holder.cbSelect = (CheckBox) row.findViewById(R.id.cb_select);
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -259,6 +296,7 @@ public class AlbumActivity extends BaseActivity {
             holder.tvTitle.setText(music.getName());
             holder.tvArtist.setText(TextUtils.isEmpty(music.getSinger()) ? "--" : music.getSinger());
             holder.tvPosition.setText(String.valueOf(position + 1));
+            holder.cbSelect.setChecked(selected == null ? false : selected[position]);
             return row;
         }
 
@@ -266,6 +304,7 @@ public class AlbumActivity extends BaseActivity {
             TextView tvPosition;
             TextView tvTitle;
             TextView tvArtist;
+            CheckBox cbSelect;
         }
 
     }

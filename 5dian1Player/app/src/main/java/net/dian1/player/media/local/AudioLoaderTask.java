@@ -89,7 +89,7 @@ public class AudioLoaderTask extends AsyncQueryHandler {
     }
 
     /**
-     * getSongList()
+     * getAlbumList()
      *
      * @param cursor
      */

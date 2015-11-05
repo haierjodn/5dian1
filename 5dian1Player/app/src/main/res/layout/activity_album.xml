@@ -45,8 +45,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:background="#90000000"
         android:orientation="horizontal">
         <TextView
@@ -54,9 +52,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="随机播放全部"
+            android:background="@drawable/common_block_press_selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="播放"
             android:textColor="#fff"
             android:textSize="@dimen/normal" />
         <TextView
@@ -64,6 +63,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/common_block_press_selector"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="下载"
             android:textColor="#fff"
             android:textSize="@dimen/normal" />
@@ -72,8 +74,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:background="@drawable/common_block_press_selector"
+            android:gravity="center"
+            android:padding="10dp"
             android:text="选择"
             android:textColor="#fff"
             android:textSize="@dimen/normal" />

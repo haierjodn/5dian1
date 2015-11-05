@@ -16,33 +16,35 @@
 
 package net.dian1.player.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lidroid.xutils.BitmapUtils;
+
 import net.dian1.player.R;
-import net.dian1.player.adapter.ArrayListAdapter;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.Album;
-import net.dian1.player.model.Music;
 import net.dian1.player.model.SearchResult;
 import net.dian1.player.util.AudioUtils;
 
@@ -55,9 +57,14 @@ public class SearchActivity extends BaseActivity implements OnClickListener {
 
 	private EditText editText;
 
-	private ListView gvRepoList;
+	private GridView gvRepoList;
+
+	private List<Album> musicDayList;
 
 	private SearchAdapter searchAdapter;
+
+	private int mScreenWidth;
+	private int mScreenHeight;
 
 
 	public static void launch(Context c){
@@ -71,6 +78,11 @@ public class SearchActivity extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_search);
+		Display display = getWindowManager().getDefaultDisplay();
+		mScreenHeight= display.getHeight();
+		mScreenWidth = display.getWidth();
+
+		musicDayList = new ArrayList<>();
 
 		initView();
 
@@ -87,13 +99,15 @@ public class SearchActivity extends BaseActivity implements OnClickListener {
 		btnSearch = findViewById(R.id.tv_search);
 		editText = (EditText) findViewById(R.id.et_search);
 		searchAdapter = new SearchAdapter(this);
-		gvRepoList = (ListView)findViewById(R.id.lv_music);
+		gvRepoList = (GridView)findViewById(R.id.gv_search);
 		gvRepoList.setAdapter(searchAdapter);
 		gvRepoList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				//AlbumActivity.launch(SearchActivity.this);
-				PlayerActivity.launch(SearchActivity.this, AudioUtils.buildPlaylist(searchAdapter.getList(), position));
+				Object item = searchAdapter.getItem(position);
+				if(item != null && item instanceof Album) {
+					AlbumActivity.launch(SearchActivity.this, ((Album) item).getId());
+				}
 			}
 		});
 
@@ -118,6 +132,9 @@ public class SearchActivity extends BaseActivity implements OnClickListener {
 
 	private void refreshData() {
 		String keyWords = editText.getText().toString();
+		if(TextUtils.isEmpty(keyWords)) {
+			return;
+		}
 		ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSearchApi.URL, SearchResult.class,
 				ApiData.MusicSearchApi.getParams(keyWords), new OnResultListener<SearchResult>() {
 
@@ -128,49 +145,85 @@ public class SearchActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onResultError(String msg, String code) {
-				showToastSafe(R.string.search_failed, Toast.LENGTH_SHORT);
+				showToastSafe(getString(R.string.search_failed) + "(" + msg + ")", Toast.LENGTH_SHORT);
 			}
 		}));
+		hideSoftInputFromWindow();
+	}
+
+	private void hideSoftInputFromWindow() {
+		InputMethodManager imm = (InputMethodManager)getSystemService(
+				Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 	}
 
 	private void updateView(SearchResult response) {
+		musicDayList.clear();
 		if(response != null) {
-			searchAdapter.setList(response.getSongList());
+			musicDayList.addAll(response.getAlbumList());
 		}
+		searchAdapter.notifyDataSetChanged();
 	}
 
-	//自定义适配器
-	class SearchAdapter extends ArrayListAdapter<Music> {
+	class SearchAdapter extends BaseAdapter{
 
-		public SearchAdapter(Activity context) {
-			super(context);
+		private Context context;
+
+		SearchAdapter(Context context){
+			this.context = context;
+		}
+
+		public int getCount() {
+			return musicDayList == null ? 0 : musicDayList.size();
+		}
+
+		public Object getItem(int position) {
+			return position >= getCount() ? null : musicDayList.get(position);
+		}
+
+		public long getItemId(int id) {
+			return id;
 		}
 
 		//创建View方法
 		public View getView(int position, View convertView, ViewGroup parent) {
-			ViewHolder holder;
+			ViewHolder viewHolder;
 			if (convertView == null) {
-				convertView = LayoutInflater.from(mContext).inflate(R.layout.search_list_item, null);
-				holder = new ViewHolder();
-				holder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
-				holder.tvStyle = (TextView) convertView.findViewById(R.id.tv_style);
-				holder.tvArtistAlbum = (TextView) convertView.findViewById(R.id.tv_artist_album);
-				convertView.setTag(holder);
+				viewHolder = new ViewHolder();
+				convertView = LayoutInflater.from(context).inflate(R.layout.repo_list_item, null);
+				viewHolder.ivAlbum = (ImageView) convertView.findViewById(R.id.iv_album);
+				viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+				viewHolder.tvArtist = (TextView) convertView.findViewById(R.id.tv_artist);
+				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.ivAlbum.getLayoutParams();
+				params.height = (int)(mScreenHeight/3.8f);
+				params.width = (mScreenWidth-40)/2;
+				viewHolder.ivAlbum.setLayoutParams(params);
+				convertView.setTag(viewHolder);
 			} else {
-				holder = (ViewHolder) convertView.getTag();
+				viewHolder = (ViewHolder) convertView.getTag();
 			}
-			Music music = (Music) getItem(position);
-			holder.tvName.setText(music.getName());
-			holder.tvStyle.setText(music.getFengge());
-			holder.tvArtistAlbum.setText((TextUtils.isEmpty(music.getSinger()) ? "" : music.getSinger() + " -- ")
-					+ music.getAlbumName());
+			Album album = (Album) getItem(position);
+			if(album != null) {
+				viewHolder.tvTitle.setText(album.getName());
+				viewHolder.tvArtist.setText(album.getFormat());
+				showImage(viewHolder.ivAlbum, album.getPic());
+			}
 			return convertView;
 		}
 
+		private void showImage(ImageView imageView, String imageUrl) {
+			if (!TextUtils.isEmpty(imageUrl)) {
+				BitmapUtils bitmapUtils = new BitmapUtils(SearchActivity.this);
+				bitmapUtils.configDefaultLoadingImage(R.drawable.player_albumcover_default);// 默认背景图片
+				bitmapUtils.configDefaultLoadFailedImage(R.drawable.player_albumcover_default);// 加载失败图片
+				bitmapUtils.display(imageView, imageUrl);
+			}
+		}
+
 		class ViewHolder {
-			TextView tvName;
-			TextView tvStyle;
-			TextView tvArtistAlbum;
+			ImageView ivAlbum;
+			TextView tvTitle;
+			TextView tvArtist;
 		}
 	}
 }

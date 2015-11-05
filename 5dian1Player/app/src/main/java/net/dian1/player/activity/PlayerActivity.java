@@ -43,6 +43,7 @@ import net.dian1.player.api.Music;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
 import net.dian1.player.api.PlaylistEntry;
+import net.dian1.player.db.DatabaseImpl;
 import net.dian1.player.dialog.AddToPlaylistDialog;
 import net.dian1.player.dialog.LoadingDialog;
 import net.dian1.player.download.DownloadManager;
@@ -97,6 +98,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
     private String mBetterRes;
     private LoadingDialog mUriLoadingDialog;
+    private Playlist favorPlaylist;
 
     public static void launch(Context c, Playlist playlist) {
         Intent intent = new Intent(c, PlayerActivity.class);
@@ -121,6 +123,9 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         Log.i(Dian1Application.TAG, "PlayerActivity.onCreate");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.player);
+
+        database = new DatabaseImpl(PlayerActivity.this);
+        favorPlaylist = database.getFavorites();
 
         initView();
 
@@ -219,6 +224,24 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
                 getPlayerEngine().seekTo(progress * 1000);
             }
         });
+        updateFavorIcon();
+    }
+
+    private boolean currentEntryIsFavor() {
+        if(mPlaylistEntry == null || mPlaylistEntry.getMusic() == null) {
+            return false;
+        }
+        for(PlaylistEntry entry : favorPlaylist.getAllPlaylistEntry()) {
+            if(mPlaylistEntry.getMusic().getId() == entry.getMusic().getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateFavorIcon() {
+        mFavorImageButton.setImageResource(currentEntryIsFavor() ?
+                R.drawable.player_favor_already : R.drawable.player_favor_not);
     }
 
     public void doCloseActivity() {
@@ -338,6 +361,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
     };
 
+    DatabaseImpl database = null;
     /**
      * favor button action
      */
@@ -345,7 +369,20 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
         @Override
         public void onClick(View v) {
-            mFavorImageButton.setImageResource(R.drawable.player_favor_already);
+            if(mPlaylistEntry != null) {
+                if(currentEntryIsFavor()) {
+                    database.removeFromFavorites(mPlaylistEntry);
+                    if(favorPlaylist.containEntry(mPlaylistEntry)) {
+                        favorPlaylist.removeEntry(mPlaylistEntry);
+                    }
+                } else {
+                    database.addToFavorites(mPlaylistEntry);
+                    if(!favorPlaylist.containEntry(mPlaylistEntry)) {
+                        favorPlaylist.addPlaylistEntry(mPlaylistEntry);
+                    }
+                }
+                updateFavorIcon();
+            }
         }
 
     };
@@ -404,6 +441,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             if(playlistEntry == null) {
                 return;
             }
+            updateFavorIcon();
             mPlaylistEntry = playlistEntry;
             mCurrentAlbum = playlistEntry.getAlbum();
             if(mCurrentAlbum != null) {

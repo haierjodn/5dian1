@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import android.util.Log;
 
@@ -279,10 +280,30 @@ public class Playlist implements Serializable {
 	 * 
 	 * @return
 	 */
-	public PlaylistEntry[] getAllTracks() {
-		PlaylistEntry[] out = new PlaylistEntry[playlist.size()];
-		playlist.toArray(out);
-		return out;
+	public List<PlaylistEntry> getAllPlaylistEntry() {
+		return playlist;
+	}
+
+	public boolean containEntry(PlaylistEntry playlistEntry) {
+		if(playlistEntry == null || playlistEntry.getMusic() == null) {
+			return false;
+		}
+		for(PlaylistEntry entry : playlist) {
+			if(playlistEntry.getMusic().getId() == entry.getMusic().getId()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void removeEntry(PlaylistEntry playlistEntry) {
+		if(containEntry(playlistEntry)) {
+			for(PlaylistEntry entry : playlist) {
+				if(playlistEntry.getMusic().getId() == entry.getMusic().getId()) {
+					playlist.remove(entry);
+				}
+			}
+		}
 	}
 
 	/**

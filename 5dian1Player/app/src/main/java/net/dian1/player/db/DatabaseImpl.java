@@ -82,8 +82,8 @@ public class DatabaseImpl implements Database {
 		
 		db.execSQL("CREATE TABLE IF NOT EXISTS "
 				+ TABLE_FAVORITES
-				+ " (track_id INTEGER UNIQUE, track_name VARCHAR," 
-				+ " track_duration INTEGER, track_url VARCHAR, track_stream VARCHAR, track_rating REAL," 
+				+ " (track_id INTEGER UNIQUE, track_name VARCHAR, album_track_num INTEGER, track_path VARCHAR,"
+				+ " track_duration INTEGER, track_file_size INTEGER, track_url VARCHAR, track_stream VARCHAR, track_rating REAL,"
 				+ " album_id INTEGER, album_name VARCHAR, album_image VARCHAR, album_rating REAL, artist_name VARCHAR);");
 
 		db.execSQL(UserInfoTable.CREATE_SQL);
