@@ -55,10 +55,15 @@ import net.dian1.player.http.OnResultListener;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineListener;
 import net.dian1.player.media.local.AudioLoaderTask;
+import net.dian1.player.model.Category;
+import net.dian1.player.model.CategoryResponse;
 import net.dian1.player.util.AudioUtils;
 import net.dian1.player.util.Helper;
 import net.dian1.player.util.OnSeekToListenerImp;
 import net.dian1.player.util.SeekToMode;
+import net.dian1.player.widget.DualWheelMenu;
+
+import java.util.List;
 
 /**
  * 1. Common Music Player
@@ -66,6 +71,8 @@ import net.dian1.player.util.SeekToMode;
  *
  */
 public class PlayerActivity extends BaseActivity implements OnClickListener {
+
+    public static String STYLE_SELECTED = null;
 
     private PlayerEngine getPlayerEngine() {
         return Dian1Application.getInstance().getPlayerEngineInterface();
@@ -75,6 +82,9 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
     private Album mCurrentAlbum;
     private PlaylistEntry mPlaylistEntry;
+
+    private List<Category> categoryListCached;
+    private TextView tvStyle;
 
     // XML layout
     private TextView mArtistTextView;
@@ -126,10 +136,13 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
         database = new DatabaseImpl(PlayerActivity.this);
         favorPlaylist = database.getFavorites();
+        STYLE_SELECTED = null;
 
         initView();
 
         handleIntent();
+
+        setupHeader();
 
         Dian1Application.getInstance().getDownloadManager().registerDownloadObserver(new DownloadObserver() {
             @Override
@@ -205,10 +218,6 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         mFavorImageButton.setOnClickListener(favorOnClickListener);
 
         mCurrentAlbum = null;
-
-        findViewById(R.id.iv_back).setOnClickListener(this);
-        findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
-
         mProgressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekbar, int progress, boolean fromUser) {
@@ -225,6 +234,56 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             }
         });
         updateFavorIcon();
+    }
+
+    private void setupHeader() {
+        findViewById(R.id.iv_back).setOnClickListener(this);
+        tvStyle = (TextView) findViewById(R.id.tv_style);
+        tvStyle.setVisibility(isListenAny ? View.VISIBLE : View.GONE);
+        if(isListenAny) {
+            tvStyle.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    requestMusicStyle();
+                }
+            });
+        }
+    }
+
+    private void requestMusicStyle() {
+        ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicStyleApi.URL, CategoryResponse.class,
+                new OnResultListener<CategoryResponse>() {
+
+                    @Override
+                    public void onResult(final CategoryResponse response) {
+                        if (response != null) {
+                            categoryListCached = response.getCategoryList();
+                        }
+                        popupMusicStyleWheel();
+                    }
+
+                    @Override
+                    public void onResultError(String msg, String code) {
+                        Toast.makeText(PlayerActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+        }));
+    }
+
+    private void popupMusicStyleWheel() {
+        DualWheelMenu reasonMenu = null;
+        if(reasonMenu == null) {
+            reasonMenu = new DualWheelMenu(this, categoryListCached, null);
+            reasonMenu.setOnChangeListener(new DualWheelMenu.OnDualWheelChangedListener() {
+                @Override
+                public void onChanged(int firstOldValue, int firstNewValue, int secondOldValue, int secondNewValue) {
+                    int key = Integer.decode(categoryListCached.get(firstNewValue).getKey());
+                    String value = categoryListCached.get(firstNewValue).getValue();
+                    tvStyle.setText(value);
+                    STYLE_SELECTED = value;
+                }
+            });
+        }
+        reasonMenu.show();
     }
 
     private boolean currentEntryIsFavor() {
@@ -280,25 +339,6 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         ibDownload.setVisibility(View.GONE);
     }
 
-    private void getMusicDetailFromNetwork() {
-        long musicId = 1;
-        ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSuibianApi.URL, net.dian1.player.model.Music.class,
-                ApiData.MusicSuibianApi.getParams(null), new OnResultListener<net.dian1.player.model.Music>() {
-
-            @Override
-            public void onResult(net.dian1.player.model.Music response) {
-                //dismissDialog();
-                updateView(response);
-            }
-
-            @Override
-            public void onResultError(String msg, String code) {
-                //dismissDialog();
-                //showToastSafe(msg, Toast.LENGTH_SHORT);
-            }
-        }));
-    }
-
     private void updateView(net.dian1.player.model.Music music) {
         if(music != null) {
 
@@ -329,8 +369,10 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         public void onClick(View v) {
             if (getPlayerEngine().isPlaying()) {
                 getPlayerEngine().pause();
+                stopRotatoAnim();
             } else {
                 getPlayerEngine().play();
+                startRotatoAnim();
             }
         }
 
@@ -457,7 +499,6 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
                 albumPath = music.getAlbum();
             }
             showImage(mCoverImageView, albumPath);
-            startRotatoAnim();
 
             mSongTextView.setText(playlistEntry.getMusic().getName());
             ((TextView) findViewById(R.id.tv_title)).setText(playlistEntry.getMusic().getName());
@@ -475,8 +516,10 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             if (getPlayerEngine() != null) {
                 if (getPlayerEngine().isPlaying()) {
                     mPlayImageButton.setImageResource(R.drawable.player_pause);
+                    stopRotatoAnim();
                 } else {
                     mPlayImageButton.setImageResource(R.drawable.player_play);
+                    startRotatoAnim();
                 }
             }
         }
@@ -515,6 +558,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         }
     };
 
+    private boolean isListenAny = false;
     /**
      * Loads playlist to the PlayerEngine
      */
@@ -525,13 +569,15 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             playlist = (Playlist) intent.getSerializableExtra("playlist");
             boolean toPlay = intent.getBooleanExtra("toPlay", false);
             if(playlist != null) {
+                isListenAny = false;
                 setupPlaylist(playlist);
                 mPlayerEngineListener.onTrackChanged(getPlayerEngine().getPlaylist().getSelectedTrack());
             } else {
+                isListenAny = true;
                 if (getPlayerEngine() != null && getPlayerEngine().getPlaylist() != null) {
                     mPlayerEngineListener.onTrackChanged(getPlayerEngine().getPlaylist().getSelectedTrack());
                 }
-                if (toPlay && !getPlayerEngine().isPlaying()) {
+                if (toPlay && !getPlayerEngine().isPlaying()) {//listen any
                     downloadPlaylist();
                 }
             }
@@ -545,6 +591,10 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         if (operatingAnim != null) {
             mCoverImageView.startAnimation(operatingAnim);
         }
+    }
+
+    private void stopRotatoAnim() {
+        mCoverImageView.clearAnimation();
     }
 
     private void setupPlaylist(Playlist playlist) {
@@ -564,7 +614,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
      */
     private void downloadPlaylist() {
         ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSuibianApi.URL, net.dian1.player.model.Music.class,
-                ApiData.MusicSuibianApi.getParams(null), new OnResultListener<net.dian1.player.model.Music>() {
+                ApiData.MusicSuibianApi.getParams(STYLE_SELECTED), new OnResultListener<net.dian1.player.model.Music>() {
 
             @Override
             public void onResult(net.dian1.player.model.Music response) {

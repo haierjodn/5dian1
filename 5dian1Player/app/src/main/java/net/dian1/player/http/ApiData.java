@@ -73,6 +73,15 @@ public class ApiData extends Api {
 
     }
 
+    public static class MusicStyleApi {
+
+        public static final String URL = API_URL + "/musicCategory.asp";
+
+        public static ApiRequestParams getParams() {
+            return null;
+        }
+
+    }
 
     public static class MusicDayApi {
 

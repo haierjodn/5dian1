@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.adapter.ArrayListAdapter;
+import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.common.Extra;
 import net.dian1.player.dialog.AlbumLoadingDialog;
 import net.dian1.player.http.ApiData;
@@ -50,6 +52,7 @@ import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.Album;
 import net.dian1.player.model.Music;
+import net.dian1.player.util.AudioUtils;
 import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.ImageUtils;
 
@@ -219,6 +222,8 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
                 List<Music> list = mustListAdapter.getSelectedList();
                 if (list == null || list.size() < 1) {
                     showToastSafe("No item selected", Toast.LENGTH_SHORT);
+                } else {
+                    PlayerActivity.launch(AlbumActivity.this, AudioUtils.buildPlaylist(list, 0));
                 }
                 break;
             }
@@ -229,6 +234,20 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
                 List<Music> list = mustListAdapter.getSelectedList();
                 if (list == null || list.size() < 1) {
                     showToastSafe("No item selected", Toast.LENGTH_SHORT);
+                } else {
+                    for(final Music music : list) {
+                        PlaylistEntry entry = new PlaylistEntry();
+                        net.dian1.player.api.Album album = new net.dian1.player.api.Album();
+                        album.setId((int) mAlbum.getId());
+                        //album.setArtistName(get);
+                        album.setName(mAlbum.getName());
+                        album.setRating(0.5d);
+                        album.setImage(mAlbum.getPic());
+                        entry.setAlbum(album);
+                        net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);
+                        entry.setMusic(music1);
+                        Dian1Application.getInstance().getDownloadManager().download(entry);
+                    }
                 }
                 break;
             }
@@ -278,7 +297,7 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View row = convertView;
             ViewHolder holder;
             if (row == null) {
@@ -297,6 +316,13 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
             holder.tvArtist.setText(TextUtils.isEmpty(music.getSinger()) ? "--" : music.getSinger());
             holder.tvPosition.setText(String.valueOf(position + 1));
             holder.cbSelect.setChecked(selected == null ? false : selected[position]);
+            holder.cbSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    selected[position] = isChecked;
+                }
+            });
+            holder.cbSelect.setEnabled(position < maxSelectable);
             return row;
         }
 

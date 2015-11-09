@@ -1,170 +1,187 @@
-<?xml version="1.0" encoding="utf-8"?>    <!--
-		Copyright (C) 2009 Teleca Poland Sp. z o.o. <android@teleca.com> This
-		program is free software; you can redistribute it and/or modify it
-		under the terms of the GNU General Public License as published by the
-		Free Software Foundation; either version 3, or (at your option) any
-		later version. This program is distributed in the hope that it will be
-		useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-		General Public License for more details. You should have received a
-		copy of the GNU General Public License along with this program. If
-		not, see <http://www.gnu.org/licenses/>.
-	-->
-<!--<android.gesture.GestureOverlayView xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/gestures"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:gestureStrokeType="multiple"-->
-    <!--android:eventsInterceptionEnabled="false"-->
-    <!--android:orientation="vertical">-->
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/player_bg1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@drawable/player_bg1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+    <!-- header -->
+    <LinearLayout android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
 
-        <include layout="@layout/common_header" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:id="@+id/TopBar"
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginTop="20dp"
-            android:minHeight="74dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:src="@drawable/header_back" />
 
-            <TextView
-                android:id="@+id/SongTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="在爱与痛的边缘"
-                android:textSize="@dimen/normal_x"
-                android:textColor="#fff"
-                android:singleLine="true" />
-
-            <TextView
-                android:id="@+id/ArtistTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="Artist - Album"
-                android:textSize="@dimen/normal"
-                android:textColor="#fff"
-                android:gravity="center"
-                android:scrollHorizontally="true"
-                android:marqueeRepeatLimit="2"
-                android:singleLine="true"
-                android:ellipsize="marquee" />
-
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/ll_reflect_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            android:text="5.1音乐库"
+            android:textColor="#fff"
+            android:textSize="@dimen/normal" />
 
-
-                <net.dian1.player.widget.RoundImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:gravity="center"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/player_albumcover_default"
-                    android:id="@+id/CoverImageView" />
-
-
-            <!--<FrameLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:layout_below="@id/ReflectableLayout">-->
-
-                <!--<net.dian1.player.widget.ReflectiveSurface-->
-                    <!--android:id="@+id/ReflectiveSurface"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_marginTop="1dp" />-->
-
-                <!--<ImageView-->
-                    <!--android:id="@+id/ReflectShade"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_marginTop="1dp"-->
-                    <!--android:background="@drawable/gradient_reflect"></ImageView>-->
-            <!--</FrameLayout>-->
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:id="@+id/ll_progress"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_style"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:text="@string/music_style"
+            android:textColor="#fff"
+            android:textSize="@dimen/normal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp" />
 
-            <RelativeLayout
-                android:layout_width="300dp"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/CurrentTimeTextView"
-                    android:layout_height="wrap_content"
-                    android:layout_width="48dp"
-                    android:gravity="left"
-                    android:text="--:--"
-                    android:textColor="#fff"
-                    android:layout_alignParentLeft="true" />
-
-
-                <TextView
-                    android:id="@+id/TotalTimeTextView"
-                    android:layout_height="wrap_content"
-                    android:layout_width="48dp"
-                    android:gravity="right"
-                    android:text="--:--"
-                    android:textColor="#fff"
-                    android:layout_alignParentRight="true" />
-
-            </RelativeLayout>
-
-            <SeekBar
-                android:id="@+id/ProgressBar"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:paddingTop="3dp"
-                android:progressDrawable="@drawable/seek_bg"
-                android:thumb="@drawable/player_seek_thumb"
-                android:thumbOffset="3dp" />
-
-            <!--<SeekBar-->
-                <!--android:id="@+id/ProgressBar"-->
-                <!--android:layout_width="300dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:paddingTop="3dp"-->
-                <!--android:progressDrawable="@drawable/seek_bg"-->
-                <!--android:thumb="@drawable/player_seek_thumb"-->
-                <!--android:thumbOffset="3dp" />-->
-
-        </LinearLayout>
-
-        <include
-            layout="@layout/player_controller_layout"
-            android:id="@+id/player_controller_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_alignParentBottom="true" />
     </LinearLayout>
-<!--</android.gesture.GestureOverlayView>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/TopBar"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:minHeight="74dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/SongTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="在爱与痛的边缘"
+            android:textSize="@dimen/normal_x"
+            android:textColor="#fff"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/ArtistTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Artist - Album"
+            android:textSize="@dimen/normal"
+            android:textColor="#fff"
+            android:gravity="center"
+            android:scrollHorizontally="true"
+            android:marqueeRepeatLimit="2"
+            android:singleLine="true"
+            android:ellipsize="marquee" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_reflect_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <net.dian1.player.widget.RoundImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:src="@drawable/player_albumcover_default"
+            android:id="@+id/CoverImageView" />
+
+
+        <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_below="@id/ReflectableLayout">-->
+
+        <!--<net.dian1.player.widget.ReflectiveSurface-->
+        <!--android:id="@+id/ReflectiveSurface"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginTop="1dp" />-->
+
+        <!--<ImageView-->
+        <!--android:id="@+id/ReflectShade"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginTop="1dp"-->
+        <!--android:background="@drawable/gradient_reflect"></ImageView>-->
+        <!--</FrameLayout>-->
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/CurrentTimeTextView"
+                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:gravity="left"
+                android:text="--:--"
+                android:textColor="#fff"
+                android:layout_alignParentLeft="true" />
+
+
+            <TextView
+                android:id="@+id/TotalTimeTextView"
+                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:gravity="right"
+                android:text="--:--"
+                android:textColor="#fff"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+        <SeekBar
+            android:id="@+id/ProgressBar"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="3dp"
+            android:progressDrawable="@drawable/seek_bg"
+            android:thumb="@drawable/player_seek_thumb"
+            android:thumbOffset="3dp" />
+
+        <!--<SeekBar-->
+        <!--android:id="@+id/ProgressBar"-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingTop="3dp"-->
+        <!--android:progressDrawable="@drawable/seek_bg"-->
+        <!--android:thumb="@drawable/player_seek_thumb"-->
+        <!--android:thumbOffset="3dp" />-->
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/player_controller_layout"
+        android:id="@+id/player_controller_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true" />
+</LinearLayout><!--</android.gesture.GestureOverlayView>-->

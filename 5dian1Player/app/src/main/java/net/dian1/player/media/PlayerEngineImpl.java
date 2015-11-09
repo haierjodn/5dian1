@@ -16,11 +16,11 @@
 
 package net.dian1.player.media;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
+import net.dian1.player.activity.PlayerActivity;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
@@ -32,14 +32,12 @@ import net.dian1.player.log.LogUtil;
 import net.dian1.player.model.Music;
 import net.dian1.player.util.AudioUtils;
 
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.audiofx.Equalizer;
-import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -351,7 +349,7 @@ public class PlayerEngineImpl implements PlayerEngine {
 
 	private void playNextListenAny() {
 		ApiManager.getInstance().send(new ApiRequest(Dian1Application.getInstance(), ApiData.MusicSuibianApi.URL, Music.class,
-				ApiData.MusicSuibianApi.getParams(null), new OnResultListener<Music>() {
+				ApiData.MusicSuibianApi.getParams(PlayerActivity.STYLE_SELECTED), new OnResultListener<Music>() {
 			@Override
 			public void onResult(Music response) {
 				//stop();
