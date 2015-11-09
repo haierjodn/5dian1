@@ -223,7 +223,7 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
                 if (list == null || list.size() < 1) {
                     showToastSafe("No item selected", Toast.LENGTH_SHORT);
                 } else {
-                    PlayerActivity.launch(AlbumActivity.this, AudioUtils.buildPlaylist(list, 0));
+                    PlayerActivity.launch(AlbumActivity.this, AudioUtils.buildPlaylist(mAlbum, list, 0));
                 }
                 break;
             }

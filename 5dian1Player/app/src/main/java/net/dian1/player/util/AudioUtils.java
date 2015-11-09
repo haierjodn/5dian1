@@ -7,6 +7,7 @@ import net.dian1.player.api.PlaylistAny;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.download.DownloadJob;
 import net.dian1.player.media.PlayerEngine;
+import net.dian1.player.model.Album;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class AudioUtils {
         return engineMusic;
     }
 
-    public static Playlist buildPlaylist(List<net.dian1.player.model.Music> songList, int positionSelected) {
+    public static Playlist buildPlaylist(Album albumParent, List<net.dian1.player.model.Music> songList, int positionSelected) {
         if (songList != null && songList.size() > 0) {
             Playlist playlist = new Playlist();
             playlist.setPlaylistPlaybackMode(Playlist.PlaylistPlaybackMode.SHUFFLE);
@@ -61,6 +62,7 @@ public class AudioUtils {
                 album.setId((int) music.getAlbumId());
                 album.setName(music.getAlbumName());
                 album.setImage(music.getPic());
+                album.setImage(albumParent.getPic());
                 //album.setPic();
                 net.dian1.player.api.Music[] musics = new net.dian1.player.api.Music[1];
                 net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);

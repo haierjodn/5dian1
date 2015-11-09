@@ -584,10 +584,16 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         }
     }
 
+    Animation operatingAnim = null;
     private void startRotatoAnim() {
-        Animation operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rotato);
-        LinearInterpolator lin = new LinearInterpolator();
-        operatingAnim.setInterpolator(lin);
+        if(operatingAnim == null) {
+            operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rotato);
+            LinearInterpolator lin = new LinearInterpolator();
+            operatingAnim.setInterpolator(lin);
+            operatingAnim.setFillAfter(true);
+            operatingAnim.setFillBefore(true);
+            operatingAnim.setFillEnabled(true);
+        }
         if (operatingAnim != null) {
             mCoverImageView.startAnimation(operatingAnim);
         }
