@@ -147,7 +147,6 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         Dian1Application.getInstance().getDownloadManager().registerDownloadObserver(new DownloadObserver() {
             @Override
             public void onDownloadChanged(DownloadManager manager) {
-
             }
         });
 
@@ -181,6 +180,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
     }
 
     private void initView() {
+        findViewById(R.id.tv_title).setOnClickListener(this);
         // XML binding
         mBetterRes = getResources().getString(R.string.better_res);
 
@@ -251,22 +251,25 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
     }
 
     private void requestMusicStyle() {
+        showDialog(null);
         ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicStyleApi.URL, CategoryResponse.class,
                 new OnResultListener<CategoryResponse>() {
 
-                    @Override
-                    public void onResult(final CategoryResponse response) {
-                        if (response != null) {
-                            categoryListCached = response.getCategoryList();
-                        }
-                        popupMusicStyleWheel();
+                @Override
+                public void onResult(final CategoryResponse response) {
+                    if (response != null) {
+                        categoryListCached = response.getCategoryList();
                     }
+                    popupMusicStyleWheel();
+                    dismissDialog();
+                }
 
-                    @Override
-                    public void onResultError(String msg, String code) {
-                        Toast.makeText(PlayerActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-        }));
+                @Override
+                public void onResultError(String msg, String code) {
+                    dismissDialog();
+                    Toast.makeText(PlayerActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+            }));
     }
 
     private void popupMusicStyleWheel() {
@@ -343,6 +346,10 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         if(music != null) {
 
         }
+    }
+
+    private void updateTitleBar(String albumName) {
+        ((TextView) findViewById(R.id.tv_title)).setText(albumName);
     }
 
     /**
@@ -487,8 +494,17 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             mPlaylistEntry = playlistEntry;
             mCurrentAlbum = playlistEntry.getAlbum();
             if(mCurrentAlbum != null) {
-                mArtistTextView.setText("-- " + playlistEntry.getAlbum().getArtistName() + " --");
+                String artistName = mCurrentAlbum.getArtistName();
+                if(TextUtils.isEmpty(artistName)) {
+                    mArtistTextView.setVisibility(View.GONE);
+                } else {
+                    mArtistTextView.setVisibility(View.VISIBLE);
+                    mArtistTextView.setText("-- " + playlistEntry.getAlbum().getArtistName() + " --");
+                }
                 showImage(mCoverImageView, playlistEntry.getAlbum().getImage());
+                ((TextView) findViewById(R.id.tv_title)).setText(mCurrentAlbum.getName());
+            } else {
+                mArtistTextView.setVisibility(View.GONE);
             }
             Music music = playlistEntry.getMusic();
             String albumPath = AudioLoaderTask.getAlbumArt(getContentResolver(), music.getAlbumId());
@@ -501,7 +517,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             showImage(mCoverImageView, albumPath);
 
             mSongTextView.setText(playlistEntry.getMusic().getName());
-            ((TextView) findViewById(R.id.tv_title)).setText(playlistEntry.getMusic().getName());
+
             mCurrentTimeTextView.setText(Helper.secondsToString(0));
             mTotalTimeTextView.setText(Helper.secondsToString(playlistEntry.getMusic().getDuration()));
 
@@ -511,7 +527,6 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             mProgressBar.setProgress(0);
             mProgressBar.setMax(playlistEntry.getMusic().getDuration());
             mCoverImageView.performClick();
-
 
             if (getPlayerEngine() != null) {
                 if (getPlayerEngine().isPlaying()) {
@@ -639,6 +654,11 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.iv_back:
                 onBackPressed();
+                break;
+            case R.id.tv_title:
+                if(mCurrentAlbum != null) {
+                    AlbumActivity.launch(this, mCurrentAlbum.getId());
+                }
                 break;
         }
     }

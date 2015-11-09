@@ -18,6 +18,7 @@ package net.dian1.player.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.*;
@@ -51,6 +52,8 @@ import net.dian1.player.dialog.AlbumLoadingDialog;
 import net.dian1.player.download.DownloadManager;
 import net.dian1.player.widget.RemoteImageView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class BaseActivity extends Activity{
@@ -58,6 +61,8 @@ public class BaseActivity extends Activity{
 	protected Dian1Application app;
 
 	private BitmapUtils bitmapUtils;
+
+	private ProgressDialog progressDialog;
 
 	/** UI 线程ID */
 	protected long mUIThreadId;
@@ -151,6 +156,36 @@ public class BaseActivity extends Activity{
 		}
 		if(!TextUtils.isEmpty(imagePath)) {
 			bitmapUtils.display(imageView, imagePath);
+		}
+	}
+
+	/**
+	 * 显示加载进度条
+	 * @param content
+	 */
+	public void showDialog(String content) {
+		if (!isFinishing()) {
+			if (progressDialog == null) {
+				progressDialog = new ProgressDialog(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+				progressDialog.setCanceledOnTouchOutside(false);
+			}
+			if (!progressDialog.isShowing()) {
+				progressDialog.show();
+				View view = LayoutInflater.from(this).inflate(R.layout.common_progressdialog, null);
+				TextView tv = (TextView) view.findViewById(R.id.tv_content);
+				if(!TextUtils.isEmpty(content)) {
+					tv.setText(content);
+				} else {
+					tv.setText(R.string.common_error_loading);
+				}
+				progressDialog.setContentView(view);
+			}
+		}
+	}
+
+	public void dismissDialog() {
+		if(progressDialog != null) {
+			progressDialog.dismiss();
 		}
 	}
 
