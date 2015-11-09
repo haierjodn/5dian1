@@ -147,6 +147,7 @@
     <string name="user_gold_expired">金砖会员剩余%d天</string>
     <string name="nickname_prefix">亲爱的%s</string>
     <string name="user_ordinary">普通会员</string>
+    <string name="my_favor">我最爱</string>
 
     <!-- Register -->
     <string name="register">注册</string>

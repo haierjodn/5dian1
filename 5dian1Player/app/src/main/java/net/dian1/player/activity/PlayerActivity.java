@@ -490,7 +490,6 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             if(playlistEntry == null) {
                 return;
             }
-            updateFavorIcon();
             mPlaylistEntry = playlistEntry;
             mCurrentAlbum = playlistEntry.getAlbum();
             if(mCurrentAlbum != null) {
@@ -506,6 +505,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             } else {
                 mArtistTextView.setVisibility(View.GONE);
             }
+            updateFavorIcon();
             Music music = playlistEntry.getMusic();
             String albumPath = AudioLoaderTask.getAlbumArt(getContentResolver(), music.getAlbumId());
             if(TextUtils.isEmpty(albumPath)) {

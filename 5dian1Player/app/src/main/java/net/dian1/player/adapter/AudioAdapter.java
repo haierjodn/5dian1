@@ -2,6 +2,7 @@ package net.dian1.player.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import net.dian1.player.R;
 import net.dian1.player.activity.PlayerActivity;
 import net.dian1.player.api.Music;
 import net.dian1.player.api.Playlist;
+import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.media.local.AudioLoaderManager;
 import net.dian1.player.util.AudioUtils;
 
@@ -41,6 +43,18 @@ public class AudioAdapter extends RecyclerView.Adapter implements AudioLoaderMan
             mData.addAll(data);
         }
         buildPlaylist();
+        notifyDataSetChanged();
+    }
+
+    public void setPlaylist(List<PlaylistEntry> entries) {
+        mData.clear();
+        if(entries != null && entries.size() > 0) {
+            for(int i=0; i < entries.size(); i++) {
+                PlaylistEntry entry = entries.get(i);
+                playlist.addPlaylistEntry(entry);
+                mData.add(entry.getMusic());
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -75,7 +89,9 @@ public class AudioAdapter extends RecyclerView.Adapter implements AudioLoaderMan
         ViewHolder viewHolder = (ViewHolder) holder;
         final Music item = mData.get(position);
         viewHolder.mTextAudioName.setText(item.getName());
-        viewHolder.mTextAudioSinger.setText(item.getArtist());
+        String artist = item.getArtist();
+        viewHolder.mTextAudioSinger.setText(artist);
+        viewHolder.mTextAudioSinger.setVisibility(TextUtils.isEmpty(artist) ? View.GONE : View.VISIBLE);
         viewHolder.mAudioStatus.setVisibility(AudioUtils.isPlaying(item) ? View.VISIBLE : View.INVISIBLE);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

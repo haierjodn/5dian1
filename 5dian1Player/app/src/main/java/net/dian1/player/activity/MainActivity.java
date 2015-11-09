@@ -139,6 +139,9 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
             case R.id.tv_setting:
                 SettingActivity.startAction(MainActivity.this);
                 break;
+            case R.id.tv_favor:
+                FavorActivity.launch(this);
+                break;
             case R.id.iv_gold:
                 if(Dian1Application.getInstance().getUser().getIsappvip() == 1) {
                     ComUtils.openBrowser(this, "http://www.5dian1.net/user/upgrade.asp", "WEB1");
@@ -186,6 +189,7 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
             findViewById(resId).setOnClickListener(this);
         }
         findViewById(R.id.tv_setting).setOnClickListener(this);
+        findViewById(R.id.tv_favor).setOnClickListener(this);
     }
 
     /**

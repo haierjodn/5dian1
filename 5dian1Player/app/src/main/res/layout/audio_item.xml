@@ -31,12 +31,14 @@
         android:layout_height="wrap_content"
         android:text="风一样"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="15dp"
         android:layout_alignLeft="@id/audio_name"
         android:layout_below="@id/audio_name"
         android:singleLine="true"
         android:textColor="#eee"
         android:textSize="@dimen/normal_s" />
 
+    <View style="@style/DividerLine"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
