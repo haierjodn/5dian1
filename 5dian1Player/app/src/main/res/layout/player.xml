@@ -161,10 +161,12 @@
             android:id="@+id/ProgressBar"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:minHeight="14dp"
+            android:maxHeight="14dp"
             android:paddingTop="3dp"
             android:progressDrawable="@drawable/seek_bg"
             android:thumb="@drawable/player_seek_thumb"
-            android:thumbOffset="3dp" />
+            android:thumbOffset="3dp"/>
 
         <!--<SeekBar-->
         <!--android:id="@+id/ProgressBar"-->
