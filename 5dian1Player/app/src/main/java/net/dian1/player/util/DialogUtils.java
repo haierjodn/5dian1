@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
+import net.dian1.player.common.Constants;
 import net.dian1.player.model.common.VersionLatest;
 
 /**
@@ -101,6 +102,19 @@ public class DialogUtils {
     }
 
     public static void showNoAuthorityAndJumpPage(final Context context) {
-        Toast.makeText(context, "No authority, would u please go to purchase page?", Toast.LENGTH_LONG).show();
+        showCommonDialog(context, context.getString(R.string.user_alert),
+                context.getString(R.string.exceed_tried_times_ordinary_user),
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                },
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ComUtils.openBrowser(context, Constants.URL_VIP_INRO, null);
+                    }
+                });
+//        Toast.makeText(context, "No authority, would u please go to purchase page?", Toast.LENGTH_LONG).show();
     }
 }

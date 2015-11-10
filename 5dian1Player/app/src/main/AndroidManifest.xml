@@ -267,6 +267,9 @@
         <activity android:name=".activity.login.RegisterActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".activity.login.BindActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".activity.BrowserActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">

@@ -73,7 +73,7 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 
 	protected void initView() {
 		setupHeader(R.string.forget_password);
-		findViewById(R.id.iv_search).setVisibility(View.GONE);
+		findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
 
 		et_phone = (EditText) findViewById(R.id.et_phone);
 		et_code = (EditText) findViewById(R.id.et_code);

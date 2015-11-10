@@ -140,7 +140,7 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
 
     private void initView() {
         setupHeader(-1);
-        findViewById(R.id.iv_search).setVisibility(View.GONE);
+        findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
         musicListView = (ListView) findViewById(R.id.lv_music);
 
         mustListAdapter = new MustListAdapter(this);

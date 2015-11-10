@@ -24,14 +24,20 @@ import net.dian1.player.activity.PlayerActivity;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
+import net.dian1.player.common.Constants;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.log.LogUtil;
 import net.dian1.player.model.Music;
+import net.dian1.player.model.authority.Authority;
+import net.dian1.player.preferences.CommonPreference;
+import net.dian1.player.service.PlayerService;
 import net.dian1.player.util.AudioUtils;
+import net.dian1.player.util.DialogUtils;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -63,6 +69,11 @@ public class PlayerEngineImpl implements PlayerEngine {
 	 * Acceptable number of fails within FAIL_TIME_FRAME
 	 */
 	private static final int ACCEPTABLE_FAIL_NUMBER = 2;
+
+	/**
+	 * Max play count for ordinary user at listen any mode
+	 */
+	public static final int MAX_PLAY_COUNT_DAY = 3;
 	
 	/**
 	 * Beginning of last FAIL_TIME_FRAME
@@ -72,8 +83,8 @@ public class PlayerEngineImpl implements PlayerEngine {
 	/**
 	 * Number of times failed within FAIL_TIME_FRAME
 	 */
-	private long mTimesFailed; 
-	
+	private long mTimesFailed;
+
 	/**
 	 * Simple MediaPlayer extensions, adds reference to the current track
 	 * 
@@ -348,16 +359,31 @@ public class PlayerEngineImpl implements PlayerEngine {
 	}
 
 	private void playNextListenAny() {
+		final Authority authority = Dian1Application.getInstance().getUserAuthority();
+		final int countToday;
+		if(authority == null || !authority.listenAny) {
+			countToday = CommonPreference.getCountDay();
+			if(countToday >= MAX_PLAY_COUNT_DAY) {
+				Intent intent = new Intent();
+				intent.setAction(Constants.ACTION_MAX_PLAY_TIMES_LIMITED);
+				Dian1Application.getInstance().sendBroadcast(intent);
+				//DialogUtils.showNoAuthorityAndJumpPage(Dian1Application.getInstance());
+				stop();
+				return;
+			}
+		} else {
+			countToday = -1;
+		}
 		ApiManager.getInstance().send(new ApiRequest(Dian1Application.getInstance(), ApiData.MusicSuibianApi.URL, Music.class,
 				ApiData.MusicSuibianApi.getParams(PlayerActivity.STYLE_SELECTED), new OnResultListener<Music>() {
 			@Override
 			public void onResult(Music response) {
-				//stop();
-				//final PlaylistEntry playlistEntry = mPlaylist.getSelectedTrack();
-				//playlistEntry.setMusic(AudioUtils.convertMusic(response));
 				mPlaylist.addPlaylistEntry(AudioUtils.buildPlaylistEntry(response, 0));
 				mPlaylist.selectNext();
 				play();
+				if(authority == null || !authority.listenAny) {
+					CommonPreference.saveCountDay(countToday + 1);
+				}
 			}
 			@Override
 			public void onResultError(String msg, String code) {

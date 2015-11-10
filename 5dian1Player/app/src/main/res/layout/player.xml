@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="5.1音乐库"
+            android:text=""
             android:textColor="#fff"
             android:textSize="@dimen/normal" />
 
@@ -61,7 +61,7 @@
             android:id="@+id/SongTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="在爱与痛的边缘"
+            android:text="--"
             android:textSize="@dimen/normal_x"
             android:textColor="#fff"
             android:singleLine="true" />
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="Artist - Album"
+            android:text=""
             android:textSize="@dimen/normal"
             android:textColor="#fff"
             android:gravity="center"

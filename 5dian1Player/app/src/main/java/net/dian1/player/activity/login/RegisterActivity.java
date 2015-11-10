@@ -74,7 +74,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
 	protected void initView() {
 		setupHeader(R.string.register);
-		findViewById(R.id.iv_search).setVisibility(View.GONE);
+		findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
 		et_phone = (EditText) findViewById(R.id.et_phone);
 		et_code = (EditText) findViewById(R.id.et_code);
 		et_pwd = (EditText) findViewById(R.id.et_pwd);

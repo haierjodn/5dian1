@@ -40,11 +40,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
 	private void initView() {
 		findViewById(R.id.tv_setting_adjust).setOnClickListener(this);
+		findViewById(R.id.tv_setting_adjust).setVisibility(View.GONE);
 		findViewById(R.id.tv_setting_update).setOnClickListener(this);
 		findViewById(R.id.tv_setting_about).setOnClickListener(this);
 		findViewById(R.id.tv_setting_exit).setOnClickListener(this);
 		setupHeader(R.string.settings);
-		findViewById(R.id.iv_search).setVisibility(View.GONE);
+		findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
 	}
 
 	@Override

@@ -17,9 +17,11 @@
 package net.dian1.player.activity;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -43,6 +45,7 @@ import net.dian1.player.api.Music;
 import net.dian1.player.api.Playlist;
 import net.dian1.player.api.Playlist.PlaylistPlaybackMode;
 import net.dian1.player.api.PlaylistEntry;
+import net.dian1.player.common.Constants;
 import net.dian1.player.db.DatabaseImpl;
 import net.dian1.player.dialog.AddToPlaylistDialog;
 import net.dian1.player.dialog.LoadingDialog;
@@ -53,11 +56,15 @@ import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.media.PlayerEngine;
+import net.dian1.player.media.PlayerEngineImpl;
 import net.dian1.player.media.PlayerEngineListener;
 import net.dian1.player.media.local.AudioLoaderTask;
 import net.dian1.player.model.Category;
 import net.dian1.player.model.CategoryResponse;
+import net.dian1.player.model.authority.Authority;
+import net.dian1.player.preferences.CommonPreference;
 import net.dian1.player.util.AudioUtils;
+import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.Helper;
 import net.dian1.player.util.OnSeekToListenerImp;
 import net.dian1.player.util.SeekToMode;
@@ -78,6 +85,15 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         return Dian1Application.getInstance().getPlayerEngineInterface();
     }
 
+    private BroadcastReceiver deliveryChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent != null && intent.getAction().equals(Constants.ACTION_MAX_PLAY_TIMES_LIMITED)) {
+                DialogUtils.showNoAuthorityAndJumpPage(PlayerActivity.this);
+            }
+        }
+    };
+
     private Playlist mPlaylist;
 
     private Album mCurrentAlbum;
@@ -87,8 +103,8 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
     private TextView tvStyle;
 
     // XML layout
-    private TextView mArtistTextView;
-    private TextView mSongTextView;
+    private TextView tvArtist;
+    private TextView tvSongName;
     private TextView mCurrentTimeTextView;
     private TextView mTotalTimeTextView;
     private SeekBar mProgressBar;
@@ -133,6 +149,9 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         Log.i(Dian1Application.TAG, "PlayerActivity.onCreate");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.player);
+
+        IntentFilter intentFilter = new IntentFilter(Constants.ACTION_MAX_PLAY_TIMES_LIMITED);
+        registerReceiver(deliveryChangedReceiver, intentFilter);
 
         database = new DatabaseImpl(PlayerActivity.this);
         favorPlaylist = database.getFavorites();
@@ -184,12 +203,12 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         // XML binding
         mBetterRes = getResources().getString(R.string.better_res);
 
-        mArtistTextView = (TextView) findViewById(R.id.ArtistTextView);
-        mSongTextView = (TextView) findViewById(R.id.SongTextView);
+        tvArtist = (TextView) findViewById(R.id.ArtistTextView);
+        tvSongName = (TextView) findViewById(R.id.SongTextView);
         //AutoScrolling of long song titles
-        mSongTextView.setEllipsize(TruncateAt.MARQUEE);
-        mSongTextView.setHorizontallyScrolling(true);
-        mSongTextView.setSelected(true);
+        tvSongName.setEllipsize(TruncateAt.MARQUEE);
+        tvSongName.setHorizontallyScrolling(true);
+        tvSongName.setSelected(true);
 
         mCurrentTimeTextView = (TextView) findViewById(R.id.CurrentTimeTextView);
         mTotalTimeTextView = (TextView) findViewById(R.id.TotalTimeTextView);
@@ -239,7 +258,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
     private void setupHeader() {
         findViewById(R.id.iv_back).setOnClickListener(this);
         tvStyle = (TextView) findViewById(R.id.tv_style);
-        tvStyle.setVisibility(isListenAny ? View.VISIBLE : View.GONE);
+        tvStyle.setVisibility(isListenAny ? View.VISIBLE : View.INVISIBLE);
         if(isListenAny) {
             tvStyle.setOnClickListener(new OnClickListener() {
                 @Override
@@ -490,33 +509,35 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             if(playlistEntry == null) {
                 return;
             }
+            Music music = playlistEntry.getMusic();
+            String albumPath = AudioLoaderTask.getAlbumArt(getContentResolver(), music.getAlbumId());
+
             mPlaylistEntry = playlistEntry;
             mCurrentAlbum = playlistEntry.getAlbum();
             if(mCurrentAlbum != null) {
                 String artistName = mCurrentAlbum.getArtistName();
                 if(TextUtils.isEmpty(artistName)) {
-                    mArtistTextView.setVisibility(View.GONE);
+                    tvArtist.setVisibility(View.GONE);
                 } else {
-                    mArtistTextView.setVisibility(View.VISIBLE);
-                    mArtistTextView.setText("-- " + playlistEntry.getAlbum().getArtistName() + " --");
+                    tvArtist.setVisibility(View.VISIBLE);
+                    tvArtist.setText("-- " + playlistEntry.getAlbum().getArtistName() + " --");
                 }
-                showImage(mCoverImageView, playlistEntry.getAlbum().getImage());
-                ((TextView) findViewById(R.id.tv_title)).setText(mCurrentAlbum.getName());
+                updateTitleBar(mCurrentAlbum.getName());
+                if(TextUtils.isEmpty(albumPath)) {
+                    albumPath = mCurrentAlbum.getImage();
+                }
             } else {
-                mArtistTextView.setVisibility(View.GONE);
+                tvArtist.setVisibility(View.GONE);
             }
+
             updateFavorIcon();
-            Music music = playlistEntry.getMusic();
-            String albumPath = AudioLoaderTask.getAlbumArt(getContentResolver(), music.getAlbumId());
-            if(TextUtils.isEmpty(albumPath)) {
-                albumPath = mCurrentAlbum.getImage();
-            }
+
             if(TextUtils.isEmpty(albumPath)) {
                 albumPath = music.getAlbum();
             }
             showImage(mCoverImageView, albumPath);
 
-            mSongTextView.setText(playlistEntry.getMusic().getName());
+            tvSongName.setText(playlistEntry.getMusic().getName());
 
             mCurrentTimeTextView.setText(Helper.secondsToString(0));
             mTotalTimeTextView.setText(Helper.secondsToString(playlistEntry.getMusic().getDuration()));
@@ -634,6 +655,19 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
      * 随便听模式下载随机歌单
      */
     private void downloadPlaylist() {
+        final Authority authority = Dian1Application.getInstance().getUserAuthority();
+        final int countToday;
+        if(authority == null || !authority.listenAny) {
+            countToday = CommonPreference.getCountDay();
+            if(countToday >= PlayerEngineImpl.MAX_PLAY_COUNT_DAY) {
+                Intent intent = new Intent();
+                intent.setAction(Constants.ACTION_MAX_PLAY_TIMES_LIMITED);
+                sendBroadcast(intent);
+                return;
+            }
+        } else {
+            countToday = -1;
+        }
         ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSuibianApi.URL, net.dian1.player.model.Music.class,
                 ApiData.MusicSuibianApi.getParams(STYLE_SELECTED), new OnResultListener<net.dian1.player.model.Music>() {
 
@@ -641,6 +675,9 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             public void onResult(net.dian1.player.model.Music response) {
                 //updateView(response);
                 setupPlaylist(AudioUtils.buildPlaylist(response, 0));
+                if(authority == null || !authority.listenAny) {
+                    CommonPreference.saveCountDay(countToday + 1);
+                }
             }
 
             @Override
@@ -661,6 +698,12 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(deliveryChangedReceiver);
     }
 
     public void albumClickHandler(View target) {

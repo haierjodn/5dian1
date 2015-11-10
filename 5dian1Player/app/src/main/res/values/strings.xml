@@ -2,7 +2,7 @@
 <resources>
     <string name="about_address">Teleca Poland Sp. z o.o.\n6 Kasprzaka Street\n90-083 Lodz, Poland</string>
     <string name="about_link">android@teleca.com</string>
-    <string name="app_name">5.1发烧音乐</string>
+    <string name="app_name">5.1汽车音乐</string>
     <string name="about_note">(c) ©2011-2015 5.1音乐网</string>
 
     <string name="popular_this_week">popular this week</string>
@@ -153,6 +153,10 @@
     <string name="register">注册</string>
     <string name="register_success">注册成功</string>
 
+    <string name="bind">绑定</string>
+    <string name="bind_success">绑定成功</string>
+    <string name="bind_tips">亲爱的，绑定手机可提升账户安全</string>
+
     <string name="forget_password">忘记密码</string>
 
     <string name="login_btn">登陆</string>
@@ -216,5 +220,8 @@
     <string name="setting_logout">退出登陆</string>
     <string name="music_style">风格</string>
 
+    <!-- Other -->
+    <string name="user_alert">会员提示</string>
+    <string name="exceed_tried_times_ordinary_user">普通会员每天最多试听3首歌，金砖会员不受限制，继续了解？</string>
 
 </resources>

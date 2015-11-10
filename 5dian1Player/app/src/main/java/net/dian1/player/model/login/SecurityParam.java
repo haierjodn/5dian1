@@ -52,6 +52,14 @@ public class SecurityParam extends ApiParam {
         return param;
     }
 
+    public static SecurityParam getBindParam(String phone, String validCode) {
+        SecurityParam param = new SecurityParam();
+        param.setAct("bindphone");
+        param.setPhone(phone);
+        param.setAuthCode(validCode);
+        return param;
+    }
+
     public String getAct() {
         return act;
     }

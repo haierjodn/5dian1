@@ -10,6 +10,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import net.dian1.player.Dian1Application;
+import net.dian1.player.media.PlayerEngineImpl;
+
+import java.util.Calendar;
 
 /**
  *
@@ -63,9 +66,32 @@ public class CommonPreference {
 		return mPreferences.getInt(key, defValue);
 	}
 
+
+    public static int getCountDay() {
+        int maskData = CommonPreference.getInt(CommonPreference.PLAY_COUNT, 0);
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DAY_OF_YEAR);
+        int count = maskData & 0xf;
+        int day = (maskData & 0xfff0) >> 4;
+        if(day > 365) {
+            return PlayerEngineImpl.MAX_PLAY_COUNT_DAY;
+        } else if(day == today) {
+            return count;
+        }
+        return 0;
+    }
+
+    public static void saveCountDay(int count) {
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DAY_OF_YEAR);
+        int maskData = ((today & 0xfff) << 4) + (count & 0xf);
+        CommonPreference.saveInt(CommonPreference.PLAY_COUNT, maskData);
+    }
+
     /************* Preference Constants ********************/
     /** 每日推荐 */
     public final static String MUSIC_DAY = "music.day";
 
-
+    /** 随便听每日播放次数 */
+    public final static String PLAY_COUNT = "play.count.day";
 }

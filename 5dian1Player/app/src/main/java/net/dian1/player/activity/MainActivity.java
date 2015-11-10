@@ -19,6 +19,7 @@ package net.dian1.player.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
+import net.dian1.player.activity.login.BindActivity;
 import net.dian1.player.adapter.PurpleEntry;
 import net.dian1.player.adapter.PurpleListener;
 import net.dian1.player.api.Album;
@@ -44,6 +46,7 @@ import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.UserInfo;
 import net.dian1.player.model.common.VersionLatest;
+import net.dian1.player.preferences.CommonPreference;
 import net.dian1.player.util.ComUtils;
 import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.Helper;
@@ -103,9 +106,21 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                 tvLevel.setText(R.string.user_ordinary);
                 ivGold.setImageResource(R.drawable.icon_level_siliver);
             }
-            //tvRenewal.setText(userInfo.getNickname());
             showImage(ivPortrait, userInfo.getPortrait());
             ivGold.setOnClickListener(this);
+            if(TextUtils.isEmpty(userInfo.getPhone())) {
+                DialogUtils.showCommonDialog(this, getString(R.string.bind), getString(R.string.bind_tips),
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                BindActivity.startAction(MainActivity.this);
+                            }
+                        });
+            }
         }
     }
 
@@ -137,6 +152,7 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                 //HomeActivity.launch(this);
                 break;
             case R.id.tv_setting:
+                CommonPreference.saveCountDay(0);
                 SettingActivity.startAction(MainActivity.this);
                 break;
             case R.id.tv_favor:

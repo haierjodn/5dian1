@@ -73,13 +73,13 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
     /**
      * next button action
      */
-    private OnSeekToListenerImp onPrevTouchListener = new OnSeekToListenerImp(
+    private OnSeekToListenerImp onNextTouchListener = new OnSeekToListenerImp(
             getPlayerEngine(), SeekToMode.EForward);
 
     /**
      * prev button action
      */
-    private OnSeekToListenerImp onNextTouchListener = new OnSeekToListenerImp(
+    private OnSeekToListenerImp onPrevTouchListener = new OnSeekToListenerImp(
             getPlayerEngine(), SeekToMode.ERewind);
 
     @Override
@@ -129,7 +129,7 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
             Music music = playlistEntry.getMusic();
             String albumPath = AudioLoaderTask.getAlbumArt(getContext().getContentResolver(), music.getAlbumId());
             if(TextUtils.isEmpty(albumPath)) {
-                albumPath = mCurrentAlbum.getImage();
+                albumPath = mCurrentAlbum == null ? null : mCurrentAlbum.getImage();
             }
             bitmapUtils.display(ivCover, albumPath);
 

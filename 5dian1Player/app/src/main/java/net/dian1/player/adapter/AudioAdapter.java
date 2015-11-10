@@ -96,8 +96,8 @@ public class AudioAdapter extends RecyclerView.Adapter implements AudioLoaderMan
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PlayerActivity.launch(mActivity, playlist);
                 playlist.select(position);
+                PlayerActivity.launch(mActivity, playlist);
             }
         });
     }
