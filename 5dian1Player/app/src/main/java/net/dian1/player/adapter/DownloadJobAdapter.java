@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import net.dian1.player.Dian1Application;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.download.DownloadJob;
 import net.dian1.player.R;
@@ -43,7 +44,7 @@ public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		View row = convertView;
 		ViewHolder holder;
 		if (row == null) {
@@ -52,6 +53,7 @@ public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 			holder.songName = (TextView)row.findViewById(R.id.TrackRowName);
 			holder.songArtistAlbum = (TextView)row.findViewById(R.id.TrackRowArtistAlbum);
 			holder.songProgressText = (TextView)row.findViewById(R.id.TrackRowProgress);
+			holder.tvDelete = row.findViewById(R.id.tv_delete);
 			holder.songProgressText.setVisibility(type == TYPE_COMPLETED ? View.INVISIBLE : View.VISIBLE);
 			row.setTag(holder);
 		}
@@ -59,17 +61,23 @@ public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 			holder = (ViewHolder) row.getTag();
 		}
 
-		PlaylistEntry playlistEntry = mList.get(position).getPlaylistEntry();
+		final PlaylistEntry playlistEntry = mList.get(position).getPlaylistEntry();
 		holder.songName.setText(playlistEntry.getMusic().getName());
 		holder.songArtistAlbum.setText(playlistEntry.getAlbum().getArtistName()+" - "+playlistEntry.getAlbum().getName());
 
 		if(type == TYPE_DOWNLOADING) {
 			if (mList.get(position).getProgress() == 100) {
-				holder.songProgressText.setText("COMPLETE");
+				holder.songProgressText.setText("");//COMPLETE
 			} else {
 				holder.songProgressText.setText(mList.get(position).getProgress() + "%");
 			}
 		}
+		holder.tvDelete.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Dian1Application.getInstance().getDownloadManager().deleteDownload(mList.get(position));
+			}
+		});
 
 		return row;
 	}
@@ -84,6 +92,7 @@ public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 		TextView songName;
 		TextView songArtistAlbum;
 		TextView songProgressText;
+		View tvDelete;
 	}
 
 }

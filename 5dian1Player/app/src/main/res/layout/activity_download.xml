@@ -37,11 +37,46 @@
     <View style="@style/DividerLine"
         android:layout_marginTop="15dp"/>
 
-    <android.support.v4.view.ViewPager
+    <!--<android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center" />-->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <net.dian1.player.widget.swipelist.SwipeListView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:swipe="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/slv_downloaded"
+            android:listSelector="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@color/divider_line"
+            android:dividerHeight="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:swipeFrontView="@+id/front"
+            swipe:swipeBackView="@+id/back"
+            swipe:swipeCloseAllItemsWhenMoveList="true"
+            swipe:swipeMode="left" />
+        <net.dian1.player.widget.swipelist.SwipeListView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:swipe="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/slv_downloading"
+            android:listSelector="@android:color/transparent"
+            android:cacheColorHint="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/divider_line"
+            android:dividerHeight="0.5dp"
+            android:visibility="gone"
+            swipe:swipeFrontView="@+id/front"
+            swipe:swipeBackView="@+id/back"
+            swipe:swipeCloseAllItemsWhenMoveList="true"
+            swipe:swipeMode="left" />
+
+    </FrameLayout>
 
     <!--<ListView
         android:layout_width="match_parent"

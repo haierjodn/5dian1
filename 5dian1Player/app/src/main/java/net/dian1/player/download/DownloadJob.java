@@ -147,10 +147,10 @@ public class DownloadJob {
 	
 	public void notifyDownloadEnded(int errorCode){
 		if(errorCode <= 0 && !mDownloadTask.isCancelled()){
+			mProgress = 100;
 			if(mListener != null) {
 				mListener.downloadEnded(this);
 			}
-			mProgress = 100;
 		} else {
 			this.errorCode = errorCode;
 			if(mListener != null) {

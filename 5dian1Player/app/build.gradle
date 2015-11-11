@@ -30,4 +30,5 @@ dependencies {
     //compile 'org.litepal.android:core:1.2.1'
     compile 'com.jiechic.library:xUtils:2.6.14'
     compile files('libs/fastjson-1.1.45.android.jar')
+    compile files('libs/nineoldandroids-2.4.0.jar')
 }

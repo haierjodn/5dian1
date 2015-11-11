@@ -133,12 +133,6 @@ public class DownloadManagerImpl implements DownloadManager {
 		if (fileMP3.exists()) {
 			fileMP3.delete();
 		}
-		String fileNameOGG = DownloadHelper.getFileName(playlistEntry,
-				JamendoGet2Api.ENCODING_OGG);
-		File fileOGG = new File(trackPath, fileNameOGG);
-		if (fileOGG.exists()) {
-			fileOGG.delete();
-		}
 	}
 
 	@Override

@@ -109,8 +109,8 @@ public class DownloadProviderDbImpl implements DownloadProvider {
 	public void removeDownload(DownloadJob job) {
 		if (job.getProgress() < 100) {
 			job.cancel();
-			mQueuedJobs.remove(job);
-		} else {
+		}
+		if(!mQueuedJobs.remove(job)) {
 			mCompletedJobs.remove(job);
 		}
 		mDb.remove(job);
