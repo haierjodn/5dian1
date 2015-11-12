@@ -372,6 +372,7 @@ public class Dian1Application extends Application {
 		if (user != null) {
 			user = null;
 		}
+		getPlayerEngineInterface().stop();
 		new DatabaseImpl(this).deleteAllUserInfo();
 	}
 

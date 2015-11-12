@@ -23,17 +23,6 @@ public class ApiData extends Api {
     private static final String TAG = "ApiData";
 
 
-    // 2.20. 退出登录
-//	public static class LogoutApi {
-//
-//		public static final String URL = API_URL + "/logout";
-//		public static ApiRequestParams setParams(LogoutParam param) {
-//			return new ApiData().new ApiRequestParams(param);
-//		}
-//
-//	}
-
-
     // 登录
     public static class LoginApi {
 

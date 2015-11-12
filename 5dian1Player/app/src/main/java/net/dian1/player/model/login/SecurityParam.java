@@ -1,7 +1,9 @@
 package net.dian1.player.model.login;
 
 
+import net.dian1.player.Dian1Application;
 import net.dian1.player.http.ApiParam;
+import net.dian1.player.model.UserInfo;
 
 /**
  * token	String 	在“修改密码”“绑定手机”“修改绑定”时，需要
@@ -33,8 +35,16 @@ public class SecurityParam extends ApiParam {
     public SecurityParam() {
     }
 
+    public void initUserId() {
+        UserInfo userInfo = Dian1Application.getInstance().getUser();
+        if(userInfo != null) {
+            setUid(String.valueOf(userInfo.getLoginId()));
+        }
+    }
+
     public static SecurityParam getPwdForgetParam(String code, String phone, String password) {
         SecurityParam param = new SecurityParam();
+        param.initUserId();
         param.setAct("resetpwd");
         param.setAuthCode(code);
         param.setPhone(phone);
@@ -44,7 +54,8 @@ public class SecurityParam extends ApiParam {
 
     public static SecurityParam getPwdSetParam(String oldPwd, String newPwd) {
         SecurityParam param = new SecurityParam();
-        param.setAct("resetpwd");
+        param.initUserId();
+        param.setAct("newpwd");
         param.setOldPwd(oldPwd);
         param.setNewPwd(newPwd);
         //param.setAuthCode(code);
@@ -54,6 +65,7 @@ public class SecurityParam extends ApiParam {
 
     public static SecurityParam getBindParam(String phone, String validCode) {
         SecurityParam param = new SecurityParam();
+        param.initUserId();
         param.setAct("bindphone");
         param.setPhone(phone);
         param.setAuthCode(validCode);

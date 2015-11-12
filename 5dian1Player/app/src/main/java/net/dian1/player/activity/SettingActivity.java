@@ -9,6 +9,7 @@ import android.widget.Toast;
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.activity.login.LoginActivity;
+import net.dian1.player.common.Extra;
 import net.dian1.player.dialog.AboutDialog;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
@@ -86,6 +87,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 	private void logoff() {
 		finish();
 		Dian1Application.getInstance().logoff();
+		MainActivity.closeAll(this);
 		LoginActivity.startAction(this);
 	}
 }

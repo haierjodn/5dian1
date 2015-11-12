@@ -1,6 +1,7 @@
 package net.dian1.player.http;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -17,6 +18,8 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+
+import org.w3c.dom.Text;
 
 /**
  * token	String	true	用户登录后的标识，登录时由服务端返回
@@ -50,6 +53,8 @@ public class ApiRequest {
 
     public String mUrl;
 
+    private String mToken;
+
     /**
      * 接口版本号,后端做接口版本兼容所需 *
      */
@@ -69,7 +74,15 @@ public class ApiRequest {
         } else {
             mRequestParams = params;
         }
-        setupHeaders(mRequestParams);
+        UserInfo user = ((Dian1Application) mContext.getApplicationContext()).getUser();
+        if (user != null) {
+            mToken = user.getToken();
+            if(!TextUtils.isEmpty(mToken)) {
+                mRequestParams.addQueryStringParameter("token", mToken);
+            }
+            LogUtil.i(TAG, user.getToken());
+        }
+        setupHeaders();
     }
 
     // 无参数
@@ -99,19 +112,15 @@ public class ApiRequest {
         return this;
     }
 
-	private void setupHeaders(RequestParams requestParams) {
-		UserInfo user = ((Dian1Application) mContext.getApplicationContext()).getUser();
-		if (user != null) {
-            LogUtil.i(TAG, user.getToken());
-			mRequestParams.addHeader(Api.HEADER_TOKEN, user.getToken());
+	private void setupHeaders() {
+		if (!TextUtils.isEmpty(mToken)) {
+			mRequestParams.addHeader(Api.HEADER_TOKEN, mToken);
 		}
 		mRequestParams.addHeader(Api.HEADER_APP_VERSION, ComUtils.getAppVersion(mContext)); // app版本号
 		mRequestParams.addHeader(Api.HEADER_SYS_VERSION, ComUtils.getVersion()); // 系统版本号版本号
 		mRequestParams.addHeader(Api.HEADER_PLATFORM, "ANDROID"); // 平台信息
 		mRequestParams.addHeader(Api.HEADER_DEVICE, ComUtils.getUserAgent()); // 设备信息
 		mRequestParams.addHeader(Api.HEADER_APP_VERSION, API_VERSION_VALUE); // 接口版本
-		// TODO Add venderId String True 商家id
-
 	}
 
     public class OnCallBack extends RequestCallBack<String> {

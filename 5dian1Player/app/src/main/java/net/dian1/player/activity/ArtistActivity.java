@@ -55,7 +55,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
  * 
  * @author Lukasz Wisniewski
  */
-public class ArtistActivity extends Activity {
+public class ArtistActivity extends BaseActivity {
 
 	private ArtistBar mArtistBar;
 	private AlbumGridAdapter mAlbumGridAdapter;

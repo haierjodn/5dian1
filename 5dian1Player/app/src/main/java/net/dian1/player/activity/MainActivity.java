@@ -39,6 +39,7 @@ import net.dian1.player.adapter.PurpleEntry;
 import net.dian1.player.adapter.PurpleListener;
 import net.dian1.player.api.Album;
 import net.dian1.player.api.Playlist;
+import net.dian1.player.common.Extra;
 import net.dian1.player.dialog.AboutDialog;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
@@ -53,10 +54,7 @@ import net.dian1.player.util.Helper;
 import net.dian1.player.widget.OnAlbumClickListener;
 
 /**
- * Home activity of the jamendo, central navigation place
  *
- * @author Lukasz Wisniewski
- * @author Marcin Gil
  */
 public class MainActivity extends BaseActivity implements OnAlbumClickListener, OnClickListener {
 
@@ -75,6 +73,13 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
      */
     public static void launch(Context c) {
         Intent intent = new Intent(c, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        c.startActivity(intent);
+    }
+
+    public static void closeAll(Context c) {
+        Intent intent = new Intent(c, MainActivity.class);
+        intent.setAction(Extra.ACTION_MAIN_EXIT);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         c.startActivity(intent);
     }
@@ -195,6 +200,14 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if(intent != null && Extra.ACTION_MAIN_EXIT.equals(intent.getAction())) {
+            finish();
+        }
     }
 
     /**
