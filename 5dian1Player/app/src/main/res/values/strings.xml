@@ -151,6 +151,7 @@
 
     <!-- Register -->
     <string name="register">注册</string>
+    <string name="registering">注册中</string>
     <string name="register_success">注册成功</string>
 
     <string name="bind">绑定</string>
@@ -201,7 +202,7 @@
     <!--忘记密码-->
     <string name="forget_title">找回密码</string>
     <string name="forget_phone">输入绑定手机号</string>
-    <string name="forget_input_code">输入验证码</string>
+    <string name="forget_input_code">收到的验证码</string>
     <string name="forget_gain_code">获取验证码</string>
     <string name="forget_regain_code">秒后重新获取</string>
     <string name="forget_pwd">请设置新密码</string>
@@ -212,6 +213,11 @@
     <string name="forget_sms_code_false">获取验证码失败，请重试...</string>
     <string name="forget_reset_success">重置密码成功</string>
     <string name="download_manager">下载管理</string>
+    <string name="forget_input_error">老规矩，换个姿势，再输一次</string>
+
+    <!-- 注册 -->
+    <string name="register_input_error">换个姿势，再输一次</string>
+
 
     <!-- Setting -->
     <string name="setting_adjust">均衡器</string>

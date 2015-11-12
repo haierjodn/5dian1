@@ -159,15 +159,19 @@ public class BaseActivity extends Activity{
 		}
 	}
 
+	public void showDialog(String content) {
+		showDialog(content, true);
+	}
 	/**
 	 * 显示加载进度条
 	 * @param content
 	 */
-	public void showDialog(String content) {
+	public void showDialog(String content, boolean cancellable) {
 		if (!isFinishing()) {
 			if (progressDialog == null) {
 				progressDialog = new ProgressDialog(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
 				progressDialog.setCanceledOnTouchOutside(false);
+				progressDialog.setCancelable(cancellable);
 			}
 			if (!progressDialog.isShowing()) {
 				progressDialog.show();

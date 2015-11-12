@@ -112,16 +112,19 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 			String code = et_code.getText().toString().trim();
 			//健壮性 但是貌似没什么卵用
 			if (TextUtils.isEmpty(phone)) {
-				showToastSafe(R.string.forget_phone_empty, Toast.LENGTH_SHORT);
+				//forget_phone_empty
+				showToastSafe(R.string.register_input_error, Toast.LENGTH_SHORT);
 				return;
 			}
 			if (TextUtils.isEmpty(pwd)) {
-				showToastSafe(R.string.login_pwd_empty, Toast.LENGTH_SHORT);
+				//login_pwd_empty
+				showToastSafe(R.string.register_input_error, Toast.LENGTH_SHORT);
 				return;
 			}
 
 			if (TextUtils.isEmpty(code)) {
-				showToastSafe(R.string.forget_code_empty, Toast.LENGTH_SHORT);
+				//forget_code_empty
+				showToastSafe(R.string.register_input_error, Toast.LENGTH_SHORT);
 				return;
 			}
 			//showDialog();
@@ -130,30 +133,31 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 			param.setAuthCode(code);
 			param.setPhone(phone);
 			param.setPwd(password);
+			showDialog(getString(R.string.registering), false);
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.RegisterApi.URL, DMSResponse.class,
 					ApiData.RegisterApi.getParams(param), new OnResultListener<DMSResponse>() {
 				@Override
 				public void onResult(DMSResponse response) {
-					//dismissDialog();
+					dismissDialog();
 					Toast.makeText(ctx, R.string.register_success, Toast.LENGTH_SHORT).show();
 					finish();
 				}
 				@Override
 				public void onResultError(String msg, String code) {
 					Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
-					//dismissDialog();
+					dismissDialog();
 				}
 			}));
 			break;
 		case R.id.tv_gain_code:
 
 			if (TextUtils.isEmpty(phone)) {
-				et_phone.setError(getString(R.string.forget_phone_empty));
+				showToastSafe(R.string.forget_phone_empty, Toast.LENGTH_SHORT);
 				return;
 			}
 
 			if (phone.length() < 11) {
-				et_phone.setError(getString(R.string.forget_phone_error));
+				showToastSafe(R.string.forget_phone_error, Toast.LENGTH_SHORT);
 				return;
 			}
 			//showDialog(getString(R.string.forget_gain_code));
@@ -207,7 +211,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			et_phone.setError("");
 			updateLoginState();
 		}
 

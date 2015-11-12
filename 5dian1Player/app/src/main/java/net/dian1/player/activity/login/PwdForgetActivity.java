@@ -112,54 +112,57 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 			String code = et_code.getText().toString().trim();
 			//健壮性 但是貌似没什么卵用
 			if (TextUtils.isEmpty(phone)) {
-				showToastSafe(R.string.forget_phone_empty, Toast.LENGTH_SHORT);
+				//forget_phone_empty
+				showToastSafe(R.string.forget_input_error, Toast.LENGTH_SHORT);
 				return;
 			}
 			if (TextUtils.isEmpty(pwd)) {
-				showToastSafe(R.string.login_pwd_empty, Toast.LENGTH_SHORT);
+				//login_pwd_empty
+				showToastSafe(R.string.forget_input_error, Toast.LENGTH_SHORT);
 				return;
 			}
 
 			if (TextUtils.isEmpty(code)) {
-				showToastSafe(R.string.forget_code_empty, Toast.LENGTH_SHORT);
+				//forget_code_empty
+				showToastSafe(R.string.forget_input_error, Toast.LENGTH_SHORT);
 				return;
 			}
-			//showDialog();
+			showDialog(null, false);
 			final String password = et_pwd.getText().toString();
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.SecurityApi.URL, DMSResponse.class,
 					ApiData.SecurityApi.getParams(SecurityParam.getPwdForgetParam(code, phone, password)),
 					new OnResultListener<DMSResponse>() {
 				@Override
 				public void onResult(DMSResponse response) {
-					//dismissDialog();
+					dismissDialog();
 					Toast.makeText(ctx, R.string.forget_reset_success, Toast.LENGTH_SHORT).show();
 					finish();
 				}
 				@Override
 				public void onResultError(String msg, String code) {
 					Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
-					//dismissDialog();
+					dismissDialog();
 				}
 			}));
 			break;
 		case R.id.tv_gain_code:
 
 			if (TextUtils.isEmpty(phone)) {
-				et_phone.setError(getString(R.string.forget_phone_empty));
+				showToastSafe(R.string.forget_phone_empty, Toast.LENGTH_SHORT);
 				return;
 			}
 
 			if (phone.length() < 11) {
-				et_phone.setError(getString(R.string.forget_phone_error));
+				showToastSafe(R.string.forget_phone_error, Toast.LENGTH_SHORT);
 				return;
 			}
-			//showDialog(getString(R.string.forget_gain_code));
+			showDialog(getString(R.string.forget_gain_code), true);
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.ValidCodeApi.URL, ApiData.ValidCodeApi.getParams(
 					new ValidCodeParam("getcode_findpwd", "", phone)), new OnResultListener() {
 
 				@Override
 				public void onResult(Object response) {
-					//dismissDialog();
+					dismissDialog();
 					Toast.makeText(ctx, R.string.forget_sms_code, Toast.LENGTH_SHORT).show();
 					// 验证码倒计时
 					new Thread(new Runnable() {
@@ -184,7 +187,7 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 
 				@Override
 				public void onResultError(String msg, String code) {
-					//dismissDialog();
+					dismissDialog();
 					showToastSafe(msg, Toast.LENGTH_SHORT);
 				}
 			}));
@@ -204,7 +207,6 @@ public class PwdForgetActivity extends BaseActivity implements View.OnClickListe
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			et_phone.setError("");
 			updateLoginState();
 		}
 

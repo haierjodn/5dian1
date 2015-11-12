@@ -70,16 +70,16 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 			String newPwd = et_new.getText().toString().trim();
 			String renewPwd = et_renew.getText().toString().trim();
 			if (newPwd.length() < 6 || renewPwd.length() < 6) {
-				et_new.setError(getString(R.string.change_pwd_length));
+				showToastSafe(R.string.change_pwd_length, Toast.LENGTH_SHORT);
 				return;
 			}
 			if (newPwd.length() > 12 || renewPwd.length() > 12) {
-				et_renew.setError(getString(R.string.change_pwd_length));
+				showToastSafe(R.string.change_pwd_length, Toast.LENGTH_SHORT);
 				return;
 			}
 
 			if (!newPwd.equals(renewPwd)) {
-				et_new.setError(getString(R.string.change_inconformity));
+				showToastSafe(R.string.change_inconformity, Toast.LENGTH_SHORT);
 				return;
 			}
 			//String md5Old = ComUtils.MD5(oldPwd);
@@ -118,9 +118,6 @@ public class ChangePwdActivity extends BaseActivity implements View.OnClickListe
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			et_old.setError("");
-			et_new.setError("");
-			et_renew.setError("");
 			updateLoginState();
 		}
 

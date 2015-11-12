@@ -574,22 +574,26 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
         @Override
         public void onTrackStop() {
+            stopRotatoAnim();
             mPlayImageButton.setImageResource(R.drawable.player_play);
         }
 
         @Override
         public boolean onTrackStart() {
+            startRotatoAnim();
             mPlayImageButton.setImageResource(R.drawable.player_pause);
             return true;
         }
 
         @Override
         public void onTrackPause() {
+            stopRotatoAnim();
             mPlayImageButton.setImageResource(R.drawable.player_play);
         }
 
         @Override
         public void onTrackStreamError() {
+            stopRotatoAnim();
             Toast.makeText(PlayerActivity.this, R.string.stream_error, Toast.LENGTH_LONG).show();
         }
     };

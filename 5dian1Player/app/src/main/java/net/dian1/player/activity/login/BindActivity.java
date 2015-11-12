@@ -93,39 +93,40 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 				showToastSafe(R.string.forget_code_empty, Toast.LENGTH_SHORT);
 				return;
 			}
-			//showDialog();
+			showDialog(null, true);
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.SecurityApi.URL, DMSResponse.class,
 					ApiData.SecurityApi.getParams(SecurityParam.getBindParam(phone, code)),
 					new OnResultListener<DMSResponse>() {
 				@Override
 				public void onResult(DMSResponse response) {
+					dismissDialog();
 					Toast.makeText(ctx, R.string.bind_success, Toast.LENGTH_SHORT).show();
 					finish();
 				}
 				@Override
 				public void onResultError(String msg, String code) {
 					Toast.makeText(ctx, msg, Toast.LENGTH_SHORT).show();
-					//dismissDialog();
+					dismissDialog();
 				}
 			}));
 			break;
 		case R.id.tv_gain_code:
 			if (TextUtils.isEmpty(phone)) {
-				et_phone.setError(getString(R.string.forget_phone_empty));
+				showToastSafe(R.string.forget_phone_empty, Toast.LENGTH_SHORT);
 				return;
 			}
 
 			if (phone.length() < 11) {
-				et_phone.setError(getString(R.string.forget_phone_error));
+				showToastSafe(R.string.forget_phone_error, Toast.LENGTH_SHORT);
 				return;
 			}
-			//showDialog(getString(R.string.forget_gain_code));
+			showDialog(getString(R.string.forget_gain_code));
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.ValidCodeApi.URL, ApiData.ValidCodeApi.getParams(
 					ValidCodeParam.getBindCodeParam(phone)), new OnResultListener() {
 
 				@Override
 				public void onResult(Object response) {
-					//dismissDialog();
+					dismissDialog();
 					Toast.makeText(ctx, R.string.forget_sms_code, Toast.LENGTH_SHORT).show();
 					// 验证码倒计时
 					new Thread(new Runnable() {
@@ -150,7 +151,7 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 
 				@Override
 				public void onResultError(String msg, String code) {
-					//dismissDialog();
+					dismissDialog();
 					showToastSafe(msg, Toast.LENGTH_SHORT);
 				}
 			}));
@@ -170,7 +171,6 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			et_phone.setError("");
 			updateLoginState();
 		}
 

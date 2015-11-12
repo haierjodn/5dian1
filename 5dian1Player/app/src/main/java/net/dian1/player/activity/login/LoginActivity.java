@@ -151,13 +151,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 String acc = etUserName.getText().toString().trim();
                 final String pwd = etPassword.getText().toString().trim();
 
-                // // TODO:登录 cid
+                showDialog(getString(R.string.login_ing), false);
                 ApiManager.getInstance().send(new ApiRequest(this, ApiData.LoginApi.URL, LoginResponse.class,
                         ApiData.LoginApi.setParams(new LoginParam(acc, pwd, "1")), new OnResultListener<LoginResponse>() {
 
                     @Override
                     public void onResult(final LoginResponse response) {
-                        //dismissDialog();
+                        dismissDialog();
                         if (response != null) {
                             app.setUser(response.user);
                             MainActivity.launch(LoginActivity.this);
@@ -168,7 +168,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                     @Override
                     public void onResultError(String msg, String code) {
-                        //dismissDialog();
+                        dismissDialog();
                         showToastSafe(msg, Toast.LENGTH_SHORT);
                     }
                 }));
