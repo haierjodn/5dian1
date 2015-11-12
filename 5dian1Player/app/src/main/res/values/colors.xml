@@ -19,4 +19,5 @@
 
     <color name="divider_line">#7fbbbbbb</color>
 
+    <color name="wheel_select_block">#07000000</color>
 </resources>

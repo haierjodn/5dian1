@@ -28,7 +28,7 @@
     <!-- This is the main color -->
     <item android:bottom="1dp" android:top="1dp">
         <shape>
-            <solid android:color="@color/white" />
+            <solid android:color="@color/wheel_select_block" />
         </shape>
     </item>
 </layer-list>
