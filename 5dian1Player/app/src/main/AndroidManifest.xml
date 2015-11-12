@@ -278,7 +278,9 @@
         <activity android:name=".activity.FavorActivity"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity android:name=".activity.login.UserInfoActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
     </application>
 

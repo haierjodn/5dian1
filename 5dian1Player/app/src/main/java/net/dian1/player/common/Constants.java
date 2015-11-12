@@ -9,4 +9,7 @@ public class Constants {
 
     public final static String URL_VIP_INRO = "http://www.5dian1.net/app/jinzhuan.html";
 
+    //续期
+    public final static String URL_VIP_RENEWAL = "http://www.5dian1.net/user/upgrade.asp";
+
 }

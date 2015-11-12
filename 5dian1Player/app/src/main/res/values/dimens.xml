@@ -2,6 +2,8 @@
 <resources>
     <dimen name="user_portrait">68dp</dimen>
 
+    <dimen name="user_portrait_large">96dp</dimen>
+
     <dimen name="tab_size">32px</dimen>
     <dimen name="icon_size">48px</dimen>
     <dimen name="album_size">130px</dimen>

@@ -158,6 +158,12 @@
     <string name="bind_success">绑定成功</string>
     <string name="bind_tips">亲爱的，绑定手机可提升账户安全</string>
 
+    <!-- 会员资料 -->
+    <string name="member_info">会员资料</string>
+    <string name="phone">电话：</string>
+    <string name="email">邮件：</string>
+    <string name="level">等级：</string>
+
     <string name="forget_password">忘记密码</string>
 
     <string name="login_btn">登陆</string>

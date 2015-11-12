@@ -35,10 +35,12 @@ import android.widget.Toast;
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.activity.login.BindActivity;
+import net.dian1.player.activity.login.UserInfoActivity;
 import net.dian1.player.adapter.PurpleEntry;
 import net.dian1.player.adapter.PurpleListener;
 import net.dian1.player.api.Album;
 import net.dian1.player.api.Playlist;
+import net.dian1.player.common.Constants;
 import net.dian1.player.common.Extra;
 import net.dian1.player.dialog.AboutDialog;
 import net.dian1.player.http.ApiData;
@@ -126,6 +128,12 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                             }
                         });
             }
+            ivPortrait.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    UserInfoActivity.startAction(MainActivity.this);
+                }
+            });
         }
     }
 
@@ -165,9 +173,9 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                 break;
             case R.id.iv_gold:
                 if(Dian1Application.getInstance().getUser().getIsappvip() == 1) {
-                    ComUtils.openBrowser(this, "http://www.5dian1.net/user/upgrade.asp", "WEB1");
+                    ComUtils.openBrowser(this, Constants.URL_VIP_RENEWAL, "WEB1");
                 } else {
-                    ComUtils.openBrowser(this, "http://www.5dian1.net/user/upgrade.asp", "WEB2");
+                    ComUtils.openBrowser(this, Constants.URL_VIP_RENEWAL, "WEB2");
                 }
                 break;
         }
