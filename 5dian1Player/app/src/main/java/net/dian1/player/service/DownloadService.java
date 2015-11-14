@@ -104,7 +104,9 @@ public class DownloadService extends Service {
 		@Override
 		public void downloadEnded(DownloadJob job) {
 			mDownloadProvider.downloadCompleted(job);
-			displayNotifcation(job);
+			if(job.getProgress() == 100) {
+				displayNotifcation(job);
+			}
 			new MediaScannerNotifier(DownloadService.this, job);
 		}
 

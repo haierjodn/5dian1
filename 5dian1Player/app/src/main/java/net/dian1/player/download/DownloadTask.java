@@ -35,12 +35,18 @@ import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.api.Music;
 import net.dian1.player.api.WSError;
 import net.dian1.player.api.impl.JamendoGet2ApiImpl;
+import net.dian1.player.http.ApiData;
+import net.dian1.player.http.ApiManager;
+import net.dian1.player.http.ApiRequest;
+import net.dian1.player.util.AudioUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.lidroid.xutils.http.client.HttpRequest;
 
 
 /**
@@ -85,7 +91,15 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer>{
 		PlaylistEntry mPlaylistEntry = job.getPlaylistEntry();
 		String mDestination = job.getDestination();
 
-		String url = mPlaylistEntry.getMusic().getFirstMusicNetUrl();
+		Music engineMusic = mPlaylistEntry.getMusic();
+		String url = engineMusic.getFirstMusicNetUrl();
+
+		if(TextUtils.isEmpty(url)) {
+			engineMusic = requestMusicDetail(engineMusic.getId());
+			url = engineMusic.getFirstMusicNetUrl();
+			job.getPlaylistEntry().setMusic(engineMusic);
+		}
+
 		//url = "http://room2.5dian1.net/低音环绕·极品女声1/15.我和草原有个约定.mp3";
 		if(TextUtils.isEmpty(url)) {
 			return false;
@@ -141,6 +155,17 @@ public class DownloadTask extends AsyncTask<Void, Integer, Integer>{
 		mPlaylistEntry.getMusic().getFirstMusicUrlInfo().setLocalUrl(outFile.getAbsolutePath());
 		//downloadCover(job);
 		return true;
+	}
+
+	private static Music requestMusicDetail(int musicId) {
+		ApiRequest musicDetailRequest = new ApiRequest(Dian1Application.getInstance(), ApiData.MusicDetailApi.URL, net.dian1.player.model.Music.class,
+				ApiData.MusicDetailApi.getParams(musicId), null).setHttpMethod(HttpRequest.HttpMethod.GET);
+
+		net.dian1.player.model.Music musicDetail = ApiManager.getInstance().executeSync(musicDetailRequest, net.dian1.player.model.Music.class);
+		if(musicDetail != null) {
+			return AudioUtils.convertMusic(musicDetail);
+		}
+		return null;
 	}
 	
 	

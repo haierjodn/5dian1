@@ -240,6 +240,7 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
                             entry.setMusic(music1);
                             Dian1Application.getInstance().getDownloadManager().download(entry);
                         }
+                        DownloadActivity.launch(AlbumActivity.this);
                     }
                 } else {
                     showToastSafe(R.string.vip_download_limited, Toast.LENGTH_SHORT);
