@@ -131,4 +131,21 @@ public class DialogUtils {
                     }
                 });
     }
+
+    public static void showNoAuthority12AndJumpPage(final Context context) {
+        showCommonDialog(context, context.getString(R.string.user_alert),
+                context.getString(R.string.exceed_tried_times_album_ordinary_user),
+                context.getString(R.string.btn_goto_vip), null,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                },
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ComUtils.openBrowser(context, Constants.URL_VIP_INRO, null);
+                    }
+                });
+    }
 }

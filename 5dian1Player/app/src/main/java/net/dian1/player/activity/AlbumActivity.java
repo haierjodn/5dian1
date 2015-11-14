@@ -134,7 +134,7 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 1 && !Dian1Application.getInstance().getUserAuthority().searchAlbumAll) {
-                    DialogUtils.showNoAuthorityAndJumpPage(AlbumActivity.this);
+                    DialogUtils.showNoAuthority12AndJumpPage(AlbumActivity.this);
                 } else {
                     PlayerActivity.launch(AlbumActivity.this,
                             mAlbum.buildPlaylist(position)/*MockUtils.buildSamplePlaylist()*/);
@@ -212,9 +212,14 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
                 }
                 break;
             }
-            case R.id.tv_select:
+            case R.id.tv_select: {
                 mustListAdapter.selectAll();
+                final Authority authority = Dian1Application.getInstance().getUserAuthority();
+                if (authority != null && !authority.searchAlbumAll) {
+                    showToastSafe(R.string.exceed_tried_times_album_ordinary_user_toast, Toast.LENGTH_SHORT);
+                }
                 break;
+            }
             case R.id.tv_download: {
                 final Authority authority = Dian1Application.getInstance().getUserAuthority();
                 if(authority != null && authority.downloadAuth) {
