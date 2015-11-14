@@ -14,7 +14,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="请输入绑定的手机号码"
+        android:text="你绑定的手机号码"
         android:textSize="@dimen/normal_s"
         android:textColor="@color/font_white"
         android:singleLine="true" />
@@ -61,7 +61,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="请输入验证码"
+        android:text="收到的验证码"
         android:textSize="@dimen/normal_s"
         android:textColor="@color/font_white"
         android:singleLine="true" />
@@ -83,7 +83,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="请输入新密码"
+        android:text="新的登录密码"
         android:textSize="@dimen/normal_s"
         android:textColor="@color/font_white"
         android:singleLine="true" />

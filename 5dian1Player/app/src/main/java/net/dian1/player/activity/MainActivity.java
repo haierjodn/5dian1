@@ -76,6 +76,7 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
     public static void launch(Context c) {
         Intent intent = new Intent(c, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
 
