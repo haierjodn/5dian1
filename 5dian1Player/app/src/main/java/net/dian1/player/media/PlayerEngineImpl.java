@@ -164,19 +164,6 @@ public class PlayerEngineImpl implements PlayerEngine {
 	}
 
 	@Override
-	public void next() {
-		if(mPlaylist != null){
-			if(mPlaylist.isPlaylistMode(PlaylistPlaybackMode.LISTEN_ANY)) {
-				playNextListenAny();
-			} else {
-				stop();
-				mPlaylist.selectNext();
-				play();
-			}
-		}
-	}
-
-	@Override
 	public void openPlaylist(Playlist playlist) {
 		if(!playlist.isEmpty()){
 			prevPlaylist = mPlaylist;
@@ -302,6 +289,19 @@ public class PlayerEngineImpl implements PlayerEngine {
 	}
 
 	@Override
+	public void next() {
+		if(mPlaylist != null){
+			if(mPlaylist.isPlaylistMode(PlaylistPlaybackMode.LISTEN_ANY)) {
+				playNextListenAny();
+			} else {
+				stop();
+				mPlaylist.selectNext();
+				play();
+			}
+		}
+	}
+
+	@Override
 	public void skipTo(int index) {
 		mPlaylist.select(index);
 		play();
@@ -374,8 +374,9 @@ public class PlayerEngineImpl implements PlayerEngine {
 		} else {
 			countToday = -1;
 		}
+		String style = CommonPreference.getString(CommonPreference.LISTEN_ANY_STYLE, null);
 		ApiManager.getInstance().send(new ApiRequest(Dian1Application.getInstance(), ApiData.MusicSuibianApi.URL, Music.class,
-				ApiData.MusicSuibianApi.getParams(PlayerActivity.STYLE_SELECTED), new OnResultListener<Music>() {
+				ApiData.MusicSuibianApi.getParams(style), new OnResultListener<Music>() {
 			@Override
 			public void onResult(Music response) {
 				mPlaylist.addPlaylistEntry(AudioUtils.buildPlaylistEntry(response, 0));

@@ -5,7 +5,7 @@ package net.dian1.player.model.authority;
  */
 public class Authority {
 
-    /** 随便听, 默认不授权，金砖会员授权 */
+    /** 随便听, 默认3首授权，金砖会员不受限制 */
     public boolean listenAny = false;
 
     /** 每日推荐, 默认授权 */
@@ -16,6 +16,9 @@ public class Authority {
      * 且所有歌曲都不能下载，当想播放第3首以上的歌，
      * 或想下载时，弹出金钻会员说明*/
     public boolean searchAlbumAll = false;
+
+    /** 金转会员才有下载权限 */
+    public boolean downloadAuth = false;
 
     public Authority() {
     }
@@ -28,6 +31,7 @@ public class Authority {
         listenAny = (isVip == 1);
         musicDay = true;
         searchAlbumAll = (isVip == 1);
+        downloadAuth = (isVip == 1);
     }
 
  }

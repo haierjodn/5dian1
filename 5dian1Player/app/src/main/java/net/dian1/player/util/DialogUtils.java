@@ -57,12 +57,20 @@ public class DialogUtils {
         builder.show();
     }
 
+    public static void showCommonDialog(final Context ctx, final String title, final String content,
+                                        final View.OnClickListener cancelListener,
+                                        final View.OnClickListener confirmListener) {
+        showCommonDialog(ctx, title, content, null, null, cancelListener, confirmListener);
+
+    }
+
     /**
      *
      * @param ctx
      * @param content
      */
     public static void showCommonDialog(final Context ctx, final String title, final String content,
+                                        final String btnConfirmText,final String btnCancelText,
                                         final View.OnClickListener cancelListener,
                                         final View.OnClickListener confirmListener) {
         final Dialog dialog = new Dialog(ctx);
@@ -75,6 +83,9 @@ public class DialogUtils {
         TextView tvContent = (TextView) dialog.findViewById(R.id.tv_content);
         tvContent.setText(content);
         TextView tvConfirm = (TextView) dialog.findViewById(R.id.tv_confirm);
+        if(!TextUtils.isEmpty(btnConfirmText)) {
+            tvConfirm.setText(btnConfirmText);
+        }
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +96,9 @@ public class DialogUtils {
             }
         });
         TextView tvCancel = (TextView) dialog.findViewById(R.id.tv_cancel);
+        if(!TextUtils.isEmpty(btnCancelText)) {
+            tvCancel.setText(btnCancelText);
+        }
         if(cancelListener != null) {
             dialog.findViewById(R.id.v_line).setVisibility(View.VISIBLE);
             tvCancel.setVisibility(View.VISIBLE);
@@ -104,6 +118,7 @@ public class DialogUtils {
     public static void showNoAuthorityAndJumpPage(final Context context) {
         showCommonDialog(context, context.getString(R.string.user_alert),
                 context.getString(R.string.exceed_tried_times_ordinary_user),
+                context.getString(R.string.btn_goto_vip), null,
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -115,6 +130,5 @@ public class DialogUtils {
                         ComUtils.openBrowser(context, Constants.URL_VIP_INRO, null);
                     }
                 });
-//        Toast.makeText(context, "No authority, would u please go to purchase page?", Toast.LENGTH_LONG).show();
     }
 }

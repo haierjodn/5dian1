@@ -94,4 +94,8 @@ public class CommonPreference {
 
     /** 随便听每日播放次数 */
     public final static String PLAY_COUNT = "play.count.day";
+
+    /** 缓存随便听音乐风格 */
+    public final static String LISTEN_ANY_STYLE = "music.listen.any.style";
+
 }

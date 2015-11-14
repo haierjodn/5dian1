@@ -203,7 +203,8 @@ public class DualWheelMenu extends Dialog implements OnWheelChangedListener, Vie
          */
         public int indexOf(String value) {
             for(int i = 0; i < items.length; i++) {
-                if(items[i].equals(value)) {
+                KeyValue keyValue = items[i];
+                if(keyValue != null && keyValue.getValue().equals(value)) {
                     return i;
                 }
             }

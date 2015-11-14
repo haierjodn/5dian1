@@ -144,10 +144,13 @@
     <string name="custom">Custom</string>
 
     <!-- Main -->
-    <string name="user_gold_expired">金砖会员剩余%d天</string>
+    <string name="user_gold_expired">金钻会员剩余%d天</string>
     <string name="nickname_prefix">亲爱的%s</string>
     <string name="user_ordinary">普通会员</string>
     <string name="my_favor">我最爱</string>
+
+    <!-- Album Details -->
+    <string name="error_tips_no_select">大侠，要先选择歌曲哦</string>
 
     <!-- Register -->
     <string name="register">注册</string>
@@ -163,6 +166,7 @@
     <string name="phone">电话：</string>
     <string name="email">邮件：</string>
     <string name="level">等级：</string>
+    <string name="vip_download_limited">只有金钻会员，才能下载哦……</string>
 
     <string name="forget_password">忘记密码</string>
 
@@ -232,8 +236,11 @@
     <string name="setting_logout">退出登陆</string>
     <string name="music_style">风格</string>
 
+    <!-- 会员资格 -->
+    <string name="btn_goto_vip">看看金钻</string>
+
     <!-- Other -->
     <string name="user_alert">会员提示</string>
-    <string name="exceed_tried_times_ordinary_user">普通会员每天最多试听3首歌，金砖会员不受限制，继续了解？</string>
+    <string name="exceed_tried_times_ordinary_user">5.1随便听，普通会员每次只能播3首，金钻会员不受限制……</string>
 
 </resources>

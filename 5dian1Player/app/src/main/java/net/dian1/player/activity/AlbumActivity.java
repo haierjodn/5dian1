@@ -52,6 +52,7 @@ import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.Album;
 import net.dian1.player.model.Music;
+import net.dian1.player.model.authority.Authority;
 import net.dian1.player.util.AudioUtils;
 import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.ImageUtils;
@@ -71,22 +72,6 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
         Intent intent = new Intent(context, AlbumActivity.class);
         intent.putExtra(Extra.ALBUM_ID, albumId);
         context.startActivity(intent);
-    }
-
-    /**
-     * Launch this Activity from the outside
-     *
-     * @param c     Activity from which AlbumActivity should be started
-     * @param album Album to be presented
-     */
-    public static void launch(Activity c, Album album) {
-        new AlbumLoadingDialog(c, R.string.album_loading, R.string.album_fail).execute(album);
-    }
-
-    public static void launch(
-            IntentDistributorActivity c, Album album,
-            int reviewId) {
-        new AlbumLoadingDialog(c, R.string.album_loading, R.string.album_fail).execute(album, reviewId);
     }
 
     /**
@@ -221,7 +206,7 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
             case R.id.tv_play: {
                 List<Music> list = mustListAdapter.getSelectedList();
                 if (list == null || list.size() < 1) {
-                    showToastSafe("No item selected", Toast.LENGTH_SHORT);
+                    showToastSafe(getString(R.string.error_tips_no_select), Toast.LENGTH_SHORT);
                 } else {
                     PlayerActivity.launch(AlbumActivity.this, AudioUtils.buildPlaylist(mAlbum, list, 0));
                 }
@@ -231,23 +216,28 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
                 mustListAdapter.selectAll();
                 break;
             case R.id.tv_download: {
-                List<Music> list = mustListAdapter.getSelectedList();
-                if (list == null || list.size() < 1) {
-                    showToastSafe("No item selected", Toast.LENGTH_SHORT);
-                } else {
-                    for(final Music music : list) {
-                        PlaylistEntry entry = new PlaylistEntry();
-                        net.dian1.player.api.Album album = new net.dian1.player.api.Album();
-                        album.setId((int) mAlbum.getId());
-                        //album.setArtistName(get);
-                        album.setName(mAlbum.getName());
-                        album.setRating(0.5d);
-                        album.setImage(mAlbum.getPic());
-                        entry.setAlbum(album);
-                        net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);
-                        entry.setMusic(music1);
-                        Dian1Application.getInstance().getDownloadManager().download(entry);
+                final Authority authority = Dian1Application.getInstance().getUserAuthority();
+                if(authority != null && authority.downloadAuth) {
+                    List<Music> list = mustListAdapter.getSelectedList();
+                    if (list == null || list.size() < 1) {
+                        showToastSafe(getString(R.string.error_tips_no_select), Toast.LENGTH_SHORT);
+                    } else {
+                        for(final Music music : list) {
+                            PlaylistEntry entry = new PlaylistEntry();
+                            net.dian1.player.api.Album album = new net.dian1.player.api.Album();
+                            album.setId((int) mAlbum.getId());
+                            //album.setArtistName(get);
+                            album.setName(mAlbum.getName());
+                            album.setRating(0.5d);
+                            album.setImage(mAlbum.getPic());
+                            entry.setAlbum(album);
+                            net.dian1.player.api.Music music1 = AudioUtils.convertMusic(music);
+                            entry.setMusic(music1);
+                            Dian1Application.getInstance().getDownloadManager().download(entry);
+                        }
                     }
+                } else {
+                    showToastSafe(R.string.vip_download_limited, Toast.LENGTH_SHORT);
                 }
                 break;
             }

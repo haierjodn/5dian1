@@ -79,8 +79,6 @@ import java.util.List;
  */
 public class PlayerActivity extends BaseActivity implements OnClickListener {
 
-    public static String STYLE_SELECTED = null;
-
     private PlayerEngine getPlayerEngine() {
         return Dian1Application.getInstance().getPlayerEngineInterface();
     }
@@ -125,6 +123,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
     private String mBetterRes;
     private LoadingDialog mUriLoadingDialog;
     private Playlist favorPlaylist;
+    private DualWheelMenu reasonMenu = null;
 
     public static void launch(Context c, Playlist playlist) {
         Intent intent = new Intent(c, PlayerActivity.class);
@@ -155,13 +154,14 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
         database = new DatabaseImpl(PlayerActivity.this);
         favorPlaylist = database.getFavorites();
-        STYLE_SELECTED = null;
 
         initView();
 
         handleIntent();
 
         setupHeader();
+
+        setStyleText();
 
         Dian1Application.getInstance().getDownloadManager().registerDownloadObserver(new DownloadObserver() {
             @Override
@@ -255,6 +255,13 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         updateFavorIcon();
     }
 
+    private void setStyleText() {
+        String style = CommonPreference.getString(CommonPreference.LISTEN_ANY_STYLE, null);
+        if(!TextUtils.isEmpty(style)) {
+            tvStyle.setText(style);
+        }
+    }
+
     private void setupHeader() {
         findViewById(R.id.iv_back).setOnClickListener(this);
         tvStyle = (TextView) findViewById(R.id.tv_style);
@@ -274,38 +281,50 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicStyleApi.URL, CategoryResponse.class,
                 new OnResultListener<CategoryResponse>() {
 
-                @Override
-                public void onResult(final CategoryResponse response) {
-                    if (response != null) {
-                        categoryListCached = response.getCategoryList();
+                    @Override
+                    public void onResult(final CategoryResponse response) {
+                        if (response != null) {
+                            categoryListCached = response.getCategoryList();
+                        }
+                        popupMusicStyleWheel();
+                        dismissDialog();
                     }
-                    popupMusicStyleWheel();
-                    dismissDialog();
-                }
 
-                @Override
-                public void onResultError(String msg, String code) {
-                    dismissDialog();
-                    Toast.makeText(PlayerActivity.this, msg, Toast.LENGTH_SHORT).show();
-                }
-            }));
+                    @Override
+                    public void onResultError(String msg, String code) {
+                        dismissDialog();
+                        Toast.makeText(PlayerActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                }));
     }
 
     private void popupMusicStyleWheel() {
-        DualWheelMenu reasonMenu = null;
         if(reasonMenu == null) {
             reasonMenu = new DualWheelMenu(this, categoryListCached, null);
             reasonMenu.setOnChangeListener(new DualWheelMenu.OnDualWheelChangedListener() {
                 @Override
                 public void onChanged(int firstOldValue, int firstNewValue, int secondOldValue, int secondNewValue) {
-                    int key = Integer.decode(categoryListCached.get(firstNewValue).getKey());
+                    //int key = Integer.decode(categoryListCached.get(firstNewValue).getKey());
                     String value = categoryListCached.get(firstNewValue).getValue();
-                    tvStyle.setText(value);
-                    STYLE_SELECTED = value;
+                    String currentStyle = CommonPreference.getString(CommonPreference.LISTEN_ANY_STYLE, null);
+                    if (!value.equals(currentStyle)) {
+                        tvStyle.setText(value);
+                        CommonPreference.save(CommonPreference.LISTEN_ANY_STYLE, value);
+                        getPlayerEngine().next();
+                    }
                 }
             });
         }
         reasonMenu.show();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String style = CommonPreference.getString(CommonPreference.LISTEN_ANY_STYLE, null);
+                if(!TextUtils.isEmpty(style)) {
+                    reasonMenu.setCurrentValue(style);
+                }
+            }
+        }, 200);
     }
 
     private boolean currentEntryIsFavor() {
@@ -378,10 +397,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
         @Override
         public void onClick(View v) {
-
-            if (mPlayImageButton.getVisibility() == View.GONE) {
-                setMediaVisible();
-            }
+            AlbumActivity.launch(PlayerActivity.this, mCurrentAlbum.getId());
         }
 
     };
@@ -488,14 +504,18 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
      * repeat button action
      */
     private OnClickListener downloadOnClickListener = new OnClickListener() {
-
         @Override
         public void onClick(View v) {
-            if(mPlaylistEntry != null) {
-                Dian1Application.getInstance().getDownloadManager().download(mPlaylistEntry);
+            final Authority authority = Dian1Application.getInstance().getUserAuthority();
+            if(authority != null && authority.downloadAuth) {
+                if (mPlaylistEntry != null) {
+                    Dian1Application.getInstance().getDownloadManager().download(mPlaylistEntry);
+                }
+                //goto download
+                DownloadActivity.launch(PlayerActivity.this);
+            } else {
+                showToastSafe(R.string.vip_download_limited, Toast.LENGTH_SHORT);
             }
-            //goto download
-            DownloadActivity.launch(PlayerActivity.this);
         }
     };
 
@@ -542,12 +562,10 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             mCurrentTimeTextView.setText(Helper.secondsToString(0));
             mTotalTimeTextView.setText(Helper.secondsToString(playlistEntry.getMusic().getDuration()));
 
-            //mCoverImageView.
             //mCoverImageView.setImageUrl(playlistEntry.getAlbum().getImage().replaceAll("1.100.jpg", mBetterRes)); // Get higher resolution image 300x300
 
             mProgressBar.setProgress(0);
             mProgressBar.setMax(playlistEntry.getMusic().getDuration());
-            mCoverImageView.performClick();
 
             if (getPlayerEngine() != null) {
                 if (getPlayerEngine().isPlaying()) {
@@ -609,13 +627,15 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             playlist = (Playlist) intent.getSerializableExtra("playlist");
             boolean toPlay = intent.getBooleanExtra("toPlay", false);
             if(playlist != null) {
-                isListenAny = false;
+                isListenAny = (playlist.getPlaylistPlaybackMode() == PlaylistPlaybackMode.LISTEN_ANY);
                 setupPlaylist(playlist);
                 mPlayerEngineListener.onTrackChanged(getPlayerEngine().getPlaylist().getSelectedTrack());
             } else {
                 isListenAny = true;
                 if (getPlayerEngine() != null && getPlayerEngine().getPlaylist() != null) {
-                    mPlayerEngineListener.onTrackChanged(getPlayerEngine().getPlaylist().getSelectedTrack());
+                    playlist = getPlayerEngine().getPlaylist();
+                    isListenAny = (playlist.getPlaylistPlaybackMode() == PlaylistPlaybackMode.LISTEN_ANY);
+                    mPlayerEngineListener.onTrackChanged(playlist.getSelectedTrack());
                 }
                 if (toPlay && !getPlayerEngine().isPlaying()) {//listen any
                     downloadPlaylist();
@@ -672,8 +692,9 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
         } else {
             countToday = -1;
         }
+        String style = CommonPreference.getString(CommonPreference.LISTEN_ANY_STYLE, null);
         ApiManager.getInstance().send(new ApiRequest(this, ApiData.MusicSuibianApi.URL, net.dian1.player.model.Music.class,
-                ApiData.MusicSuibianApi.getParams(STYLE_SELECTED), new OnResultListener<net.dian1.player.model.Music>() {
+                ApiData.MusicSuibianApi.getParams(style), new OnResultListener<net.dian1.player.model.Music>() {
 
             @Override
             public void onResult(net.dian1.player.model.Music response) {
