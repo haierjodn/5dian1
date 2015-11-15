@@ -193,6 +193,10 @@ public class ApiData extends Api {
         }
     }
 
+    public static class FaceUploadApi {
+        //http://www.5dian1.net/api/app/uptouxiang/upload.asp
+        public static final String URL = API_URL + "/uptouxiang/upload.asp";
 
+    }
 
 }

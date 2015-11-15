@@ -8,6 +8,7 @@
     <color name="common_orange">#e36f26</color>
     <color name="white">#ffffff</color>
     <color name="green">#50d2c2</color>
+    <color name="blue">#448ccb</color>
 
     <!-- Main -->
     <color name="main_listen_any">#afc71d12</color>

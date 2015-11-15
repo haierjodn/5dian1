@@ -244,5 +244,6 @@
     <string name="exceed_tried_times_ordinary_user">5.1随便听，普通会员每次只能播3首，金钻会员不受限制……</string>
     <string name="exceed_tried_times_album_ordinary_user">普通会员只能播放第1首和第2首，金钻会员不受限制……</string>
     <string name="exceed_tried_times_album_ordinary_user_toast">金钻会普通会员只能播放前2首，所以只能选择前2首，员不受限制……</string>
+    <string name="common_external_storage_unmount">未找到存储卡，无法存储照片！</string>
 
 </resources>

@@ -1,10 +1,12 @@
 package net.dian1.player.util;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
@@ -147,5 +149,33 @@ public class DialogUtils {
                         ComUtils.openBrowser(context, Constants.URL_VIP_INRO, null);
                     }
                 });
+    }
+
+    public static void showImageChooserDialog(final Activity activity) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.picture_chooser_dialog);
+
+        TextView tvExplorer = (TextView) dialog.findViewById(R.id.tv_choose_explorer);
+        tvExplorer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                ImageUploadUtils.chooseImageInCategory(activity);
+            }
+        });
+        TextView tvShot = (TextView) dialog.findViewById(R.id.tv_choose_shot);
+        tvShot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    ImageUploadUtils.takeCapture(activity);
+                } else {
+                    Toast.makeText(activity, activity.getString(R.string.common_external_storage_unmount), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        dialog.show();
     }
 }
