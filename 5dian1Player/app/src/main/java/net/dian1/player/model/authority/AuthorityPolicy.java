@@ -11,7 +11,7 @@ public class AuthorityPolicy {
      */
     public static Authority getAuthority(int isVip) {
         Authority auth = new Authority(isVip);
-        auth = new Authority(1);
+        //auth = new Authority(1);
         return auth;
     }
 

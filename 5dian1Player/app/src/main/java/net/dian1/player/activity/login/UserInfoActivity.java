@@ -9,6 +9,7 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
 import net.dian1.player.model.DMSResponse;
+import net.dian1.player.model.UploadImageParam;
 import net.dian1.player.model.UserInfo;
 import net.dian1.player.model.login.SecurityParam;
 import net.dian1.player.model.login.ValidCodeParam;
@@ -33,6 +35,8 @@ import net.dian1.player.util.ImageUploadUtils;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
+
 public class UserInfoActivity extends BaseActivity implements View.OnClickListener{
 
 
@@ -40,7 +44,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
 	private ImageView ivPortrait;
 
-	private UploadFaceTask uploadFaceTask;
+	//private UploadFaceTask uploadFaceTask;
 
 	public static void startAction(Context ctx) {
 		Intent intent = new Intent(ctx, UserInfoActivity.class);
@@ -122,13 +126,11 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 						if(bitmap != null) {
 							ivPortrait.setImageBitmap(bitmap);
 						}
-						if(uploadFaceTask == null) {
+						/*if(uploadFaceTask == null) {
 							uploadFaceTask = new UploadFaceTask();
 						}
-						uploadFaceTask.execute(bitmap);
-						//ImageUploadUtils.uploadFile(this, bitmap);
-						//ImageUploadUtils.onCropResult(data);
-						//showResizeImage(data);
+						uploadFaceTask.execute(bitmap);*/
+						uploadFaceTask(bitmap);
 					}
 					break;
 			}
@@ -136,6 +138,44 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
+	private void uploadFaceTask(Bitmap bitmap) {
+		if(bitmap != null) {
+			String imageStr = Bitmap2StrByBase64(bitmap);
+			UserInfo userInfo = Dian1Application.getInstance().getUser();
+			UploadImageParam uploadImageParam = new UploadImageParam(userInfo.getLoginId(), imageStr);
+			showDialog("头像上传中");
+			ApiManager.getInstance().send(new ApiRequest(this, ApiData.FaceUploadApi.URL, DMSResponse.class,
+					ApiData.FaceUploadApi.setParams(uploadImageParam), new OnResultListener<DMSResponse>() {
+
+				@Override
+				public void onResult(final DMSResponse response) {
+					dismissDialog();
+					if (response != null) {
+						//showToastSafe(result ? "头像上传成功" : "头像上传失败", Toast.LENGTH_SHORT);
+						showToastSafe("头像上传成功", Toast.LENGTH_SHORT);
+					}
+					finish();
+				}
+
+				@Override
+				public void onResultError(String msg, String code) {
+					dismissDialog();
+					showToastSafe(msg, Toast.LENGTH_SHORT);
+				}
+			}));
+		}
+	}
+
+	/**
+	 * 通过Base32将Bitmap转换成Base64字符串
+	 * @return
+	 */
+	public String Bitmap2StrByBase64(Bitmap bitmap){
+		ByteArrayOutputStream bos=new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 40, bos);//参数100表示不压缩
+		byte[] bytes=bos.toByteArray();
+		return Base64.encodeToString(bytes, Base64.DEFAULT);
+	}
 
 	class UploadFaceTask extends AsyncTask<Bitmap, Void, Boolean> {
 

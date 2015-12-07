@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.lidroid.xutils.http.RequestParams;
 
 import net.dian1.player.model.LoginParam;
+import net.dian1.player.model.UploadImageParam;
 import net.dian1.player.model.login.PwdResetParam;
 import net.dian1.player.model.login.PwdUpdateParam;
 import net.dian1.player.model.login.RegisterParam;
@@ -196,6 +197,10 @@ public class ApiData extends Api {
     public static class FaceUploadApi {
         //http://www.5dian1.net/api/app/uptouxiang/upload.asp
         public static final String URL = API_URL + "/uptouxiang/upload.asp";
+
+        public static ApiRequestParams setParams(UploadImageParam param) {
+            return new ApiData().new ApiRequestParams(param);
+        }
 
     }
 
