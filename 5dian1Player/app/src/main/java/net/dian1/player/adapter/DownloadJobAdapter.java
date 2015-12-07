@@ -43,6 +43,16 @@ public class DownloadJobAdapter extends ArrayListAdapter<DownloadJob> {
 		type = listType;
 	}
 
+	public void updateItem(final DownloadJob downloadJob) {
+		for (int i = 0; i < mList.size(); i++) {
+			if(mList.get(i).getPlaylistEntry().getMusic().getId() == downloadJob.getPlaylistEntry().getMusic().getId()) {
+				mList.set(i, downloadJob);
+				notifyDataSetChanged();
+				return;
+			}
+		}
+	}
+
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		View row = convertView;

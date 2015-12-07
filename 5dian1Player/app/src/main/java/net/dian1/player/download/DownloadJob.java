@@ -130,7 +130,7 @@ public class DownloadJob {
 		int oldProgress = mProgress;
 		mProgress = (mDownloadedSize*100)/mTotalSize;
 		if(mProgress != oldProgress) {
-			mDownloadManager.notifyObservers();
+			mDownloadManager.notifyObservers(this);
 		}
 	}
 

@@ -147,9 +147,9 @@ public class DownloadManagerImpl implements DownloadManager {
 	}
 
 	@Override
-	public synchronized void notifyObservers() {
+	public synchronized void notifyObservers(DownloadJob downloadJob) {
 		for (DownloadObserver observer : mObservers) {
-			observer.onDownloadChanged(this);
+			observer.onDownloadChanged(downloadJob);
 		}
 	}
 }

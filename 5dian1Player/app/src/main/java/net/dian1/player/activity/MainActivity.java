@@ -166,7 +166,6 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                 //HomeActivity.launch(this);
                 break;
             case R.id.tv_setting:
-                CommonPreference.saveCountDay(0);
                 SettingActivity.startAction(MainActivity.this);
                 break;
             case R.id.tv_favor:

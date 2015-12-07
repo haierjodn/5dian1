@@ -16,29 +16,33 @@
         android:textColor="#fff"
         android:textSize="@dimen/normal_x"/>
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@id/tv_number"
-        android:singleLine="true"
         android:layout_marginTop="10dp"
-        android:text="像梦一样自由"
-        android:textColor="#fff"
-        android:textSize="@dimen/normal"/>
-
-    <TextView
-        android:id="@+id/tv_artist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_title"
-        android:layout_alignLeft="@id/tv_title"
-        android:singleLine="true"
-        android:layout_marginTop="5dp"
         android:layout_marginBottom="10dp"
-        android:text="汪峰"
-        android:textColor="#fff"
-        android:textSize="@dimen/normal"/>
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="像梦一样自由"
+            android:textColor="#fff"
+            android:textSize="@dimen/normal"/>
+
+        <TextView
+            android:id="@+id/tv_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_marginTop="5dp"
+            android:text="汪峰"
+            android:textColor="#fff"
+            android:textSize="@dimen/normal"/>
+    </LinearLayout>
 
     <CheckBox android:id="@+id/cb_select"
         android:layout_width="wrap_content"

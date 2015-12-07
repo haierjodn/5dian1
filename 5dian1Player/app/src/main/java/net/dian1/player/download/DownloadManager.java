@@ -16,9 +16,9 @@
 
 package net.dian1.player.download;
 
-import java.util.ArrayList;
-
 import net.dian1.player.api.PlaylistEntry;
+
+import java.util.ArrayList;
 
 /**
  * Interface to all download related actions.
@@ -95,6 +95,6 @@ public interface DownloadManager {
 	/**
 	 * Notifies all observers that the state of the downloads has changed.
 	 */
-	public abstract void notifyObservers();
+	public abstract void notifyObservers(DownloadJob downloadJob);
 
 }

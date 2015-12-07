@@ -309,7 +309,12 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
             }
             Music music = (Music) getItem(position);
             holder.tvTitle.setText(music.getName());
-            holder.tvArtist.setText(TextUtils.isEmpty(music.getSinger()) ? "--" : music.getSinger());
+            if(TextUtils.isEmpty(music.getSinger())) {
+                holder.tvArtist.setVisibility(View.GONE);
+            } else {
+                holder.tvArtist.setVisibility(View.VISIBLE);
+                holder.tvArtist.setText(music.getSinger());
+            }
             holder.tvPosition.setText(String.valueOf(position + 1));
             holder.cbSelect.setChecked(selected == null ? false : selected[position]);
             holder.cbSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

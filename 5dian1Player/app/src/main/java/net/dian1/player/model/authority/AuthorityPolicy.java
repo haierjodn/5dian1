@@ -10,7 +10,8 @@ public class AuthorityPolicy {
      * @return
      */
     public static Authority getAuthority(int isVip) {
-        Authority auth = new Authority(1/*isVip*/);
+        Authority auth = new Authority(isVip);
+        auth = new Authority(1);
         return auth;
     }
 

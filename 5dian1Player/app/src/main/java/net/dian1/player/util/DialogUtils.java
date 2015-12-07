@@ -18,6 +18,7 @@ import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.common.Constants;
 import net.dian1.player.model.common.VersionLatest;
+import net.dian1.player.preferences.CommonPreference;
 
 /**
  * Created by Desmond on 2015/9/25.
@@ -124,11 +125,13 @@ public class DialogUtils {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        CommonPreference.saveCountDay(0);
                     }
                 },
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        CommonPreference.saveCountDay(0);
                         ComUtils.openBrowser(context, Constants.URL_VIP_INRO, null);
                     }
                 });

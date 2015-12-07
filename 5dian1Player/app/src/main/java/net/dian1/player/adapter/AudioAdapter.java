@@ -91,7 +91,7 @@ public class AudioAdapter extends RecyclerView.Adapter implements AudioLoaderMan
         viewHolder.mTextAudioName.setText(item.getName());
         String artist = item.getArtist();
         viewHolder.mTextAudioSinger.setText(artist);
-        viewHolder.mTextAudioSinger.setVisibility(TextUtils.isEmpty(artist) ? View.GONE : View.VISIBLE);
+        viewHolder.mTextAudioSinger.setVisibility(isNoArtist(artist)? View.GONE : View.VISIBLE);
         viewHolder.mAudioStatus.setVisibility(AudioUtils.isPlaying(item) ? View.VISIBLE : View.INVISIBLE);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +100,10 @@ public class AudioAdapter extends RecyclerView.Adapter implements AudioLoaderMan
                 PlayerActivity.launch(mActivity, playlist);
             }
         });
+    }
+
+    private boolean isNoArtist(String artist) {
+        return TextUtils.isEmpty(artist) || artist.equals("<unknown>");
     }
 
     @Override

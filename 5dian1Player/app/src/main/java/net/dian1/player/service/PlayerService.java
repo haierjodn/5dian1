@@ -31,6 +31,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import net.dian1.player.Dian1Application;
@@ -368,7 +369,9 @@ public class PlayerService extends Service {
 
         String artist = (album == null ? playlistEntry.getMusic().getArtist() : album.getArtistName());
 
-        String notificationMessage = playlistEntry.getMusic().getName() + " - " + artist;
+        artist = (TextUtils.isEmpty(artist) || artist.equals("<unknown>")) ? "" : " - " + artist;
+
+        String notificationMessage = playlistEntry.getMusic().getName() + artist;
 
         Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
 

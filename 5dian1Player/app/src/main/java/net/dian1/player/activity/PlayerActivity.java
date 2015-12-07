@@ -49,12 +49,15 @@ import net.dian1.player.common.Constants;
 import net.dian1.player.db.DatabaseImpl;
 import net.dian1.player.dialog.AddToPlaylistDialog;
 import net.dian1.player.dialog.LoadingDialog;
+import net.dian1.player.download.DownloadJob;
 import net.dian1.player.download.DownloadManager;
 import net.dian1.player.download.DownloadObserver;
+import net.dian1.player.download.DownloadProvider;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
+import net.dian1.player.log.LogUtil;
 import net.dian1.player.media.PlayerEngine;
 import net.dian1.player.media.PlayerEngineImpl;
 import net.dian1.player.media.PlayerEngineListener;
@@ -70,6 +73,7 @@ import net.dian1.player.util.OnSeekToListenerImp;
 import net.dian1.player.util.SeekToMode;
 import net.dian1.player.widget.DualWheelMenu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -91,6 +95,8 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             }
         }
     };
+
+    private DownloadProvider mDownloadProvider;
 
     private Playlist mPlaylist;
 
@@ -154,6 +160,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
         database = new DatabaseImpl(PlayerActivity.this);
         favorPlaylist = database.getFavorites();
+        mDownloadProvider = Dian1Application.getInstance().getDownloadManager().getProvider();
 
         initView();
 
@@ -165,7 +172,7 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
 
         Dian1Application.getInstance().getDownloadManager().registerDownloadObserver(new DownloadObserver() {
             @Override
-            public void onDownloadChanged(DownloadManager manager) {
+            public void onDownloadChanged(DownloadJob downloadJob) {
             }
         });
 
@@ -555,7 +562,12 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
             if(TextUtils.isEmpty(albumPath)) {
                 albumPath = music.getAlbum();
             }
-            showImage(mCoverImageView, albumPath);
+
+            if(TextUtils.isEmpty(albumPath)) {
+                showCover(playlistEntry.getMusic().getName());
+            } else {
+                showImage(mCoverImageView, albumPath);
+            }
 
             tvSongName.setText(playlistEntry.getMusic().getName());
 
@@ -574,6 +586,21 @@ public class PlayerActivity extends BaseActivity implements OnClickListener {
                 } else {
                     mPlayImageButton.setImageResource(R.drawable.player_play);
                     startRotatoAnim();
+                }
+            }
+        }
+
+        private void showCover(final String songName) {
+            ArrayList<DownloadJob> downloadJobs = mDownloadProvider.getCompletedDownloads();
+            for(int i=0; i < downloadJobs.size(); i++) {
+                try {
+                    final DownloadJob downloadJob = downloadJobs.get(i);
+                    final PlaylistEntry entry = downloadJob.getPlaylistEntry();
+                    if (entry != null && songName.contains(entry.getMusic().getName())) {
+                        showImage(mCoverImageView, entry.getAlbum().getImage());
+                    }
+                } catch (Exception e) {
+                    LogUtil.i("Show cover according to download job error:" + e.getStackTrace().toString());
                 }
             }
         }

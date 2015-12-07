@@ -57,7 +57,7 @@ public class DownloadProviderDbImpl implements DownloadProvider {
 				mDownloadManager.download(dJob.getPlaylistEntry());
 			}
 		}
-		mDownloadManager.notifyObservers();
+		//mDownloadManager.notifyObservers();
 	}
 
 	public ArrayList<DownloadJob> getAllDownloads() {
@@ -75,13 +75,13 @@ public class DownloadProviderDbImpl implements DownloadProvider {
 		return mQueuedJobs;
 	}
 
-	public void downloadCompleted(DownloadJob job) {
+	public void downloadCompleted(final DownloadJob job) {
 		mQueuedJobs.remove(job);
 		mCompletedJobs.add(job);
 		if(job.getErrorCode() == 0) {
 			mDb.setStatus(job.getPlaylistEntry(), true);
 		}
-		mDownloadManager.notifyObservers();
+		mDownloadManager.notifyObservers(job);
 	}
 
 	public boolean queueDownload(DownloadJob downloadJob) {
@@ -99,7 +99,7 @@ public class DownloadProviderDbImpl implements DownloadProvider {
 
 		if (mDb.addToLibrary(downloadJob.getPlaylistEntry())) {
 			mQueuedJobs.add(downloadJob);
-			mDownloadManager.notifyObservers();
+			mDownloadManager.notifyObservers(downloadJob);
 			return true;
 		} else {
 			return false;
@@ -114,7 +114,7 @@ public class DownloadProviderDbImpl implements DownloadProvider {
 			mCompletedJobs.remove(job);
 		}
 		mDb.remove(job);
-		mDownloadManager.notifyObservers();
+		mDownloadManager.notifyObservers(job);
 	}
 
 	@Override

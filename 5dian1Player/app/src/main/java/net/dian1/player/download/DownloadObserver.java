@@ -24,6 +24,6 @@ package net.dian1.player.download;
  */
 public interface DownloadObserver {
 
-	void onDownloadChanged(DownloadManager manager);
+	void onDownloadChanged(DownloadJob downloadJob);
 
 }

@@ -135,8 +135,13 @@ public class PlayerControllerBottom extends LinearLayout implements View.OnClick
 
             tvName.setText(playlistEntry.getMusic().getName());
 
-            tvArtist.setText(playlistEntry.getMusic().getArtist());
-
+            String artist = playlistEntry.getMusic().getArtist();
+            if(TextUtils.isEmpty(artist) || artist.equals("<unknown>")) {
+                tvArtist.setVisibility(GONE);
+            } else {
+                tvArtist.setVisibility(VISIBLE);
+                tvArtist.setText(playlistEntry.getMusic().getArtist());
+            }
             if (getPlayerEngine() != null) {
                 if (getPlayerEngine().isPlaying()) {
                     imPlay.setImageResource(R.drawable.player_pause);

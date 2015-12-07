@@ -80,19 +80,6 @@ public class DownloadActivity extends BaseActivity implements DownloadObserver,
     private PlayerEngine mPlayerInterface;
 
     private Handler mHandler;
-    /**
-     * Runnable periodically querying DownloadService about
-     * downloads
-     */
-    private Runnable mUpdateTimeTask = new Runnable() {
-        public void run() {
-            downloadedListView.closeOpenedItems();
-            downloadingListView.closeOpenedItems();
-            //updateListView(mDownloadSpinner.getSelectedItemPosition());
-            downloadedJobAdapter.setList(mDownloadManager.getCompletedDownloads());
-            downloadingJobAdapter.setList(mDownloadManager.getQueuedDownloads());
-        }
-    };
 
     /**
      * Launch this Activity from the outside
@@ -123,7 +110,7 @@ public class DownloadActivity extends BaseActivity implements DownloadObserver,
 
     @Override
     protected void onPause() {
-        mHandler.removeCallbacks(mUpdateTimeTask);
+        //mHandler.removeCallbacks(mUpdateTimeTask);
         mDownloadManager.deregisterDownloadObserver(this);
         super.onPause();
     }
@@ -251,8 +238,26 @@ public class DownloadActivity extends BaseActivity implements DownloadObserver,
     }
 
     @Override
-    public void onDownloadChanged(DownloadManager manager) {
-        mHandler.post(mUpdateTimeTask);
+    public void onDownloadChanged(DownloadJob downloadJob) {
+        mHandler.post(new UpdateTimeTask(downloadJob));
+    }
+
+    /**
+     * Runnable periodically querying DownloadService about
+     * downloads
+     */
+    private class UpdateTimeTask implements Runnable {
+        private DownloadJob downloadJob;
+        public UpdateTimeTask(DownloadJob downloadJob) {
+            this.downloadJob = downloadJob;
+        }
+        public void run() {
+            downloadedListView.closeOpenedItems();
+            downloadingListView.closeOpenedItems();
+            downloadedJobAdapter.updateItem(downloadJob);
+            downloadingJobAdapter.updateItem(downloadJob);
+            mHandler.removeCallbacks(this);
+        }
     }
 
 }
