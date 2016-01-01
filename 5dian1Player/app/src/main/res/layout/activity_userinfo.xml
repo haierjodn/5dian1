@@ -66,6 +66,20 @@
                 android:textColor="@color/font_white"
                 android:textSize="@dimen/normal" />
 
+            <ImageView
+                android:id="@+id/iv_edit_nickname"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_nickname"
+                android:layout_alignTop="@id/tv_nickname"
+                android:layout_marginTop="-8dp"
+                android:visibility="visible"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:src="@drawable/pencil"/>
 
         </RelativeLayout>
 

@@ -167,6 +167,10 @@
     <string name="email">邮件：</string>
     <string name="level">等级：</string>
     <string name="vip_download_limited">只有金钻会员，才能下载哦……</string>
+    <string name="userinfo_portrait_uploading">头像上传中</string>
+    <string name="userinfo_portrait_upload_success">头像上传成功</string>
+    <string name="userinfo_upload_loading">资料保存中...</string>
+    <string name="userinfo_upload_success">资料保存成功</string>
 
     <string name="forget_password">忘记密码</string>
 
@@ -174,6 +178,7 @@
     <string name="login_acc">帐号</string>
     <string name="login_pwd">密码</string>
     <string name="confirm">确定</string>
+    <string name="submit">提交</string>
     <string name="net_error">网络异常</string>
     <string name="net_error_tips">网络加载超时</string>
     <string name="currency_unit">￥%.2f</string>
@@ -239,11 +244,13 @@
     <!-- 会员资格 -->
     <string name="btn_goto_vip">看看金钻</string>
 
+
     <!-- Other -->
     <string name="user_alert">会员提示</string>
     <string name="exceed_tried_times_ordinary_user">5.1随便听，普通会员每次只能播3首，金钻会员不受限制……</string>
     <string name="exceed_tried_times_album_ordinary_user">普通会员只能播放第1首和第2首，金钻会员不受限制……</string>
-    <string name="exceed_tried_times_album_ordinary_user_toast">金钻会普通会员只能播放前2首，所以只能选择前2首，员不受限制……</string>
+    <string name="exceed_tried_times_album_ordinary_user_toast">普通会员只能播放前2首，所以只能选择前2首，金钻会员不受限制……</string>
     <string name="common_external_storage_unmount">未找到存储卡，无法存储照片！</string>
+    <string name="userinfo_change_phone">修改手机号码</string>
 
 </resources>

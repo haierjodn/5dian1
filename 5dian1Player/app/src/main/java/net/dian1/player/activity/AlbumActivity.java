@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
+import net.dian1.player.activity.login.BindActivity;
 import net.dian1.player.adapter.ArrayListAdapter;
 import net.dian1.player.api.PlaylistEntry;
 import net.dian1.player.common.Extra;
@@ -216,7 +217,13 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
                 mustListAdapter.selectAll();
                 final Authority authority = Dian1Application.getInstance().getUserAuthority();
                 if (authority != null && !authority.searchAlbumAll) {
-                    showToastSafe(R.string.exceed_tried_times_album_ordinary_user_toast, Toast.LENGTH_SHORT);
+                    DialogUtils.showCommonDialog(this, getString(R.string.bind), getString(R.string.exceed_tried_times_album_ordinary_user_toast),
+                            null, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                }
+                            });
+                    //showToastSafe(R.string.exceed_tried_times_album_ordinary_user_toast, Toast.LENGTH_SHORT);
                 }
                 break;
             }

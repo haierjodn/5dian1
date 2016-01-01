@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lidroid.xutils.http.RequestParams;
+
 import net.dian1.player.R;
 import net.dian1.player.activity.BaseActivity;
 import net.dian1.player.http.ApiData;
@@ -37,6 +39,9 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 	 */
 	public static final int REGISTER_TIME_FINISH_MESSAGE = 0x0001;
 
+	//0: 绑定, 1：修改手机号码
+	private int pageType = 0;
+
 	private EditText et_phone;
 
 	private EditText et_code;
@@ -54,15 +59,29 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 		ctx.startActivity(intent);
 	}
 
+	public static void actionToChangePhone(Context ctx) {
+		Intent intent = new Intent(ctx, BindActivity.class);
+		intent.putExtra("pageType", 1);
+		ctx.startActivity(intent);
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_bind);
+		Intent intent = getIntent();
+		if(intent != null) {
+			pageType = intent.getIntExtra("pageType", 0);
+		}
+		if(pageType == 1) {
+			setContentView(R.layout.activity_change_phone);
+		} else {
+			setContentView(R.layout.activity_bind);
+		}
 		initView();
 	}
 
 	protected void initView() {
-		setupHeader(R.string.bind);
+		setupHeader(pageType == 1 ? R.string.userinfo_change_phone : R.string.bind);
 		findViewById(R.id.iv_search).setVisibility(View.INVISIBLE);
 		et_phone = (EditText) findViewById(R.id.et_phone);
 		et_code = (EditText) findViewById(R.id.et_code);
@@ -94,8 +113,14 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 				return;
 			}
 			showDialog(null, true);
+			RequestParams requestParams = null;
+			if(pageType == 1) {
+				requestParams = ApiData.SecurityApi.getParams(SecurityParam.getChangePhoneParam(phone, code));
+			} else {
+				requestParams = ApiData.SecurityApi.getParams(SecurityParam.getBindParam(phone, code));
+			}
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.SecurityApi.URL, DMSResponse.class,
-					ApiData.SecurityApi.getParams(SecurityParam.getBindParam(phone, code)),
+					requestParams,
 					new OnResultListener<DMSResponse>() {
 				@Override
 				public void onResult(DMSResponse response) {
@@ -121,9 +146,16 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 				return;
 			}
 			showDialog(getString(R.string.forget_gain_code));
-			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.ValidCodeApi.URL, ApiData.ValidCodeApi.getParams(
-					ValidCodeParam.getBindCodeParam(phone)), new OnResultListener() {
-
+			RequestParams validCodeRequestParams = null;
+			if(pageType == 1) {
+				validCodeRequestParams = ApiData.ValidCodeApi.getParams(
+						ValidCodeParam.getReBindCodeParam(String.valueOf(app.getUser().getLoginId()), app.getUser().getPhone()));
+			} else {
+				validCodeRequestParams = ApiData.ValidCodeApi.getParams(
+						ValidCodeParam.getBindCodeParam(phone));
+			}
+			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.ValidCodeApi.URL, validCodeRequestParams,
+					new OnResultListener() {
 				@Override
 				public void onResult(Object response) {
 					dismissDialog();

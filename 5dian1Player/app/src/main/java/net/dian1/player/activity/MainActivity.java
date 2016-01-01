@@ -218,6 +218,14 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            updateUserInfo();
+        }
+    }
+
     /**
      * Fills ListView with clickable menu items
      */

@@ -72,6 +72,21 @@ public class SecurityParam extends ApiParam {
         return param;
     }
 
+    /**
+     * 修改手机号码
+     * @param phone
+     * @param validCode
+     * @return
+     */
+    public static SecurityParam getChangePhoneParam(String phone, String validCode) {
+        SecurityParam param = new SecurityParam();
+        param.initUserId();
+        param.setAct("resetphone");
+        param.setPhone(phone);
+        param.setAuthCode(validCode);
+        return param;
+    }
+
     public String getAct() {
         return act;
     }

@@ -1,5 +1,6 @@
 package net.dian1.player.activity.login;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,13 +22,17 @@ import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.activity.BaseActivity;
 import net.dian1.player.activity.MainActivity;
+import net.dian1.player.db.DatabaseImpl;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
 import net.dian1.player.http.ApiRequest;
 import net.dian1.player.http.OnResultListener;
+import net.dian1.player.log.LogUtil;
 import net.dian1.player.model.DMSResponse;
+import net.dian1.player.model.LoginResponse;
 import net.dian1.player.model.UploadImageParam;
 import net.dian1.player.model.UserInfo;
+import net.dian1.player.model.UserinfoEditParam;
 import net.dian1.player.model.login.SecurityParam;
 import net.dian1.player.model.login.ValidCodeParam;
 import net.dian1.player.util.DialogUtils;
@@ -44,11 +50,13 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
 	private ImageView ivPortrait;
 
+	private boolean uploadSuccess = false;
+
 	//private UploadFaceTask uploadFaceTask;
 
-	public static void startAction(Context ctx) {
+	public static void startAction(Activity ctx) {
 		Intent intent = new Intent(ctx, UserInfoActivity.class);
-		ctx.startActivity(intent);
+		ctx.startActivityForResult(intent, 0);
 	}
 
 	@Override
@@ -72,6 +80,13 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 			TextView tvUserName = (TextView) findViewById(R.id.tv_nickname);
 			TextView tvLevel = (TextView) findViewById(R.id.tv_level);
 			tvUserName.setText(getString(R.string.nickname_prefix, userInfo.getNickname()));
+			findViewById(R.id.iv_edit_nickname).setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//修改昵称
+					clickToEditItem(EDIT_NICKNAME);
+				}
+			});
 			if(userInfo.getIsappvip() == 1) {
 				tvLevel.setText(getString(R.string.user_gold_expired ,
 						Helper.getTimeLeftFromNow(userInfo.getExpiredTime())));
@@ -85,8 +100,25 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 			ivPortrait.setOnClickListener(this);
 
 			setInfoItem(R.id.ll_phone, R.string.phone, userInfo.getPhone());
-			setInfoItem(R.id.ll_email, R.string.phone, null);
+			findViewById(R.id.ll_phone).findViewById(R.id.iv_edit).setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//修改手机号码调整
+					clickToEditItem(EDIT_PHONE);
+				}
+			});
+
+			setInfoItem(R.id.ll_email, R.string.email, userInfo.getEmail());
+			findViewById(R.id.ll_email).findViewById(R.id.iv_edit).setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//修改email
+					clickToEditItem(EDIT_EMAIL);
+				}
+			});
+
 			setInfoItem(R.id.ll_level, R.string.level, userInfo.getLevelName());
+			findViewById(R.id.ll_level).findViewById(R.id.iv_edit).setVisibility(View.GONE);
 		}
 	}
 
@@ -100,6 +132,33 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 		}
 	}
 
+	private final static int EDIT_NICKNAME = 1;
+	private final static int EDIT_PHONE = 2;
+	private final static int EDIT_EMAIL = 3;
+	private void clickToEditItem(int type) {
+		switch (type) {
+			case EDIT_NICKNAME:
+				DialogUtils.showUserInfoEditDialog(UserInfoActivity.this, "修改昵称", new DialogUtils.OnEditAction() {
+					@Override
+					public void onEditComplete(String content) {
+						uploadUserInfo(content, null);
+					}
+				});
+				break;
+			case EDIT_PHONE:
+				BindActivity.actionToChangePhone(this);
+				break;
+			case EDIT_EMAIL:
+				DialogUtils.showUserInfoEditDialog(UserInfoActivity.this, "修改Email", new DialogUtils.OnEditAction() {
+					@Override
+					public void onEditComplete(String content) {
+						uploadUserInfo(null, content);
+					}
+				});
+				break;
+		}
+	}
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -107,6 +166,12 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 				DialogUtils.showImageChooserDialog(this);
 				break;
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		setResult(uploadSuccess ? Activity.RESULT_OK : Activity.RESULT_CANCELED);
+		super.onBackPressed();
 	}
 
 	@Override
@@ -141,25 +206,28 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 	private void uploadFaceTask(Bitmap bitmap) {
 		if(bitmap != null) {
 			String imageStr = Bitmap2StrByBase64(bitmap);
-			UserInfo userInfo = Dian1Application.getInstance().getUser();
+			final UserInfo userInfo = Dian1Application.getInstance().getUser();
 			UploadImageParam uploadImageParam = new UploadImageParam(userInfo.getLoginId(), imageStr);
-			showDialog("头像上传中");
-			ApiManager.getInstance().send(new ApiRequest(this, ApiData.FaceUploadApi.URL, DMSResponse.class,
-					ApiData.FaceUploadApi.setParams(uploadImageParam), new OnResultListener<DMSResponse>() {
+			showDialog(getString(R.string.userinfo_portrait_uploading));
+			LogUtil.i("UploadImageParam", ApiData.FaceUploadApi.setParams(uploadImageParam).toString());
+			ApiManager.getInstance().send(new ApiRequest(this, ApiData.FaceUploadApi.URL, LoginResponse.class,
+					ApiData.FaceUploadApi.setParams(uploadImageParam), new OnResultListener<LoginResponse>() {
 
 				@Override
-				public void onResult(final DMSResponse response) {
+				public void onResult(final LoginResponse response) {
 					dismissDialog();
 					if (response != null) {
-						//showToastSafe(result ? "头像上传成功" : "头像上传失败", Toast.LENGTH_SHORT);
-						showToastSafe("头像上传成功", Toast.LENGTH_SHORT);
+						uploadSuccess = true;
+						app.setUser(response.user);
+						new DatabaseImpl(UserInfoActivity.this).addOrUpdateUserInfo(response.user);
+						showToastSafe(getString(R.string.userinfo_portrait_upload_success), Toast.LENGTH_SHORT);
 					}
-					finish();
 				}
 
 				@Override
 				public void onResultError(String msg, String code) {
 					dismissDialog();
+					uploadSuccess = false;
 					showToastSafe(msg, Toast.LENGTH_SHORT);
 				}
 			}));
@@ -177,25 +245,46 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 		return Base64.encodeToString(bytes, Base64.DEFAULT);
 	}
 
-	class UploadFaceTask extends AsyncTask<Bitmap, Void, Boolean> {
-
-		@Override
-		protected void onPreExecute() {
-			showDialog("头像上传中");
-			super.onPreExecute();
+	/**
+	 * 会员资料修改上传
+	 */
+	public void uploadUserInfo(String newNickName, String newEmail) {
+		final UserInfo userInfo = Dian1Application.getInstance().getUser();
+		if(userInfo == null) {
+			return;
 		}
-
-		@Override
-		protected Boolean doInBackground(Bitmap... params) {
-			return ImageUploadUtils.uploadFile(UserInfoActivity.this, params[0]);
+		UserinfoEditParam userinfoEditParam = new UserinfoEditParam();
+		userinfoEditParam.uid = String.valueOf(userInfo.getLoginId());
+		userinfoEditParam.token = userInfo.getToken();
+		if(!TextUtils.isEmpty(newNickName)) {
+			userinfoEditParam.user = newNickName;
 		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			dismissDialog();
-			showToastSafe(result ? "头像上传成功" : "头像上传失败", Toast.LENGTH_SHORT);
-			super.onPostExecute(result);
+		if(!TextUtils.isEmpty(newEmail)) {
+			userinfoEditParam.email = newEmail;
 		}
+		showDialog(getString(R.string.userinfo_upload_loading));
+		LogUtil.i("UserinfoEditParam", ApiData.UserInfoApi.setParams(userinfoEditParam).toString());
+		ApiManager.getInstance().send(new ApiRequest(this, ApiData.UserInfoApi.URL, LoginResponse.class,
+				ApiData.UserInfoApi.setParams(userinfoEditParam), new OnResultListener<LoginResponse>() {
+
+			@Override
+			public void onResult(final LoginResponse response) {
+				dismissDialog();
+				if (response != null) {
+					uploadSuccess = true;
+					app.setUser(response.user);
+					new DatabaseImpl(UserInfoActivity.this).addOrUpdateUserInfo(response.user);
+					showToastSafe(getString(R.string.userinfo_upload_success), Toast.LENGTH_SHORT);
+				}
+			}
+
+			@Override
+			public void onResultError(String msg, String code) {
+				dismissDialog();
+				uploadSuccess = false;
+				showToastSafe(msg, Toast.LENGTH_SHORT);
+			}
+		}));
 	}
 
 }

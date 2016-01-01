@@ -25,6 +25,9 @@ public class UserInfo {
 	// 真实姓名
 	private String realName;
 
+	//email
+	private String email;
+
 	private int level;
 
 	private String levelName;
@@ -81,6 +84,14 @@ public class UserInfo {
 
 	public void setRealName(String realName) {
 		this.realName = realName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public int getLevel() {

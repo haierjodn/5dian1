@@ -7,6 +7,7 @@ import com.lidroid.xutils.http.RequestParams;
 
 import net.dian1.player.model.LoginParam;
 import net.dian1.player.model.UploadImageParam;
+import net.dian1.player.model.UserinfoEditParam;
 import net.dian1.player.model.login.PwdResetParam;
 import net.dian1.player.model.login.PwdUpdateParam;
 import net.dian1.player.model.login.RegisterParam;
@@ -199,6 +200,18 @@ public class ApiData extends Api {
         public static final String URL = API_URL + "/uptouxiang/upload.asp";
 
         public static ApiRequestParams setParams(UploadImageParam param) {
+            return new ApiData().new ApiRequestParams(param);
+        }
+
+    }
+
+    /**
+     * 会员资料编辑
+     */
+    public static class UserInfoApi {
+        public static final String URL = API_URL + "/regdata.asp";
+
+        public static ApiRequestParams setParams(UserinfoEditParam param) {
             return new ApiData().new ApiRequestParams(param);
         }
 

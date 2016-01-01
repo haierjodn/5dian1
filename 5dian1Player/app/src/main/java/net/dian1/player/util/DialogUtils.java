@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -180,5 +181,41 @@ public class DialogUtils {
             }
         });
         dialog.show();
+    }
+
+
+    public static void showUserInfoEditDialog(final Activity activity, String label,
+                                              final OnEditAction onEditAction) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_userinfo_edit);
+
+        TextView tvTitle = (TextView) dialog.findViewById(R.id.tv_title);
+        tvTitle.setText(label);
+
+        final EditText etContent = (EditText) dialog.findViewById(R.id.et_content);
+
+        TextView tvConfirm = (TextView) dialog.findViewById(R.id.tv_confirm);
+        tvConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (onEditAction != null) {
+                    onEditAction.onEditComplete(etContent.getText().toString());
+                }
+            }
+        });
+        TextView tvCancel = (TextView) dialog.findViewById(R.id.tv_cancel);
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    public interface OnEditAction {
+        void onEditComplete(String content);
     }
 }
