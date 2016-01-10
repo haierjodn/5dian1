@@ -113,12 +113,7 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 				return;
 			}
 			showDialog(null, true);
-			RequestParams requestParams = null;
-			if(pageType == 1) {
-				requestParams = ApiData.SecurityApi.getParams(SecurityParam.getChangePhoneParam(phone, code));
-			} else {
-				requestParams = ApiData.SecurityApi.getParams(SecurityParam.getBindParam(phone, code));
-			}
+			RequestParams requestParams = ApiData.SecurityApi.getParams(SecurityParam.getBindParam(phone, code));
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.SecurityApi.URL, DMSResponse.class,
 					requestParams,
 					new OnResultListener<DMSResponse>() {
@@ -146,14 +141,8 @@ public class BindActivity extends BaseActivity implements View.OnClickListener{
 				return;
 			}
 			showDialog(getString(R.string.forget_gain_code));
-			RequestParams validCodeRequestParams = null;
-			if(pageType == 1) {
-				validCodeRequestParams = ApiData.ValidCodeApi.getParams(
-						ValidCodeParam.getReBindCodeParam(String.valueOf(app.getUser().getLoginId()), app.getUser().getPhone()));
-			} else {
-				validCodeRequestParams = ApiData.ValidCodeApi.getParams(
-						ValidCodeParam.getBindCodeParam(phone));
-			}
+			RequestParams validCodeRequestParams = ApiData.ValidCodeApi.getParams(
+					ValidCodeParam.getBindCodeParam(String.valueOf(app.getUser().getLoginId()), app.getUser().getPhone()));
 			ApiManager.getInstance().send(new ApiRequest(ctx, ApiData.ValidCodeApi.URL, validCodeRequestParams,
 					new OnResultListener() {
 				@Override

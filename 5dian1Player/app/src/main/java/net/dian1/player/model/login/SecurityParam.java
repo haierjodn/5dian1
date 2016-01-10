@@ -11,7 +11,7 @@ import net.dian1.player.model.UserInfo;
  * resetpwd：
  * 重设密码（找回密码）
  * newpwd：修改密码
- * bindphone：绑定手机
+ * bindphone：绑定手机(或修改绑定20160110)
  * uid	Int 	在“修改密码”“绑定手机”“修改绑定”时，需要	会员ID
  * phone	String	根据act要求有或无	手机号码
  * oldPwd	String	根据act要求有或无	原密码
@@ -63,6 +63,13 @@ public class SecurityParam extends ApiParam {
         return param;
     }
 
+    /**
+     * 1.绑定手机号码
+     * 2.修改手机号码，20160110加入
+     * @param phone
+     * @param validCode
+     * @return
+     */
     public static SecurityParam getBindParam(String phone, String validCode) {
         SecurityParam param = new SecurityParam();
         param.initUserId();
@@ -72,20 +79,14 @@ public class SecurityParam extends ApiParam {
         return param;
     }
 
-    /**
-     * 修改手机号码
-     * @param phone
-     * @param validCode
-     * @return
-     */
-    public static SecurityParam getChangePhoneParam(String phone, String validCode) {
+    /*public static SecurityParam getChangePhoneParam(String phone, String validCode) {
         SecurityParam param = new SecurityParam();
         param.initUserId();
         param.setAct("resetphone");
         param.setPhone(phone);
         param.setAuthCode(validCode);
         return param;
-    }
+    }*/
 
     public String getAct() {
         return act;

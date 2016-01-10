@@ -31,12 +31,25 @@ public class ValidCodeParam extends ApiParam {
         return new ValidCodeParam("getcode_reguser", "", phone);
     }
 
+    /**
+     *
+     * @param phone
+     * @return
+     * @deprecated
+     */
     public static ValidCodeParam getBindCodeParam(String phone) {
         return new ValidCodeParam("getcode_bindphone", "", phone);
     }
 
-    public static ValidCodeParam getReBindCodeParam(String uid, String phone) {
-        return new ValidCodeParam("getcode_rebindphone", uid, phone);
+    /**
+     * 修改绑定，同绑定手机号码act一致
+     *
+     * @param uid
+     * @param phone
+     * @return
+     */
+    public static ValidCodeParam getBindCodeParam(String uid, String phone) {
+        return new ValidCodeParam("getcode_bindphone", uid, phone);
     }
 
 }

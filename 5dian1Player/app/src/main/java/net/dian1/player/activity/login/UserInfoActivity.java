@@ -207,6 +207,13 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 		if(bitmap != null) {
 			String imageStr = Bitmap2StrByBase64(bitmap);
 			final UserInfo userInfo = Dian1Application.getInstance().getUser();
+			/**
+			 * RequestParams paramters = ApiData.FaceUploadApi.getParams(userInfo.getLoginId(), imageStr);
+			 showDialog(getString(R.string.userinfo_portrait_uploading));
+			 LogUtil.i("UploadImageParam", "pa:"+paramters.toString());
+			 ApiManager.getInstance().send(new ApiRequest(this, ApiData.FaceUploadApi.URL, LoginResponse.class,
+			 paramters, new OnResultListener<LoginResponse>() {
+			 */
 			UploadImageParam uploadImageParam = new UploadImageParam(userInfo.getLoginId(), imageStr);
 			showDialog(getString(R.string.userinfo_portrait_uploading));
 			LogUtil.i("UploadImageParam", ApiData.FaceUploadApi.setParams(uploadImageParam).toString());

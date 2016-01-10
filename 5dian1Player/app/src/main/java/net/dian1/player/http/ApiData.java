@@ -197,11 +197,20 @@ public class ApiData extends Api {
 
     public static class FaceUploadApi {
         //http://www.5dian1.net/api/app/uptouxiang/upload.asp
-        public static final String URL = API_URL + "/uptouxiang/upload.asp";
+        public static final String URL = API_URL + "/touxiang.asp";
 
         public static ApiRequestParams setParams(UploadImageParam param) {
             return new ApiData().new ApiRequestParams(param);
         }
+
+        /*public static RequestParams getParams(int loginId, String image) {
+            final RequestParams params = new RequestParams();
+            if (!TextUtils.isEmpty(image)) {
+                params.addBodyParameter("image", image);
+                params.addBodyParameter("loginId", String.valueOf(loginId));
+            }
+            return params;
+        }*/
 
     }
 
