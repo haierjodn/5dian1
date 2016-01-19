@@ -22,6 +22,7 @@ import net.dian1.player.Dian1Application;
 import net.dian1.player.R;
 import net.dian1.player.activity.BaseActivity;
 import net.dian1.player.activity.MainActivity;
+import net.dian1.player.common.Constants;
 import net.dian1.player.db.DatabaseImpl;
 import net.dian1.player.http.ApiData;
 import net.dian1.player.http.ApiManager;
@@ -35,6 +36,7 @@ import net.dian1.player.model.UserInfo;
 import net.dian1.player.model.UserinfoEditParam;
 import net.dian1.player.model.login.SecurityParam;
 import net.dian1.player.model.login.ValidCodeParam;
+import net.dian1.player.util.ComUtils;
 import net.dian1.player.util.DialogUtils;
 import net.dian1.player.util.Helper;
 import net.dian1.player.util.ImageUploadUtils;
@@ -78,8 +80,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 			ivPortrait = (ImageView) findViewById(R.id.iv_portrait);
 			ImageView ivGold = (ImageView) findViewById(R.id.iv_gold);
 			TextView tvUserName = (TextView) findViewById(R.id.tv_nickname);
-			TextView tvLevel = (TextView) findViewById(R.id.tv_level);
 			tvUserName.setText(getString(R.string.nickname_prefix, userInfo.getNickname()));
+			TextView tvLevel = (TextView) findViewById(R.id.tv_level);
 			findViewById(R.id.iv_edit_nickname).setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -97,6 +99,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 			}
 			showImage(ivPortrait, userInfo.getPortrait());
 			ivGold.setOnClickListener(this);
+			tvLevel.setOnClickListener(this);
 			ivPortrait.setOnClickListener(this);
 
 			setInfoItem(R.id.ll_phone, R.string.phone, userInfo.getPhone());
@@ -117,8 +120,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 				}
 			});
 
-			setInfoItem(R.id.ll_level, R.string.level, userInfo.getLevelName());
-			findViewById(R.id.ll_level).findViewById(R.id.iv_edit).setVisibility(View.GONE);
 		}
 	}
 
@@ -138,7 +139,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 	private void clickToEditItem(int type) {
 		switch (type) {
 			case EDIT_NICKNAME:
-				DialogUtils.showUserInfoEditDialog(UserInfoActivity.this, "修改昵称", new DialogUtils.OnEditAction() {
+				DialogUtils.showUserInfoEditDialog(UserInfoActivity.this, getString(R.string.userinfo_modify_nickname),
+						getString(R.string.userinfo_hint_nickname), new DialogUtils.OnEditAction() {
 					@Override
 					public void onEditComplete(String content) {
 						uploadUserInfo(content, null);
@@ -149,7 +151,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 				BindActivity.actionToChangePhone(this);
 				break;
 			case EDIT_EMAIL:
-				DialogUtils.showUserInfoEditDialog(UserInfoActivity.this, "修改Email", new DialogUtils.OnEditAction() {
+				DialogUtils.showUserInfoEditDialog(UserInfoActivity.this, getString(R.string.userinfo_modify_email),
+						getString(R.string.userinfo_hint_email), new DialogUtils.OnEditAction() {
 					@Override
 					public void onEditComplete(String content) {
 						uploadUserInfo(null, content);
@@ -164,6 +167,14 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 		switch (v.getId()) {
 			case R.id.iv_portrait:
 				DialogUtils.showImageChooserDialog(this);
+				break;
+			case R.id.iv_gold:
+			case R.id.tv_level:
+				if(Dian1Application.getInstance().getUser().getIsappvip() == 1) {
+					ComUtils.openBrowser(this, Constants.URL_VIP_INRO, "钻石会员说明");
+				} else {
+					ComUtils.openBrowser(this, Constants.URL_UPGRADE_VIP, "钻石会员说明");
+				}
 				break;
 		}
 	}
@@ -228,6 +239,11 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 						app.setUser(response.user);
 						new DatabaseImpl(UserInfoActivity.this).addOrUpdateUserInfo(response.user);
 						showToastSafe(getString(R.string.userinfo_portrait_upload_success), Toast.LENGTH_SHORT);
+
+						String portrait = response.user.getPortrait();
+						if(!TextUtils.isEmpty(portrait)) {
+							bitmapUtils.clearCache(portrait);
+						}
 					}
 				}
 

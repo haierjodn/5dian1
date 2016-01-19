@@ -116,7 +116,9 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
             }
             showImage(ivPortrait, userInfo.getPortrait());
             ivGold.setOnClickListener(this);
-            if(TextUtils.isEmpty(userInfo.getPhone())) {
+            tvLevel.setOnClickListener(this);
+            if(!showBind && TextUtils.isEmpty(userInfo.getPhone())) {
+                showBind = true;
                 DialogUtils.showCommonDialog(this, getString(R.string.bind), getString(R.string.bind_tips),
                         new View.OnClickListener() {
                             @Override
@@ -137,6 +139,7 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
             });
         }
     }
+    private boolean showBind = false;//show once per last launch
 
     @Override
     public void onAlbumClicked(Album album) {
@@ -172,10 +175,11 @@ public class MainActivity extends BaseActivity implements OnAlbumClickListener, 
                 FavorActivity.launch(this);
                 break;
             case R.id.iv_gold:
+            case R.id.tv_level:
                 if(Dian1Application.getInstance().getUser().getIsappvip() == 1) {
-                    ComUtils.openBrowser(this, Constants.URL_VIP_RENEWAL, "WEB1");
+                    ComUtils.openBrowser(this, Constants.URL_VIP_INRO, "钻石会员说明");
                 } else {
-                    ComUtils.openBrowser(this, Constants.URL_VIP_RENEWAL, "WEB2");
+                    ComUtils.openBrowser(this, Constants.URL_UPGRADE_VIP, "钻石会员说明");
                 }
                 break;
         }

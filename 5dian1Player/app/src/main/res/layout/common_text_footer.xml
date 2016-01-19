@@ -8,7 +8,7 @@
 		android:layout_height="wrap_content"
 		android:gravity="center"
 		android:padding="15dp"
-		android:text="每天推荐10张专辑，要查看更多，请搜索"
+		android:text="每天推荐20张专辑，要查看更多，请搜索"
 		android:textColor="@color/font_white"/>
 
 </LinearLayout>

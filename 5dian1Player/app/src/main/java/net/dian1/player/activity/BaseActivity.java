@@ -60,7 +60,7 @@ public class BaseActivity extends Activity{
 
 	protected Dian1Application app;
 
-	private BitmapUtils bitmapUtils;
+	protected BitmapUtils bitmapUtils;
 
 	private ProgressDialog progressDialog;
 

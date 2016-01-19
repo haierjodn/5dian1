@@ -145,7 +145,7 @@
 
     <!-- Main -->
     <string name="user_gold_expired">金钻会员剩余%d天</string>
-    <string name="nickname_prefix">亲爱的%s</string>
+    <string name="nickname_prefix">%s</string>
     <string name="user_ordinary">普通会员</string>
     <string name="my_favor">我最爱</string>
 
@@ -157,9 +157,10 @@
     <string name="registering">注册中</string>
     <string name="register_success">注册成功</string>
 
+    <string name="tip">弱弱提醒一句</string>
     <string name="bind">绑定</string>
     <string name="bind_success">绑定成功</string>
-    <string name="bind_tips">亲爱的，绑定手机可提升账户安全</string>
+    <string name="bind_tips">大侠，绑定手机用手机号登录更方便哦</string>
 
     <!-- 会员资料 -->
     <string name="member_info">会员资料</string>
@@ -171,6 +172,10 @@
     <string name="userinfo_portrait_upload_success">头像上传成功</string>
     <string name="userinfo_upload_loading">资料保存中...</string>
     <string name="userinfo_upload_success">资料保存成功</string>
+    <string name="userinfo_modify_nickname">修改昵称</string>
+    <string name="userinfo_modify_email">修改Email</string>
+    <string name="userinfo_hint_nickname">输入您的昵称</string>
+    <string name="userinfo_hint_email">输入您的EMAIL</string>
 
     <string name="forget_password">忘记密码</string>
 
@@ -243,6 +248,7 @@
 
     <!-- 会员资格 -->
     <string name="btn_goto_vip">看看金钻</string>
+    <string name="btn_play_continue">继续播放</string>
 
 
     <!-- Other -->
@@ -252,5 +258,6 @@
     <string name="exceed_tried_times_album_ordinary_user_toast">普通会员只能播放前2首，所以只能选择前2首，金钻会员不受限制……</string>
     <string name="common_external_storage_unmount">未找到存储卡，无法存储照片！</string>
     <string name="userinfo_change_phone">修改手机号码</string>
+
 
 </resources>

@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -122,7 +123,8 @@ public class DialogUtils {
     public static void showNoAuthorityAndJumpPage(final Context context) {
         showCommonDialog(context, context.getString(R.string.user_alert),
                 context.getString(R.string.exceed_tried_times_ordinary_user),
-                context.getString(R.string.btn_goto_vip), null,
+                context.getString(R.string.btn_goto_vip),
+                context.getString(R.string.btn_play_continue),
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -184,7 +186,7 @@ public class DialogUtils {
     }
 
 
-    public static void showUserInfoEditDialog(final Activity activity, String label,
+    public static void showUserInfoEditDialog(final Activity activity, String label, String hint,
                                               final OnEditAction onEditAction) {
         final Dialog dialog = new Dialog(activity);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -194,6 +196,7 @@ public class DialogUtils {
         tvTitle.setText(label);
 
         final EditText etContent = (EditText) dialog.findViewById(R.id.et_content);
+        etContent.setHint(hint);
 
         TextView tvConfirm = (TextView) dialog.findViewById(R.id.tv_confirm);
         tvConfirm.setOnClickListener(new View.OnClickListener() {
@@ -213,6 +216,17 @@ public class DialogUtils {
             }
         });
         dialog.show();
+
+        etContent.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                etContent.setFocusable(true);
+                etContent.requestFocus();
+                imm.showSoftInput(etContent, 0);
+            }
+        }, 100);
+
     }
 
     public interface OnEditAction {

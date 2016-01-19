@@ -32,6 +32,7 @@ public class UserInfo {
 
 	private String levelName;
 
+	//1:金砖会员
 	private int isappvip;
 
 	// 工号

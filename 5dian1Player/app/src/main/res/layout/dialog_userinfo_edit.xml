@@ -26,6 +26,7 @@
             android:maxLength="50"
             android:singleLine="true"
             android:layout_marginLeft="15dp"
+            android:hint="@string/userinfo_hint_nickname"
             android:textColor="@color/font_black"
             android:textSize="@dimen/normal_s" />
     </LinearLayout>

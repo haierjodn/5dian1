@@ -217,7 +217,7 @@ public class AlbumActivity extends BaseActivity implements View.OnClickListener 
                 mustListAdapter.selectAll();
                 final Authority authority = Dian1Application.getInstance().getUserAuthority();
                 if (authority != null && !authority.searchAlbumAll) {
-                    DialogUtils.showCommonDialog(this, getString(R.string.bind), getString(R.string.exceed_tried_times_album_ordinary_user_toast),
+                    DialogUtils.showCommonDialog(this, getString(R.string.tip), getString(R.string.exceed_tried_times_album_ordinary_user_toast),
                             null, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
